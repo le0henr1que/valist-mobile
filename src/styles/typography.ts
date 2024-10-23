@@ -21,6 +21,7 @@ export const typography = {
     normal: "400",
     bold: "700",
     semibold: "600",
+    extrabold: "800",
   },
   lineHeight: {
     base: 24,

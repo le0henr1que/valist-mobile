@@ -123,18 +123,21 @@ const getButtonStyles = (
     white: {
       fill: {
         backgroundColor: theme.colors.white,
+        padding: 0,
         text: {
           color: theme.colors.primary["600"],
         },
       },
       outlined: {
         backgroundColor: theme.colors.white,
+        padding: 0,
         text: {
           color: theme.colors.primary["600"],
         },
       },
       subtle: {
         backgroundColor: theme.colors.white,
+        padding: 0,
         text: {
           color: theme.colors.primary["600"],
         },

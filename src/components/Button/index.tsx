@@ -19,6 +19,7 @@ interface ButtonProps extends TouchableOpacityProps {
   size?: ButtonSize;
   isLoading?: boolean;
   disabled?: boolean;
+  icon?: React.ReactNode;
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -27,6 +28,7 @@ const Button: React.FC<ButtonProps> = ({
   size = "large",
   isLoading = false,
   disabled = false,
+  icon,
   title,
   ...props
 }) => {
@@ -46,6 +48,7 @@ const Button: React.FC<ButtonProps> = ({
           color={styles.text.color}
         />
       )}
+      {icon && icon}
       <Text style={styles.text}>{title}</Text>
     </TouchableOpacity>
   );

@@ -4,7 +4,8 @@ import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../screens/HomeScreen";
 import DetailsScreen from "../screens/DetailsScreen";
-import OnboardingScreen from "../screens/OnBoarding/OnBoardingScreen";
+import OnboardingScreen from "../screens/OnBoarding";
+import Login from "../screens/LoginPage";
 
 const Stack = createNativeStackNavigator();
 const MyTheme = {
@@ -26,6 +27,11 @@ export default function RootNavigator() {
         />
         <Stack.Screen name="Home" component={HomeScreen} />
         <Stack.Screen name="Details" component={DetailsScreen} />
+        <Stack.Screen
+          name="Login"
+          component={Login}
+          options={{ headerShown: false }}
+        />
       </Stack.Navigator>
     </NavigationContainer>
   );
