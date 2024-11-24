@@ -6,6 +6,9 @@ import HomeScreen from "../screens/HomeScreen";
 import DetailsScreen from "../screens/DetailsScreen";
 import OnboardingScreen from "../screens/OnBoarding";
 import Login from "../screens/LoginPage";
+import Register from "../screens/RegisterPage";
+import RegisterCode from "../screens/ConfirmCode";
+import InformationStore from "../screens/InformationStore";
 
 const Stack = createNativeStackNavigator();
 const MyTheme = {
@@ -30,6 +33,21 @@ export default function RootNavigator() {
         <Stack.Screen
           name="Login"
           component={Login}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="Register"
+          component={Register}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ConfirmCode"
+          component={RegisterCode}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="InformationStore"
+          component={InformationStore}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

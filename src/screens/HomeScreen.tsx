@@ -5,9 +5,13 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import Button from "../components/Button";
 
-type RootStackParamList = {
+export type RootStackParamList = {
   Home: undefined;
   Details: undefined;
+  Register: undefined;
+  Login: undefined;
+  ConfirmCode: undefined;
+  InformationStore: undefined;
 };
 
 export default function HomeScreen() {
@@ -18,23 +22,25 @@ export default function HomeScreen() {
     <View style={styles.container}>
       <Text>Home Screen</Text>
       <Button
-        title="Go to Details - Primary"
         onPress={() => navigation.navigate("Details")}
         variant="danger"
         type="fill"
         size="large"
         disabled={false}
         // isLoading={true}
-      />
+      >
+        Go to Details - Primary
+      </Button>
       <Button
-        title="Go to Details - Primary"
         onPress={() => navigation.navigate("Details")}
         variant="primary"
         type="fill"
         size="small"
         disabled={false}
         // isLoading={true}
-      />
+      >
+        Go to Details - Primary
+      </Button>
     </View>
   );
 }

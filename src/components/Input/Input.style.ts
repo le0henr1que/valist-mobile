@@ -16,6 +16,12 @@ export const Input = StyleSheet.create({
     lineHeight: typography.lineHeight.base,
     color: colors.neutral["900"],
   },
+  inputPassword: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    alignItems: "center",
+  },
+  iconEye: { position: "absolute", right: 16 },
   styleError: {
     width: "100%",
     display: "flex",

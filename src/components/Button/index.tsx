@@ -15,11 +15,10 @@ export type ButtonSize = "small" | "large" | "medium" | "x-small";
 interface ButtonProps extends TouchableOpacityProps {
   type?: ButtonType;
   variant?: ButtonVariant;
-  title: string;
   size?: ButtonSize;
   isLoading?: boolean;
   disabled?: boolean;
-  icon?: React.ReactNode;
+  children?: React.ReactNode; // Adicionando a propriedade children
 }
 
 const Button: React.FC<ButtonProps> = ({
@@ -28,8 +27,7 @@ const Button: React.FC<ButtonProps> = ({
   size = "large",
   isLoading = false,
   disabled = false,
-  icon,
-  title,
+  children, // Usando a propriedade children
   ...props
 }) => {
   const styles = getButtonStyles(type, variant, size);
@@ -48,15 +46,29 @@ const Button: React.FC<ButtonProps> = ({
           color={styles.text.color}
         />
       )}
-      {icon && icon}
-      <Text style={styles.text}>{title}</Text>
+
+      {children ? (
+        typeof children === "string" ? (
+          <Text style={styles.text}>{children}</Text>
+        ) : (
+          React.Children.map(children, (child) =>
+            typeof child === "string" ? (
+              <Text style={styles.text}>{child}</Text>
+            ) : (
+              child
+            )
+          )
+        )
+      ) : null}
     </TouchableOpacity>
   );
 };
+
 const styleGlobal = StyleSheet.create({
   disabled: {
     opacity: 0.5,
   },
   spinner: {},
 });
+
 export default Button;

@@ -85,21 +85,23 @@ const OnboardingScreen = ({ navigation }: ButtonsProps) => {
 const Buttons = ({ navigation }: ButtonsProps) => (
   <View style={styles.buttonContainer}>
     <Button
-      title="Acessar minha conta"
       onPress={() => navigation.navigate("Login")}
       variant="primary"
       type="fill"
       size="large"
       disabled={false}
-    />
+    >
+      Acessar minha conta{" "}
+    </Button>
     <Button
-      title="Criar uma nova conta"
       onPress={() => navigation.navigate("Details")}
       variant="primary"
       type="outlined"
       size="large"
       disabled={false}
-    />
+    >
+      Criar uma nova conta
+    </Button>
   </View>
 );
 
