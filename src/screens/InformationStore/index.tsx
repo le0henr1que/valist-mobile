@@ -17,6 +17,8 @@ import { SafeAreaFrameContext } from "react-native-safe-area-context";
 import { Input } from "../../components/Input/Input.style";
 import { Controller, set, useForm } from "react-hook-form";
 import Button from "../../components/Button";
+import LottieView from "lottie-react-native";
+import animation from "../../../assets/lotload.json";
 
 const Stack = createNativeStackNavigator();
 
@@ -266,7 +268,7 @@ function ExpirationScreen({ navigation }: { navigation: any }) {
 function LoadingScreen({ navigation }: { navigation: any }) {
   setTimeout(() => {
     navigation.navigate("Home");
-  }, 200);
+  }, 5000);
 
   return (
     <View
@@ -283,7 +285,12 @@ function LoadingScreen({ navigation }: { navigation: any }) {
         <Image source={require("../../../assets/logo-primary.png")} />
       </View>
       <View>
-        <ActivityIndicator size="large" color={colors.primary["600"]} />
+        <LottieView
+          source={animation}
+          autoPlay
+          loop
+          style={{ width: 200, height: 200 }}
+        />
       </View>
       <View>
         <Text style={styles.loadingText}>

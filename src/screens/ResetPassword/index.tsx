@@ -14,14 +14,19 @@ import {
 import Button from "../../components/Button";
 import { Input } from "../../components/Input/Input.style";
 import { colors } from "../../styles/colors";
-import { styles } from "./Login.styles";
+import { styles } from "./ResetPassword.styles";
 import { Ionicons } from "@expo/vector-icons";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../HomeScreen";
 
-export default function Login() {
+export default function ResetPassword() {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const [
+    isPasswordVisibleConfirmPassword,
+    setIsPasswordVisibleConfirmPassword,
+  ] = useState(false);
+
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
@@ -54,7 +59,7 @@ export default function Login() {
                 source={require("../../../assets/logo.png")}
                 style={styles.image}
               />
-              <Text style={styles.title}>Entre com sua conta</Text>
+              <Text style={styles.title}>Esqueci a senha</Text>
             </View>
           </ImageBackground>
           <View style={styles.body}>
@@ -79,112 +84,19 @@ export default function Login() {
                   <Text style={Input.errorText}>Email é obrigatório.</Text>
                 )}
               </View>
-              <View style={Input.inputView}>
-                <Text style={Input.label}>Senha</Text>
-                <Controller
-                  control={control}
-                  rules={{ required: true }}
-                  render={({ field: { onChange, onBlur, value } }) => (
-                    <TouchableOpacity style={Input.inputPassword}>
-                      <TextInput
-                        style={errors.password ? Input.styleError : Input.style}
-                        placeholder="Senha"
-                        secureTextEntry={!isPasswordVisible}
-                        onBlur={onBlur}
-                        onChangeText={onChange}
-                        value={value}
-                      />
 
-                      <Ionicons
-                        onPress={() => setPasswordVisible(!isPasswordVisible)}
-                        name={isPasswordVisible ? "eye" : "eye-off"}
-                        size={20}
-                        style={Input.iconEye}
-                        color="gray"
-                      />
-                    </TouchableOpacity>
-                  )}
-                  name="password"
-                />
-                {errors.password && (
-                  <Text style={Input.errorText}>Senha é obrigatória.</Text>
-                )}
-              </View>
-              <View
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  width: "100%",
-                  alignItems: "flex-end",
-                  marginLeft: 27,
-                }}
-              >
-                <Button
-                  variant="white"
-                  type="fill"
-                  size="small"
-                  onPress={() => navigation.navigate("ResetPassword")}
-                >
-                  Esqueceu a senha?
-                </Button>
-              </View>
               <View style={{ width: "100%", marginTop: 22 }}>
                 <Button
                   type="fill"
                   size="large"
-                  onPress={handleSubmit(onSubmit)}
+                  // onPress={handleSubmit(onSubmit)}
+                  onPress={() => navigation.navigate("NewPassword")}
                 >
-                  Entrar{" "}
+                  Recuperar Senha{" "}
                 </Button>
               </View>
-              <View
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  flexDirection: "row",
-                  marginTop: 16,
-                }}
-              >
-                <View style={styles.line} />
-                <Text
-                  style={{
-                    color: colors.neutral["500"],
-                    fontSize: 12,
-                    fontWeight: "normal",
-                    lineHeight: 16,
-                    marginHorizontal: 10,
-                  }}
-                >
-                  Ou faça login com
-                </Text>
-                <View style={styles.line} />
-              </View>
-              <View
-                style={{
-                  width: "100%",
-                  display: "flex",
-                  justifyContent: "center",
-                  flexDirection: "row",
-                  gap: 15,
-                }}
-              >
-                <View style={{ width: "48.5%", marginTop: 22 }}>
-                  <Button variant="neutral" type="outlined">
-                    <Image source={require("../../../assets/google.png")} />
-                    Google
-                  </Button>
-                </View>
-                <View style={{ width: "48.5%", marginTop: 22 }}>
-                  <Button variant="neutral" type="outlined">
-                    <Image source={require("../../../assets/facebook.png")} />
-                    Facebook
-                  </Button>
-                </View>
-              </View>
               <View />
-              <View>
+              <View style={{ flex: 1, justifyContent: "flex-end" }}>
                 <Text
                   style={{
                     color: colors.neutral["500"],
