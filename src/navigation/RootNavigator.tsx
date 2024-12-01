@@ -12,6 +12,7 @@ import InformationStore from "../screens/InformationStore";
 import ResetPassword from "../screens/ResetPassword";
 import NewPassword from "../screens/NewPassword";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import BarcodeScannerApp from "../screens/HomeScreen/screens/expirations/components/BarCord";
 
 const Stack = createNativeStackNavigator();
 const MyTheme = {
@@ -32,7 +33,11 @@ export default function RootNavigator() {
             component={OnboardingScreen}
             options={{ headerShown: false }}
           />
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen
+            name="Home"
+            options={{ headerShown: false }}
+            component={HomeScreen}
+          />
           <Stack.Screen name="Details" component={DetailsScreen} />
           <Stack.Screen
             name="Login"
@@ -49,6 +54,12 @@ export default function RootNavigator() {
             component={NewPassword}
             options={{ headerShown: false }}
           />
+          <Stack.Screen
+            name="BarcodeScannerApp"
+            component={BarcodeScannerApp}
+            options={{ headerShown: false }}
+          />
+
           <Stack.Screen
             name="Register"
             component={Register}

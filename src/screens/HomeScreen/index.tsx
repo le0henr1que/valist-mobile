@@ -3,7 +3,15 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { Ionicons } from "@expo/vector-icons";
 import { Text, View } from "react-native";
-
+import ClockIcon from "../../../assets/icons/clock";
+import StoreIcon from "../../../assets/icons/store";
+import UserIcon from "../../../assets/icons/user";
+import LogoIcon from "../../../assets/icons/logo";
+import InformationIcon from "../../../assets/icons/information";
+import BellIcon from "../../../assets/icons/bell";
+import Expirations from "./screens/expirations";
+import MyStore from "./screens/my-store";
+import Profile from "./screens/profile";
 // Importar as telas
 // import VencimentosScreen from "./screens/VencimentosScreen";
 // import MinhaLojaScreen from "./screens/MinhaLojaScreen";
@@ -20,48 +28,61 @@ export default function HomeScreen() {
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ color, size }) => {
-          let iconName: any;
-          if (route.name === "Vencimentos") {
-            iconName = "calendar";
-          } else if (route.name === "Minha Loja") {
-            iconName = "storefront";
-          } else if (route.name === "Perfil") {
-            iconName = "person";
-          }
-          return <Ionicons name={iconName} size={size} color={color} />;
+          const icons = {
+            Vencimentos: <ClockIcon color={color} size={size} />,
+            "Minha Loja": <StoreIcon color={color} size={size} />,
+            Perfil: <UserIcon color={color} size={size} />,
+          };
+          return icons[route.name as keyof typeof icons];
         },
-        tabBarActiveTintColor: "#007bff",
+        tabBarActiveTintColor: "#0D9488",
         tabBarInactiveTintColor: "gray",
-        headerShown: false, // Oculta o cabeçalho padrão
+
+        tabBarStyle: {
+          height: 64,
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          borderWidth: 0,
+          borderColor: "transparent",
+        },
+        tabBarLabelStyle: {
+          fontSize: 12,
+          lineHeight: 16,
+          fontWeight: "medium",
+          borderWidth: 0,
+          borderColor: "transparent",
+        },
+        headerStyle: {
+          shadowColor: "transparent",
+          elevation: 0,
+          borderWidth: 1,
+          borderColor: "#E5E7EB",
+        },
+        headerTitle: () => (
+          <View style={{ padding: 0 }}>
+            <LogoIcon />
+          </View>
+        ),
+        headerRight: () => (
+          <View
+            style={{
+              display: "flex",
+              alignItems: "center",
+              flexDirection: "row",
+              gap: 12,
+              paddingRight: 20,
+            }}
+          >
+            <InformationIcon size={40} />
+            <BellIcon size={40} />
+          </View>
+        ),
       })}
     >
-      <Tab.Screen name="Vencimentos" component={Vencimento} />
-      <Tab.Screen name="Minha Loja" component={MinhaLoja} />
-      <Tab.Screen name="Perfil" component={Perfil} />
+      <Tab.Screen name="Vencimentos" component={Expirations} />
+      <Tab.Screen name="Minha Loja" component={MyStore} />
+      <Tab.Screen name="Perfil" component={Profile} />
     </Tab.Navigator>
-  );
-}
-
-function Vencimento() {
-  return (
-    <View>
-      <Text>Home Screen 1</Text>
-    </View>
-  );
-}
-
-function MinhaLoja() {
-  return (
-    <View>
-      <Text>Home Screen 2</Text>
-    </View>
-  );
-}
-
-function Perfil() {
-  return (
-    <View>
-      <Text>Home Screen 3</Text>
-    </View>
   );
 }
