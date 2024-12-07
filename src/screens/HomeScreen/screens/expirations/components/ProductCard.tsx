@@ -3,56 +3,94 @@ import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import TrashIcon from "../../../../../../assets/icons/trash";
 import ScamBarIcon from "../../../../../../assets/icons/scam-bar";
 import { colors } from "../../../../../styles/colors";
+import { Icon } from "react-native-paper";
+import DotsVertical from "../../../../../../assets/icons/dots-vertical";
+import { useDialogModal } from "../../../../../hook/handle-modal/hooks/actions";
+import CardAction from "./CardAction";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { RootStackParamList } from "../../..";
 
 const ProductCard = ({ product }: any) => {
+  const { handleModal } = useDialogModal();
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const handlePressProductCard = () => {
+    console.log("Produto clicado");
+    navigation.navigate("ViewProduct");
+  };
+
+  const handlePress = () => {
+    handleModal({
+      isOpen: true,
+      element: <CardAction />,
+    });
+  };
   return (
-    <View style={styles.card}>
-      <View style={styles.header}>
-        <TrashIcon />
-        <Text style={styles.expiredText}>
-          VENCIDO HÁ {product.expiredDays} DIAS
-        </Text>
-      </View>
-      <View style={styles.body}>
-        <Image source={{ uri: product.image }} style={styles.image} />
-        <View style={styles.details}>
+    <TouchableOpacity onPress={() => handlePressProductCard()}>
+      <View style={styles.card}>
+        <View style={styles.header}>
           <View
             style={{
               display: "flex",
               flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "flex-start",
+              gap: 6,
+              alignItems: "center",
             }}
           >
-            <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
-              {product.name}
+            <TrashIcon />
+            <Text style={styles.expiredText}>
+              VENCIDO HÁ {product.expiredDays} DIAS
             </Text>
-            <Text style={styles.price}>R$ {product.price}</Text>
           </View>
-          <Text style={styles.text}>
-            Código do produto:{" "}
-            <Text style={{ color: colors.neutral["900"] }}>{product.code}</Text>
-          </Text>
-          <Text style={styles.text}>
-            Data de validade: {product.expiryDate}
-          </Text>
+          <TouchableOpacity onPress={() => handlePress()}>
+            <DotsVertical />
+          </TouchableOpacity>
+        </View>
+        <View style={styles.body}>
+          <Image source={{ uri: product.image }} style={styles.image} />
+          <View style={styles.details}>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+              }}
+            >
+              <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
+                {product.name}
+              </Text>
+              <Text style={styles.price}>R$ {product.price}</Text>
+            </View>
+            <Text style={styles.text}>
+              Código do produto:{" "}
+              <Text style={{ color: colors.neutral["900"] }}>
+                {product.code}
+              </Text>
+            </Text>
+            <Text style={styles.text}>
+              Data de validade: {product.expiryDate}
+            </Text>
+          </View>
+        </View>
+        <View style={styles.footer}>
+          <View
+            style={{
+              display: "flex",
+              gap: 4,
+              flexDirection: "row",
+              alignItems: "center",
+            }}
+          >
+            <ScamBarIcon color={"#0D9488"} />
+            <Text style={styles.quantity}>{product.quantity} itens</Text>
+          </View>
+          <Text style={styles.category}>{product.category}</Text>
         </View>
       </View>
-      <View style={styles.footer}>
-        <View
-          style={{
-            display: "flex",
-            gap: 4,
-            flexDirection: "row",
-            alignItems: "center",
-          }}
-        >
-          <ScamBarIcon color={"#0D9488"} />
-          <Text style={styles.quantity}>{product.quantity} itens</Text>
-        </View>
-        <Text style={styles.category}>{product.category}</Text>
-      </View>
-    </View>
+    </TouchableOpacity>
   );
 };
 
@@ -70,7 +108,7 @@ const styles = StyleSheet.create({
     padding: 10,
     display: "flex",
     gap: 6,
-    justifyContent: "flex-start",
+    justifyContent: "space-between",
     alignItems: "center",
     flexDirection: "row",
   },

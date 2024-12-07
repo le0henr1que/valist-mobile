@@ -12,10 +12,7 @@ import BellIcon from "../../../assets/icons/bell";
 import Expirations from "./screens/expirations";
 import MyStore from "./screens/my-store";
 import Profile from "./screens/profile";
-// Importar as telas
-// import VencimentosScreen from "./screens/VencimentosScreen";
-// import MinhaLojaScreen from "./screens/MinhaLojaScreen";
-// import PerfilScreen from "./screens/PerfilScreen";
+import ExpirationsRoute from "./screens/expirations/expirations.route";
 
 const Tab = createBottomTabNavigator();
 
@@ -80,7 +77,7 @@ export default function HomeScreen() {
         ),
       })}
     >
-      <Tab.Screen name="Vencimentos" component={Expirations} />
+      <Tab.Screen name="Vencimentos" component={ExpirationsRoute} />
       <Tab.Screen name="Minha Loja" component={MyStore} />
       <Tab.Screen name="Perfil" component={Profile} />
     </Tab.Navigator>

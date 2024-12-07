@@ -100,6 +100,7 @@ function Expirations() {
   const { control, handleSubmit } = useForm();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   const onSubmit = (data: any) => {
     console.log("Dados enviados:", data);
   };
@@ -111,11 +112,12 @@ function Expirations() {
 
   const handleFloatingButtonPress = () => {
     console.log("Botão flutuante pressionado");
+    navigation.navigate("BarcodeScannerApp");
   };
 
   const [selectedFilter, setSelectedFilter] = useState("Todos");
   const modalizeRefs = useRef<{ [key: string]: Modalize | null }>({});
-  const { isOpen, element, title } = useDialogModalState();
+  // const { isOpen, element, title } = useDialogModalState();
   const { handleModal } = useDialogModal();
 
   const filters = [
@@ -129,7 +131,6 @@ function Expirations() {
 
   const handleFilterPress = (filter: string) => {
     setSelectedFilter(filter);
-    console.log(isOpen, element, title);
     handleModal({
       isOpen: true,
       element: (

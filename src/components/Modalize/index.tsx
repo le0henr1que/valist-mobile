@@ -36,9 +36,11 @@ const Modal = forwardRef(() => {
       adjustToContentHeight={true}
       overlayStyle={styles.overlay}
     >
-      <View style={styles.containerText}>
-        <Text style={styles.titleStyle}>{title}</Text>
-      </View>
+      {title && (
+        <View style={styles.containerText}>
+          <Text style={styles.titleStyle}>{title}</Text>
+        </View>
+      )}
       <View style={styles.container}>{element}</View>
     </Modalize>
   );
