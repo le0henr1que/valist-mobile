@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   SafeAreaView,
@@ -18,6 +18,10 @@ import { colors } from "../../../../styles/colors";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../..";
 import { useNavigation } from "@react-navigation/native";
+import { Modalize } from "react-native-modalize";
+import FilterModalize from "./components/FilterModalize";
+import { useDialogModal } from "../../../../hook/handle-modal/hooks/actions";
+import { useDialogModalState } from "../../../../hook/handle-modal/hooks/dialog-modal-state";
 
 const productList = [
   {
@@ -25,7 +29,7 @@ const productList = [
     price: 20.0,
     code: "1234567890",
     expiryDate: "12/12/2023",
-    image: "https://via.placeholder.com/60", // Substitua por uma URL válida
+    image: "https://via.placeholder.com/60",
     quantity: 5,
     category: "Produtos de Higiene",
     expiredDays: 2,
@@ -109,43 +113,100 @@ function Expirations() {
     console.log("Botão flutuante pressionado");
   };
 
-  return (
-    <View style={styles.container}>
-      <View style={styles.searchProducts}>
-        <SearchInput
-          name="search"
-          control={control}
-          onBarcodePress={handleBarcodePress}
+  const [selectedFilter, setSelectedFilter] = useState("Todos");
+  const modalizeRefs = useRef<{ [key: string]: Modalize | null }>({});
+  const { isOpen, element, title } = useDialogModalState();
+  const { handleModal } = useDialogModal();
+
+  const filters = [
+    "Todos",
+    "Categorias",
+    "Quantidade",
+    "Preço",
+    "Marca",
+    "Cor",
+  ];
+
+  const handleFilterPress = (filter: string) => {
+    setSelectedFilter(filter);
+    console.log(isOpen, element, title);
+    handleModal({
+      isOpen: true,
+      element: (
+        <FilterModalize
+          filter={[
+            "item 1d",
+            "item 2",
+            "item 3",
+            "item 4",
+            "item 5",
+            "item 6",
+            "item 7",
+            "item 8",
+            "item 9",
+            "item 10",
+            "item 11",
+            "item 12",
+            "item 13",
+            "item 14",
+            "item 15",
+            "item 16",
+            "item 17",
+            "item 18",
+            "item 19",
+            "item 20",
+            "item 21",
+          ]}
         />
-        <View style={{ height: 32, marginTop: 20 }}>
-          <FilterCarousel />
-        </View>
-      </View>
-      <View style={styles.containerTitle}>
-        <Text style={styles.title}>Todos os produtos</Text>
-        <Text style={styles.badge}>1.000</Text>
-      </View>
-      <ScrollView
-        style={{
-          width: "100%",
-          display: "flex",
-          flexDirection: "column",
-        }}
-      >
-        {productList.map((product, index) => (
-          <View key={index} style={{ marginBottom: 16 }}>
-            <ProductCard product={product} />
+      ),
+      title: selectedFilter,
+    });
+  };
+  return (
+    <>
+      <View style={styles.container}>
+        <View style={styles.searchProducts}>
+          <SearchInput
+            name="search"
+            control={control}
+            onBarcodePress={handleBarcodePress}
+          />
+          <View style={{ height: 32, marginTop: 20 }}>
+            <FilterCarousel
+              onFilterPress={handleFilterPress}
+              filters={filters}
+              selectedFilter={selectedFilter}
+            />
           </View>
-        ))}
-      </ScrollView>
-      <TouchableOpacity
-        style={styles.floatingButton}
-        onPress={handleFloatingButtonPress}
-      >
-        <Ionicons name="add" size={24} color="white" />
-        <Text style={styles.floatingButtonText}>Adicionar produtos</Text>
-      </TouchableOpacity>
-    </View>
+        </View>
+        <View style={styles.containerTitle}>
+          <Text style={styles.title}>Todos os produtos</Text>
+          <Text style={styles.badge}>1.000</Text>
+        </View>
+        <ScrollView
+          style={{
+            width: "100%",
+            display: "flex",
+            flexDirection: "column",
+          }}
+          showsHorizontalScrollIndicator={false}
+          showsVerticalScrollIndicator={false}
+        >
+          {productList.map((product, index) => (
+            <View key={index} style={{ marginBottom: 16 }}>
+              <ProductCard product={product} />
+            </View>
+          ))}
+        </ScrollView>
+        <TouchableOpacity
+          style={styles.floatingButton}
+          onPress={handleFloatingButtonPress}
+        >
+          <Ionicons name="add" size={24} color="white" />
+          <Text style={styles.floatingButtonText}>Adicionar produtos</Text>
+        </TouchableOpacity>
+      </View>
+    </>
   );
 }
 

@@ -1,18 +1,18 @@
 // navigation/RootNavigator.tsx
-import React from "react";
 import { DefaultTheme, NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import HomeScreen from "../screens/HomeScreen";
-import DetailsScreen from "../screens/DetailsScreen";
-import OnboardingScreen from "../screens/OnBoarding";
-import Login from "../screens/LoginPage";
-import Register from "../screens/RegisterPage";
-import RegisterCode from "../screens/ConfirmCode";
-import InformationStore from "../screens/InformationStore";
-import ResetPassword from "../screens/ResetPassword";
-import NewPassword from "../screens/NewPassword";
+import React from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
+import RegisterCode from "../screens/ConfirmCode";
+import DetailsScreen from "../screens/DetailsScreen";
+import HomeScreen from "../screens/HomeScreen";
 import BarcodeScannerApp from "../screens/HomeScreen/screens/expirations/components/BarCord";
+import InformationStore from "../screens/InformationStore";
+import Login from "../screens/LoginPage";
+import NewPassword from "../screens/NewPassword";
+import OnboardingScreen from "../screens/OnBoarding";
+import Register from "../screens/RegisterPage";
+import ResetPassword from "../screens/ResetPassword";
 
 const Stack = createNativeStackNavigator();
 const MyTheme = {

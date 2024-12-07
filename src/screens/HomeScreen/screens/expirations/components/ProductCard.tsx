@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
 import TrashIcon from "../../../../../../assets/icons/trash";
+import ScamBarIcon from "../../../../../../assets/icons/scam-bar";
+import { colors } from "../../../../../styles/colors";
 
 const ProductCard = ({ product }: any) => {
   return (
@@ -14,16 +16,40 @@ const ProductCard = ({ product }: any) => {
       <View style={styles.body}>
         <Image source={{ uri: product.image }} style={styles.image} />
         <View style={styles.details}>
-          <Text style={styles.title}>{product.name}</Text>
-          <Text style={styles.price}>R$ {product.price}</Text>
-          <Text style={styles.text}>Código do produto: {product.code}</Text>
+          <View
+            style={{
+              display: "flex",
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "flex-start",
+            }}
+          >
+            <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
+              {product.name}
+            </Text>
+            <Text style={styles.price}>R$ {product.price}</Text>
+          </View>
+          <Text style={styles.text}>
+            Código do produto:{" "}
+            <Text style={{ color: colors.neutral["900"] }}>{product.code}</Text>
+          </Text>
           <Text style={styles.text}>
             Data de validade: {product.expiryDate}
           </Text>
         </View>
       </View>
       <View style={styles.footer}>
-        <Text style={styles.quantity}>{product.quantity} itens</Text>
+        <View
+          style={{
+            display: "flex",
+            gap: 4,
+            flexDirection: "row",
+            alignItems: "center",
+          }}
+        >
+          <ScamBarIcon color={"#0D9488"} />
+          <Text style={styles.quantity}>{product.quantity} itens</Text>
+        </View>
         <Text style={styles.category}>{product.category}</Text>
       </View>
     </View>
@@ -58,26 +84,32 @@ const styles = StyleSheet.create({
     padding: 10,
   },
   image: {
-    width: 60,
-    height: 60,
+    width: 80,
+    height: 80,
     borderRadius: 8,
     marginRight: 10,
   },
   details: {
     flex: 1,
+    display: "flex",
+    flexDirection: "column",
+    justifyContent: "space-between",
+    width: "100%",
   },
   title: {
     fontWeight: "bold",
     fontSize: 16,
+    width: "85%",
   },
   price: {
     color: "#007f00",
     fontWeight: "bold",
     marginVertical: 5,
+    width: "15%",
   },
   text: {
     fontSize: 14,
-    color: "#666",
+    color: colors.neutral["600"],
   },
   footer: {
     flexDirection: "row",
@@ -88,11 +120,15 @@ const styles = StyleSheet.create({
   },
   quantity: {
     fontWeight: "bold",
-    color: "#333",
+    color: "#0D9488",
   },
   category: {
     fontSize: 14,
-    color: "#888",
+    backgroundColor: colors.neutral["100"],
+    paddingVertical: 2,
+    paddingHorizontal: 12,
+    color: colors.neutral["900"],
+    borderRadius: 4,
   },
 });
 

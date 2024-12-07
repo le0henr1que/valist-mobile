@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+// src/screens/HomeScreen/screens/expirations/components/FilterCarousel.tsx
+import React from "react";
 import {
   FlatList,
   StyleSheet,
@@ -7,23 +8,20 @@ import {
   View,
 } from "react-native";
 import { colors } from "../../../../../styles/colors";
+import CheckIcon from "../../../../../../assets/icons/check";
+import CaretDown from "../../../../../../assets/icons/caret-down";
 
-const FilterCarousel = () => {
-  const [selectedFilter, setSelectedFilter] = useState("Todos");
+interface FilterCarouselProps {
+  filters: string[];
+  selectedFilter: string;
+  onFilterPress: (filter: string) => void;
+}
 
-  const filters = [
-    "Todos",
-    "Categorias",
-    "Quantidade",
-    "Preço",
-    "Marca",
-    "Cor",
-  ];
-
-  const handleFilterPress = (filter: string) => {
-    setSelectedFilter(filter);
-  };
-
+const FilterCarousel: React.FC<FilterCarouselProps> = ({
+  filters,
+  selectedFilter,
+  onFilterPress,
+}) => {
   return (
     <View style={styles.container}>
       <FlatList
@@ -37,16 +35,17 @@ const FilterCarousel = () => {
               styles.filterButton,
               selectedFilter === item && styles.activeFilterButton,
             ]}
-            onPress={() => handleFilterPress(item)}
+            onPress={() => onFilterPress(item)}
           >
-            <Text
+            <View
               style={[
                 styles.filterText,
                 selectedFilter === item && styles.activeFilterText,
               ]}
             >
-              {item}
-            </Text>
+              {selectedFilter === item && <CheckIcon />} <Text>{item}</Text>
+              <CaretDown />
+            </View>
           </TouchableOpacity>
         )}
       />
@@ -69,18 +68,33 @@ const styles = StyleSheet.create({
     marginRight: 10,
     borderWidth: 1,
     borderColor: colors.neutral["500"],
+    gap: 6,
   },
   activeFilterButton: {
+    display: "flex",
+    justifyContent: "center",
+    alignItems: "center",
+    textAlign: "center",
     backgroundColor: "#d1f7e6",
     borderColor: "#a2e3d3",
   },
   filterText: {
     color: "#333",
+    display: "flex",
+    flexDirection: "row",
+    gap: 6,
+    justifyContent: "center",
+    alignItems: "center",
     fontWeight: "500",
   },
   activeFilterText: {
     color: "#000",
     fontWeight: "700",
+    display: "flex",
+    flexDirection: "row",
+    gap: 6,
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
 
