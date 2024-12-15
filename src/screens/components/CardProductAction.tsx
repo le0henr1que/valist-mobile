@@ -1,20 +1,29 @@
 // src/screens/HomeScreen/screens/expirations/components/FilterModalize.tsx
-import { useNavigation } from "@react-navigation/native";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React from "react";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { RootStackParamList } from "../../..";
-import PlusIcon from "../../../../../../assets/icons/plus";
-import TrashLineIcon from "../../../../../../assets/icons/trash-line";
-import { colors } from "../../../../../styles/colors";
+import PlusIcon from "../../../assets/icons/plus";
+import TrashLineIcon from "../../../assets/icons/trash-line";
+import { useDialogModal } from "../../hook/handle-modal/hooks/actions";
+import { colors } from "../../styles/colors";
+import DeleteAction from "./DeleteProductAction";
 
-const CardAction = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+const CardAction = ({ navigation }: any) => {
+  const { handleModal } = useDialogModal();
 
   const handleAddBatch = () => {
     console.log("Adicionar Lote");
     navigation.navigate("AddBatch");
+    handleModal({ isOpen: false });
+  };
+
+  const handleDeleteBatch = () => {
+    console.log("Excluir Lote");
+
+    // handleModal({ isOpen: false });
+    handleModal({
+      isOpen: true,
+      element: <DeleteAction isProduct={false} />,
+    });
   };
 
   return (
@@ -29,7 +38,10 @@ const CardAction = () => {
         <PlusIcon />
         <Text style={styles.addBatch}>Adicionar Lote</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.buttonAction}>
+      <TouchableOpacity
+        style={styles.buttonAction}
+        onPress={() => handleDeleteBatch()}
+      >
         <TrashLineIcon />
         <Text style={styles.deleteProduct}>Excluir produto</Text>
       </TouchableOpacity>
@@ -46,6 +58,7 @@ const styles = StyleSheet.create({
   buttonAction: {
     borderBottomColor: colors.neutral["200"],
     borderBottomWidth: 1,
+    paddingHorizontal: 20,
     display: "flex",
     flexDirection: "row",
     gap: 6,
@@ -53,7 +66,6 @@ const styles = StyleSheet.create({
   },
 
   container: {
-    // alignItems: "center",
     marginTop: 40,
     display: "flex",
     flexDirection: "column",

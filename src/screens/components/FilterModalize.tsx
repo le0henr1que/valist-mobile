@@ -1,16 +1,7 @@
 // src/screens/HomeScreen/screens/expirations/components/FilterModalize.tsx
-import React, { forwardRef } from "react";
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-} from "react-native";
-import { Modalize } from "react-native-modalize";
-import Button from "../../../../../components/Button";
-import { colors } from "../../../../../styles/colors";
-import { typography } from "../../../../../styles/typography";
+import React from "react";
+import { ScrollView, StyleSheet, Text, TouchableOpacity } from "react-native";
+import { colors } from "../../styles/colors";
 
 interface FilterModalizeProps {
   filter: string;

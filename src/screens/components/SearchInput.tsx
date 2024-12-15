@@ -1,11 +1,11 @@
 import React, { useRef } from "react";
-import { View, TextInput, TouchableOpacity, StyleSheet } from "react-native";
 import { Controller } from "react-hook-form";
-import SearchIcon from "../../../../../../assets/icons/search";
-import ScamBarIcon from "../../../../../../assets/icons/scam-bar";
-import { colors } from "../../../../../styles/colors";
+import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
+import ScamBarIcon from "../../../assets/icons/scam-bar";
+import SearchIcon from "../../../assets/icons/search";
+import { colors } from "../../styles/colors";
 
-const SearchInput = ({ name, control, onBarcodePress }: any) => {
+const SearchInput = ({ name, control, onBarcodePress, productCode }: any) => {
   const inputRef = useRef<TextInput>(null);
 
   const handleFocus = () => {
@@ -30,7 +30,7 @@ const SearchInput = ({ name, control, onBarcodePress }: any) => {
             placeholderTextColor="#999"
             onChangeText={onChange}
             onBlur={onBlur}
-            value={value}
+            value={productCode}
           />
         )}
       />

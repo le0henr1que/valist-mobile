@@ -1,4 +1,3 @@
-// src/screens/HomeScreen/screens/expirations/components/FilterCarousel.tsx
 import React from "react";
 import {
   FlatList,
@@ -7,9 +6,9 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { colors } from "../../../../../styles/colors";
-import CheckIcon from "../../../../../../assets/icons/check";
-import CaretDown from "../../../../../../assets/icons/caret-down";
+import CaretDown from "../../../assets/icons/caret-down";
+import CheckIcon from "../../../assets/icons/check";
+import { colors } from "../../styles/colors";
 
 interface FilterCarouselProps {
   filters: string[];
@@ -43,8 +42,15 @@ const FilterCarousel: React.FC<FilterCarouselProps> = ({
                 selectedFilter === item && styles.activeFilterText,
               ]}
             >
-              {selectedFilter === item && <CheckIcon />} <Text>{item}</Text>
-              <CaretDown />
+              {selectedFilter === item && (
+                <Text>
+                  <CheckIcon />
+                </Text>
+              )}
+              <Text>{item}</Text>
+              <Text>
+                <CaretDown />
+              </Text>
             </View>
           </TouchableOpacity>
         )}

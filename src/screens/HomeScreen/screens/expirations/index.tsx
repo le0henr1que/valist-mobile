@@ -1,29 +1,32 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useRef, useState } from "react";
-import { Controller, useForm } from "react-hook-form";
+import {
+  useIsFocused,
+  useNavigation,
+  useRoute,
+} from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useLayoutEffect, useRef, useState } from "react";
+import { useForm } from "react-hook-form";
 import {
   SafeAreaView,
   ScrollView,
   StyleSheet,
   Text,
-  TextInput,
   TouchableOpacity,
   View,
 } from "react-native";
-import { Input } from "../../../../components/Input/Input.style";
-import SearchInput from "./components/SearchInput";
-import FilterCarousel from "./components/FilterCarousel";
-import ProductCard from "./components/ProductCard";
-import { colors } from "../../../../styles/colors";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../..";
-import { useNavigation } from "@react-navigation/native";
 import { Modalize } from "react-native-modalize";
-import FilterModalize from "./components/FilterModalize";
+import { RootStackParamList } from "../..";
+import SearchIcon from "../../../../../assets/search";
 import { useDialogModal } from "../../../../hook/handle-modal/hooks/actions";
-import { useDialogModalState } from "../../../../hook/handle-modal/hooks/dialog-modal-state";
+import { colors } from "../../../../styles/colors";
+import FilterCarousel from "../../../components/FilterCarousel";
+import FilterModalize from "../../../components/FilterModalize";
+import ProductCard from "../../../components/ProductCard";
+import SearchInput from "../../../components/SearchInput";
+import Header from "../../components/Header";
 
-const productList = [
+export const productList = [
   {
     name: "Desod Rexona invisible Men 150ml",
     price: 20.0,
@@ -100,6 +103,15 @@ function Expirations() {
   const { control, handleSubmit } = useForm();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const isFocused = useIsFocused();
+  const route = useRoute();
+  const { productCode } = (route.params as any) || { productCode: "" };
+
+  useLayoutEffect(() => {
+    if (isFocused) {
+      navigation.getParent()?.setOptions({ tabBarStyle: { display: "flex" } });
+    }
+  }, [navigation, isFocused]);
 
   const onSubmit = (data: any) => {
     console.log("Dados enviados:", data);
@@ -107,12 +119,12 @@ function Expirations() {
 
   const handleBarcodePress = () => {
     console.log("Ação para leitura de código de barras");
-    navigation.navigate("BarcodeScannerApp");
+    navigation.navigate("BarcodeScannerApp", { isSearch: true });
   };
 
   const handleFloatingButtonPress = () => {
     console.log("Botão flutuante pressionado");
-    navigation.navigate("BarcodeScannerApp");
+    navigation.navigate("BarcodeScannerApp", { isSearch: false });
   };
 
   const [selectedFilter, setSelectedFilter] = useState("Todos");
@@ -164,11 +176,13 @@ function Expirations() {
     });
   };
   return (
-    <>
+    <SafeAreaView style={{ flex: 1 }}>
+      <Header />
       <View style={styles.container}>
         <View style={styles.searchProducts}>
           <SearchInput
             name="search"
+            productCode={productCode}
             control={control}
             onBarcodePress={handleBarcodePress}
           />
@@ -182,8 +196,24 @@ function Expirations() {
         </View>
         <View style={styles.containerTitle}>
           <Text style={styles.title}>Todos os produtos</Text>
-          <Text style={styles.badge}>1.000</Text>
+          <Text style={styles.badge}>{productList.length}</Text>
         </View>
+        {!productList.length && (
+          <View
+            style={{
+              alignItems: "center",
+              display: "flex",
+              height: "60%",
+              flexDirection: "column",
+              justifyContent: "center",
+            }}
+          >
+            <SearchIcon />
+            <Text style={{ color: "#000", fontWeight: 500, lineHeight: 20 }}>
+              Nenhum produto encontrado
+            </Text>
+          </View>
+        )}
         <ScrollView
           style={{
             width: "100%",
@@ -207,11 +237,11 @@ function Expirations() {
           <Text style={styles.floatingButtonText}>Adicionar produtos</Text>
         </TouchableOpacity>
       </View>
-    </>
+    </SafeAreaView>
   );
 }
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   container: {
     flex: 1,
     padding: 15,

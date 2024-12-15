@@ -10,7 +10,6 @@
       "image": "./assets/logo-white.png",
       "resizeMode": "contain",
       "backgroundColor": "#0d9488",
-
       "imageSize": {
         "width": 100,
         "height": 100
@@ -24,7 +23,12 @@
         "image": "./assets/logo-white.png",
         "resizeMode": "contain",
         "backgroundColor": "#0d9488"
-      }
+      },
+      "permissions": [
+        "android.permission.CAMERA",
+        "android.permission.RECORD_AUDIO"
+      ],
+      "package": "com.le0henr1que.app"
     },
     "web": {
       "favicon": "./assets/favicon.png"
@@ -39,6 +43,11 @@
           "recordAudioAndroid": true
         }
       ]
-    ]
+    ],
+    "extra": {
+      "eas": {
+        "projectId": "66b7c251-b77e-4c4b-861d-1637158f441a"
+      }
+    }
   }
 }

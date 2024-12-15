@@ -73,7 +73,7 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
   },
   container: {
-    padding: 20,
+    // padding: 20,
     alignItems: "center",
   },
   overlay: {

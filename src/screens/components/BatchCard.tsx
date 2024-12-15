@@ -1,36 +1,34 @@
-import React from "react";
-import { View, Text, Image, StyleSheet, TouchableOpacity } from "react-native";
-import TrashIcon from "../../../../../../assets/icons/trash";
-import ScamBarIcon from "../../../../../../assets/icons/scam-bar";
-import { colors } from "../../../../../styles/colors";
-import { Icon } from "react-native-paper";
-import DotsVertical from "../../../../../../assets/icons/dots-vertical";
-import { useDialogModal } from "../../../../../hook/handle-modal/hooks/actions";
-import CardAction from "./CardAction";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { RootStackParamList } from "../../..";
+import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import { useDialogModal } from "../../hook/handle-modal/hooks/actions";
+import { RootStackParamList } from "../HomeScreen";
+import ScamBarIcon from "../../../assets/icons/scam-bar";
+import { colors } from "../../styles/colors";
+import DotsVertical from "../../../assets/icons/dots-vertical";
+import TrashIcon from "../../../assets/icons/trash";
+import CardBatchAction from "./CardBatchAction";
 
-const ProductCard = ({ product }: any) => {
+const BatchCard = ({ batch }: any) => {
   const { handleModal } = useDialogModal();
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
   const handlePressProductCard = () => {
     console.log("Produto clicado");
-    navigation.navigate("ViewProduct");
+    navigation.navigate("ViewBatch");
   };
 
   const handlePress = () => {
     handleModal({
       isOpen: true,
-      element: <CardAction />,
+      element: <CardBatchAction />,
     });
   };
   return (
-    <TouchableOpacity onPress={() => handlePressProductCard()}>
+    <TouchableOpacity style={{ width: "100%" }}>
       <View style={styles.card}>
-        <View style={styles.header}>
+        <TouchableOpacity onPress={() => handlePress()} style={styles.header}>
           <View
             style={{
               display: "flex",
@@ -41,60 +39,61 @@ const ProductCard = ({ product }: any) => {
           >
             <TrashIcon />
             <Text style={styles.expiredText}>
-              VENCIDO HÁ {product.expiredDays} DIAS
+              VENCIDO HÁ {batch?.expiredDays} DIAS
             </Text>
           </View>
           <TouchableOpacity onPress={() => handlePress()}>
             <DotsVertical />
           </TouchableOpacity>
-        </View>
-        <View style={styles.body}>
-          <Image source={{ uri: product.image }} style={styles.image} />
-          <View style={styles.details}>
+        </TouchableOpacity>
+        <TouchableOpacity onPress={() => handlePressProductCard()}>
+          <View style={styles.body}>
+            <View style={styles.details}>
+              <View
+                style={{
+                  display: "flex",
+                  flexDirection: "row",
+                  justifyContent: "space-between",
+                  alignItems: "flex-start",
+                }}
+              >
+                <View>
+                  <Text style={styles.text}>
+                    Lote:
+                    <Text style={{ color: colors.neutral["900"] }}>
+                      {batch.batchCode}
+                    </Text>
+                  </Text>
+                  <Text style={styles.text}>
+                    Data de validade: {batch?.expiryDate}
+                  </Text>
+                </View>
+                <Text style={styles.price}>R$ {batch?.price}</Text>
+              </View>
+            </View>
+          </View>
+          <View style={styles.footer}>
             <View
               style={{
                 display: "flex",
+                gap: 4,
                 flexDirection: "row",
-                justifyContent: "space-between",
-                alignItems: "flex-start",
+                alignItems: "center",
               }}
             >
-              <Text style={styles.title} numberOfLines={2} ellipsizeMode="tail">
-                {product.name}
-              </Text>
-              <Text style={styles.price}>R$ {product.price}</Text>
+              <ScamBarIcon color={"#0D9488"} />
+              <Text style={styles.quantity}>{batch?.quantity} itens</Text>
             </View>
-            <Text style={styles.text}>
-              Código do produto:{" "}
-              <Text style={{ color: colors.neutral["900"] }}>
-                {product.code}
-              </Text>
-            </Text>
-            <Text style={styles.text}>
-              Data de validade: {product.expiryDate}
-            </Text>
           </View>
-        </View>
-        <View style={styles.footer}>
-          <View
-            style={{
-              display: "flex",
-              gap: 4,
-              flexDirection: "row",
-              alignItems: "center",
-            }}
-          >
-            <ScamBarIcon color={"#0D9488"} />
-            <Text style={styles.quantity}>{product.quantity} itens</Text>
-          </View>
-          <Text style={styles.category}>{product.category}</Text>
-        </View>
+        </TouchableOpacity>
       </View>
     </TouchableOpacity>
   );
 };
-
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+  },
   card: {
     backgroundColor: "#fff",
     borderRadius: 8,
@@ -170,4 +169,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default ProductCard;
+export default BatchCard;
