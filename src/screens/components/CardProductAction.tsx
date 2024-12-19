@@ -70,6 +70,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     gap: 12,
+    marginBottom: 40,
     maxHeight: 400,
     width: "100%",
   },

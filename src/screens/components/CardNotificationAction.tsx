@@ -5,25 +5,18 @@ import PlusIcon from "../../../assets/icons/plus";
 import TrashLineIcon from "../../../assets/icons/trash-line";
 import { useDialogModal } from "../../hook/handle-modal/hooks/actions";
 import { colors } from "../../styles/colors";
-import DeleteAction from "./DeleteProductAction";
+import ReadIcon from "../../../assets/icons/read";
 
-const CardBatchAction = ({ navigation }: any) => {
+const CardNotificationAction = ({ navigation }: any) => {
   const { handleModal } = useDialogModal();
 
-  const handleAddBatch = () => {
+  const handleAddddNotification = () => {
     console.log("Adicionar Lote");
-    navigation.navigate("AddBatch");
     handleModal({ isOpen: false });
   };
 
-  const handleDeleteBatch = () => {
+  const handleDeleteddNotification = () => {
     console.log("Excluir Lote");
-
-    // handleModal({ isOpen: false });
-    handleModal({
-      isOpen: true,
-      element: <DeleteAction isProduct={false} />,
-    });
   };
 
   return (
@@ -32,18 +25,18 @@ const CardBatchAction = ({ navigation }: any) => {
         style={styles.buttonAction}
         onPress={() => {
           console.log("Adicionar Lote");
-          handleAddBatch();
+          handleAddddNotification();
         }}
       >
-        <PlusIcon />
-        <Text style={styles.addBatch}>Adicionar Lote</Text>
+        <ReadIcon />
+        <Text style={styles.addddNotification}>Marcar como lida</Text>
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.buttonAction}
-        onPress={() => handleDeleteBatch()}
+        onPress={() => handleDeleteddNotification()}
       >
         <TrashLineIcon />
-        <Text style={styles.deleteProduct}>Excluir lote</Text>
+        <Text style={styles.deleteProduct}>Excluir Notificação</Text>
       </TouchableOpacity>
     </View>
   );
@@ -70,15 +63,15 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "column",
     gap: 12,
-    marginBottom: 40,
     maxHeight: 400,
+    marginBottom: 40,
     width: "100%",
   },
   overlay: {
     zIndex: 1000,
     elevation: 1000,
   },
-  addBatch: {
+  addddNotification: {
     fontSize: 16,
     fontWeight: "bold",
     marginBottom: 20,
@@ -91,4 +84,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CardBatchAction;
+export default CardNotificationAction;

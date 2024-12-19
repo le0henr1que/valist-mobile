@@ -19,6 +19,7 @@ import ViewBatch from "../screens/ViewBatch";
 import BarcodeScannerApp from "../screens/ScamProduct";
 import EditProduct from "../screens/EditProduct";
 import EditBatch from "../screens/EditBatch";
+import Notification from "../screens/Notification";
 
 const Stack = createNativeStackNavigator();
 const MyTheme = {
@@ -113,6 +114,11 @@ export default function RootNavigator() {
             name="ViewBatch"
             component={ViewBatch}
             options={{ title: "Ver Lote" }}
+          />
+          <Stack.Screen
+            name="Notification"
+            component={Notification}
+            options={{ title: "Ver Lote", headerShown: false }}
           />
         </Stack.Navigator>
       </NavigationContainer>
