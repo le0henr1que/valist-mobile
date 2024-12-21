@@ -20,6 +20,13 @@ import BarcodeScannerApp from "../screens/ScamProduct";
 import EditProduct from "../screens/EditProduct";
 import EditBatch from "../screens/EditBatch";
 import Notification from "../screens/Notification";
+import DeleteStore from "../screens/DeleteStore";
+import ManageStore from "../screens/ManageStores";
+import ManageMembers from "../screens/ManageMembers";
+import ManageProviders from "../screens/ManageProviders";
+import EditDataStore from "../screens/EditDataStore";
+import ManageStores from "../screens/ManageStores";
+import ExportReport from "../screens/ExportReport";
 
 const Stack = createNativeStackNavigator();
 const MyTheme = {
@@ -119,6 +126,36 @@ export default function RootNavigator() {
             name="Notification"
             component={Notification}
             options={{ title: "Ver Lote", headerShown: false }}
+          />
+          <Stack.Screen
+            name="DeleteStore"
+            component={DeleteStore}
+            options={{ title: "Excluir Loja", headerShown: false }}
+          />
+          <Stack.Screen
+            name="ManageStores"
+            component={ManageStores}
+            options={{ title: "Excluir Loja", headerShown: false }}
+          />
+          <Stack.Screen
+            name="ManageMembers"
+            component={ManageMembers}
+            options={{ title: "Excluir Loja", headerShown: false }}
+          />
+          <Stack.Screen
+            name="ManageProviders"
+            component={ManageProviders}
+            options={{ title: "Excluir Loja", headerShown: false }}
+          />
+          <Stack.Screen
+            name="ExportReport"
+            component={ExportReport}
+            options={{ title: "Excluir Loja", headerShown: false }}
+          />
+          <Stack.Screen
+            name="EditStore"
+            component={EditDataStore}
+            options={{ title: "Excluir Loja", headerShown: true }}
           />
         </Stack.Navigator>
       </NavigationContainer>
