@@ -42,7 +42,7 @@ export default function DeleteStore() {
             width: "100%",
             textAlign: "center",
             gap: 24,
-            paddingVe rtical: 24,
+            paddingVertical: 24,
             borderBottomColor: colors.neutral["200"],
             borderBottomWidth: 1,
           }}
