@@ -130,22 +130,22 @@ export default function RootNavigator() {
           <Stack.Screen
             name="DeleteStore"
             component={DeleteStore}
-            options={{ title: "Excluir Loja", headerShown: false }}
+            options={{ title: "Excluir Loja", headerShown: true }}
           />
           <Stack.Screen
             name="ManageStores"
             component={ManageStores}
-            options={{ title: "Excluir Loja", headerShown: false }}
+            options={{ title: "Excluir Loja", headerShown: true }}
           />
           <Stack.Screen
             name="ManageMembers"
             component={ManageMembers}
-            options={{ title: "Excluir Loja", headerShown: false }}
+            options={{ title: "Excluir Loja", headerShown: true }}
           />
           <Stack.Screen
             name="ManageProviders"
             component={ManageProviders}
-            options={{ title: "Excluir Loja", headerShown: false }}
+            options={{ title: "Excluir Loja", headerShown: true }}
           />
           <Stack.Screen
             name="ExportReport"
