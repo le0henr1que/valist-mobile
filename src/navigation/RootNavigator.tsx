@@ -27,6 +27,11 @@ import ManageProviders from "../screens/ManageProviders";
 import EditDataStore from "../screens/EditDataStore";
 import ManageStores from "../screens/ManageStores";
 import ExportReport from "../screens/ExportReport";
+import PersonInformation from "../screens/PersonInformation";
+import ModifyPassword from "../screens/ModifyPassword";
+import FAQ from "../screens/FAQ";
+import ManageNotifications from "../screens/ManageNotifications";
+import PlansManager from "../screens/PlansManager";
 
 const Stack = createNativeStackNavigator();
 const MyTheme = {
@@ -156,6 +161,31 @@ export default function RootNavigator() {
             name="EditStore"
             component={EditDataStore}
             options={{ title: "Excluir Loja", headerShown: true }}
+          />
+          <Stack.Screen
+            name="PersonInformation"
+            component={PersonInformation}
+            options={{ title: "Informações Pessoais", headerShown: true }}
+          />
+          <Stack.Screen
+            name="ModifyPassword"
+            component={ModifyPassword}
+            options={{ title: "Alterar Senha", headerShown: true }}
+          />
+          <Stack.Screen
+            name="FAQ"
+            component={FAQ}
+            options={{ title: "Como podemos te ajudar?", headerShown: true }}
+          />
+          <Stack.Screen
+            name="ManageNotifications"
+            component={ManageNotifications}
+            options={{ title: "Notificações", headerShown: true }}
+          />
+          <Stack.Screen
+            name="PlansManager"
+            component={PlansManager}
+            options={{ title: "Minhas assinaturas", headerShown: true }}
           />
         </Stack.Navigator>
       </NavigationContainer>

@@ -3,7 +3,6 @@ import React from "react";
 import { StyleSheet, Text, View } from "react-native";
 import AtentionIcon from "../../../assets/icons/attention-icon";
 import Button from "../../components/Button";
-import CustomSwitch from "../../components/Switch";
 import { useDialogModal } from "../../hook/handle-modal/hooks/actions";
 import { colors } from "../../styles/colors";
 
