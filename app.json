@@ -20,7 +20,8 @@
       "infoPlist": {
         "NSCameraUsageDescription": "This app uses the camera to take photos.",
         "NSPhotoLibraryUsageDescription": "This app needs access to your photo library to select photos."
-      }
+      },
+      "bundleIdentifier": "com.le0henr1que.app"
     },
     "android": {
       "adaptiveIcon": {
