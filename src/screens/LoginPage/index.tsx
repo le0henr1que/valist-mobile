@@ -1,38 +1,122 @@
-import React, { useState } from "react";
+import { API_URL } from "@env";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Image,
   ImageBackground,
-  Text,
-  TextInput,
-  View,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Text,
+  TextInput,
   TouchableOpacity,
+  View,
 } from "react-native";
+import { useAuth } from "../../auth";
 import Button from "../../components/Button";
 import { Input } from "../../components/Input/Input.style";
 import { colors } from "../../styles/colors";
-import { styles } from "./Login.styles";
-import { Ionicons } from "@expo/vector-icons";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../HomeScreen";
+import { styles } from "./Login.styles";
+import * as AuthSession from "expo-auth-session";
+import { useDialogNotification } from "../../hook/notification/hooks/actions";
+
+const discovery = {
+  authorizationEndpoint: "https://accounts.google.com/o/oauth2/v2/auth",
+  tokenEndpoint: "https://oauth2.googleapis.com/token",
+  revocationEndpoint: "https://oauth2.googleapis.com/revoke",
+};
 
 export default function Login() {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { handleNotification } = useDialogNotification();
+
+  const CLIENT_ID =
+    "57942026538-3dv321nmm8ahcqu6ni6cof70k4fcs374.apps.googleusercontent.com";
+  const REDIRECT_URI = AuthSession.makeRedirectUri();
+  const RESPONSE_TYPE = "code";
+  const SCOPE = ["openid", "profile", "email"];
+
+  const [request, response, promptAsync] = AuthSession.useAuthRequest(
+    {
+      clientId: CLIENT_ID,
+      scopes: SCOPE,
+      redirectUri: REDIRECT_URI,
+      responseType: RESPONSE_TYPE,
+    },
+    discovery
+  );
+
+  const handleGoogleSignIn = async () => {
+    try {
+      const result = await promptAsync();
+      if (result.type === "success") {
+        const { code } = result.params;
+
+        const tokenResponse = await fetch(
+          "https://oauth2.googleapis.com/token",
+          {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/x-www-form-urlencoded",
+            },
+            body: new URLSearchParams({
+              code,
+              client_id: CLIENT_ID,
+              redirect_uri: REDIRECT_URI,
+              grant_type: "authorization_code",
+            }).toString(),
+          }
+        );
+
+        const tokenData = await tokenResponse.json();
+        console.log("Access Token", tokenData.access_token);
+      } else {
+        console.log("Authentication failed", result);
+      }
+    } catch (e) {
+      console.error(e);
+    }
+  };
+
+  const { signIn, isLoading } = useAuth();
 
   const {
     control,
     handleSubmit,
     formState: { errors },
+    setError,
   } = useForm();
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    try {
+      await signIn({
+        email: data?.email || "",
+        password: data?.password || "",
+      });
+      navigation.navigate("Home");
+    } catch (e: any) {
+      if (e.data.statusCode === 401) {
+        setError("email", {
+          type: "manual",
+          message: "Email ou senha incorretos",
+        });
+        return;
+      }
+      handleNotification({
+        isOpen: true,
+        variant: "error",
+        title: "Falha no acesso",
+        message:
+          "Ocorreu um erro ao tentar acessar o app. Tente novamente mais tarde.",
+      });
+      // console.log(e);
+    }
   };
 
   return (
@@ -76,7 +160,12 @@ export default function Login() {
                   name="email"
                 />
                 {errors.email && (
-                  <Text style={Input.errorText}>Email é obrigatório.</Text>
+                  <Text style={Input.errorText}>
+                    {typeof errors?.email?.message === "string" &&
+                    errors?.email?.message === ""
+                      ? "Email inválido"
+                      : String(errors?.email?.message)}
+                  </Text>
                 )}
               </View>
               <View style={Input.inputView}>
@@ -132,9 +221,10 @@ export default function Login() {
                 <Button
                   type="fill"
                   size="large"
+                  isLoading={isLoading}
                   onPress={handleSubmit(onSubmit)}
                 >
-                  Entrar{" "}
+                  Entrar
                 </Button>
               </View>
               <View
@@ -171,7 +261,11 @@ export default function Login() {
                 }}
               >
                 <View style={{ width: "48.5%", marginTop: 22 }}>
-                  <Button variant="neutral" type="outlined">
+                  <Button
+                    variant="neutral"
+                    type="outlined"
+                    onPress={() => handleGoogleSignIn()}
+                  >
                     <Image source={require("../../../assets/google.png")} />
                     Google
                   </Button>

@@ -1,4 +1,4 @@
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useRef, useState } from "react";
 import {
@@ -11,10 +11,14 @@ import {
 import Button from "../../components/Button";
 import { colors } from "../../styles/colors";
 import { RootStackParamList } from "../HomeScreen";
+import { useVerifyMutation } from "../../auth/slice/auth-api";
+import { useDialogNotification } from "../../hook/notification/hooks/actions";
 
 export default function RegisterCode() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const route = useRoute();
+  const { email, name } = route.params as any;
 
   const [code, setCode] = useState(["", "", "", ""]);
   const [timer, setTimer] = useState(62);
@@ -47,6 +51,30 @@ export default function RegisterCode() {
     timer % 60 < 10 ? "0" : ""
   }${timer % 60}`;
 
+  const [verify, { isLoading }] = useVerifyMutation();
+  const { handleNotification } = useDialogNotification();
+
+  const handleValidateCode = async () => {
+    try {
+      const result = await verify({
+        email,
+        token: code.join(""),
+      }).unwrap();
+      console.log(result);
+      navigation.navigate(
+        "InformationStore" as never,
+        { ...result, name } as never
+      );
+    } catch (error: any) {
+      handleNotification({
+        isOpen: true,
+        variant: "error",
+        title: "Erro ao validar código",
+        message: error?.data?.messages[0] || "Ocorreu um erro",
+      });
+    }
+  };
+
   return (
     <KeyboardAvoidingView behavior="padding" style={styles.container}>
       <View></View>
@@ -55,7 +83,7 @@ export default function RegisterCode() {
         <Text style={styles.subtitle}>
           Um código de 4 dígitos foi enviado para o email
           {"\n"}
-          <Text style={styles.email}>lucasscott3@email.com</Text>
+          <Text style={styles.email}>{email}</Text>
         </Text>
 
         <View style={styles.codeInputContainer}>
@@ -81,10 +109,11 @@ export default function RegisterCode() {
       </View>
       <View>
         <Button
-          onPress={() => navigation.navigate("InformationStore")}
+          onPress={() => handleValidateCode()}
           variant="primary"
           type="fill"
           size="large"
+          isLoading={isLoading}
           disabled={false}
         >
           Validar código

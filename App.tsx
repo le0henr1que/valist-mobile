@@ -5,14 +5,15 @@ import {
   Inter_800ExtraBold,
   useFonts,
 } from "@expo-google-fonts/inter";
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import * as SplashScreen from "expo-splash-screen";
 import React, { useEffect } from "react";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { Provider } from "react-redux";
-import ModalComponent from "./src/components/Modalize";
+import Modal from "./src/components/Modalize";
+import ModalNotification from "./src/components/Notification";
 import RootNavigator from "./src/navigation/RootNavigator";
 import { store } from "./store";
-import Modal from "./src/components/Modalize";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -49,12 +50,16 @@ export default function App() {
   if (!fontsLoaded) {
     return null;
   }
+  const queryClient = new QueryClient();
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
       <Provider store={store}>
-        <Modal />
-        <RootNavigator />
+        <QueryClientProvider client={queryClient}>
+          <Modal />
+          <ModalNotification />
+          <RootNavigator />
+        </QueryClientProvider>
       </Provider>
     </GestureHandlerRootView>
   );

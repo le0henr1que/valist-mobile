@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -10,12 +10,12 @@ import {
   Image,
 } from "react-native";
 import { RadioButton, ProgressBar } from "react-native-paper";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, useRoute } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { colors } from "../../styles/colors";
 import { SafeAreaFrameContext } from "react-native-safe-area-context";
 import { Input } from "../../components/Input/Input.style";
-import { Controller, set, useForm } from "react-hook-form";
+import { Controller, useForm } from "react-hook-form";
 import Button from "../../components/Button";
 import LottieView from "lottie-react-native";
 import animation from "../../../assets/lotload.json";
@@ -32,17 +32,25 @@ const ProgressHeader = ({ progress }: { progress: number }) => (
 );
 
 // Tela 1: Nome do Estabelecimento
-function EstablishmentScreen({ navigation }: { navigation: any }) {
-  const [name, setName] = useState("");
+function EstablishmentScreen({
+  navigation,
+  formMethods,
+  route,
+}: {
+  navigation: any;
+  formMethods: any;
+  route: any;
+}) {
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = formMethods;
 
   const onSubmit = (data: any) => {
-    console.log(data);
+    navigation.navigate("Notifications", { ...data, ...route });
   };
+
   return (
     <View style={styles.container}>
       <View>
@@ -50,7 +58,7 @@ function EstablishmentScreen({ navigation }: { navigation: any }) {
 
         <View>
           <Text style={styles.title}>
-            Seja bem vindo <Text style={styles.highlight}>João pereira</Text>.
+            Seja bem vindo <Text style={styles.highlight}>{route?.name}</Text>.
             Para começar, insira o nome do seu estabelecimento.
           </Text>
           <Text style={styles.subtitle}>
@@ -81,14 +89,7 @@ function EstablishmentScreen({ navigation }: { navigation: any }) {
         </View>
       </View>
       <View>
-        <Button
-          type="fill"
-          size="large"
-          onPress={() => {
-            handleSubmit(onSubmit);
-            navigation.navigate("Notifications");
-          }}
-        >
+        <Button type="fill" size="large" onPress={handleSubmit(onSubmit)}>
           Continuar
         </Button>
       </View>
@@ -97,8 +98,20 @@ function EstablishmentScreen({ navigation }: { navigation: any }) {
 }
 
 // Tela 2: Deseja receber notificações?
-function NotificationsScreen({ navigation }: { navigation: any }) {
+function NotificationsScreen({
+  navigation,
+  formMethods,
+}: {
+  navigation: any;
+  formMethods: any;
+}) {
   const [checked, setChecked] = useState("sim");
+  const { setValue, handleSubmit } = formMethods;
+  setValue("notifications", checked);
+
+  const onSubmit = (data: any) => {
+    navigation.navigate("Expiration", { ...data });
+  };
 
   return (
     <View style={styles.container}>
@@ -136,14 +149,7 @@ function NotificationsScreen({ navigation }: { navigation: any }) {
         </RadioButton.Group>
       </View>
       <View style={{ gap: 16 }}>
-        <Button
-          type="fill"
-          size="large"
-          onPress={() => {
-            // handleSubmit(onSubmit);
-            navigation.navigate("Expiration");
-          }}
-        >
+        <Button type="fill" size="large" onPress={handleSubmit(onSubmit)}>
           Continuar
         </Button>
         <Button
@@ -160,18 +166,25 @@ function NotificationsScreen({ navigation }: { navigation: any }) {
 }
 
 // Tela 3: Intervalo de notificações
-function ExpirationScreen({ navigation }: { navigation: any }) {
+function ExpirationScreen({
+  navigation,
+  formMethods,
+}: {
+  navigation: any;
+  formMethods: any;
+}) {
   const [selected, setSelected] = useState("");
   const [customDays, setCustomDays] = useState("");
   const {
     control,
     handleSubmit,
     formState: { errors },
-  } = useForm();
+  } = formMethods;
 
   const onSubmit = (data: any) => {
-    console.log(data);
+    navigation.navigate("Loading", { ...data });
   };
+
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View>
@@ -240,14 +253,7 @@ function ExpirationScreen({ navigation }: { navigation: any }) {
       </View>
       <View>
         <View style={{ gap: 16 }}>
-          <Button
-            type="fill"
-            size="large"
-            onPress={() => {
-              // handleSubmit(onSubmit);
-              navigation.navigate("Loading");
-            }}
-          >
+          <Button type="fill" size="large" onPress={handleSubmit(onSubmit)}>
             Continuar
           </Button>
           <Button
@@ -265,10 +271,23 @@ function ExpirationScreen({ navigation }: { navigation: any }) {
 }
 
 // Tela 4: Carregando
-function LoadingScreen({ navigation }: { navigation: any }) {
-  setTimeout(() => {
-    navigation.navigate("Home");
-  }, 5000);
+function LoadingScreen({ navigation, route }: { navigation: any; route: any }) {
+  const { params } = route;
+
+  const onSubmit = () => {
+    const register = {
+      organization_name: params?.storeName,
+      isNotification: params?.notifications !== "not",
+      notificationInterval: params?.amount,
+      access_token: params?.access_token,
+    };
+    console.log(register);
+    // navigation.navigate("Home");
+  };
+
+  useEffect(() => {
+    onSubmit();
+  }, []);
 
   return (
     <View
@@ -294,7 +313,7 @@ function LoadingScreen({ navigation }: { navigation: any }) {
       </View>
       <View>
         <Text style={styles.loadingText}>
-          Tudo pronto! notificado? {"\n"}Estamos configurando sua conta...
+          Tudo pronto! Estamos configurando sua conta...
         </Text>
       </View>
     </View>
@@ -302,11 +321,28 @@ function LoadingScreen({ navigation }: { navigation: any }) {
 }
 
 export default function InformationStore() {
+  const formMethods = useForm();
+  const route = useRoute();
+
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
-      <Stack.Screen name="Establishment" component={EstablishmentScreen} />
-      <Stack.Screen name="Notifications" component={NotificationsScreen} />
-      <Stack.Screen name="Expiration" component={ExpirationScreen} />
+      <Stack.Screen name="Establishment">
+        {(props) => (
+          <EstablishmentScreen
+            {...props}
+            formMethods={formMethods}
+            route={route.params}
+          />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="Notifications">
+        {(props) => (
+          <NotificationsScreen {...props} formMethods={formMethods} />
+        )}
+      </Stack.Screen>
+      <Stack.Screen name="Expiration">
+        {(props) => <ExpirationScreen {...props} formMethods={formMethods} />}
+      </Stack.Screen>
       <Stack.Screen name="Loading" component={LoadingScreen} />
     </Stack.Navigator>
   );

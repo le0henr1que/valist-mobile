@@ -1,24 +1,26 @@
-import React, { useState } from "react";
+import { Ionicons } from "@expo/vector-icons";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Image,
   ImageBackground,
-  Text,
-  TextInput,
-  View,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
+  Text,
+  TextInput,
   TouchableOpacity,
+  View,
 } from "react-native";
+import { useCodeCheckMutation } from "../../auth/slice/auth-api";
 import Button from "../../components/Button";
 import { Input } from "../../components/Input/Input.style";
+import { useDialogNotification } from "../../hook/notification/hooks/actions";
 import { colors } from "../../styles/colors";
-import { styles } from "./Register.styles";
-import { Ionicons } from "@expo/vector-icons";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../HomeScreen";
+import { styles } from "./Register.styles";
 
 export default function Register() {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
@@ -30,14 +32,39 @@ export default function Register() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
+  const [codeCheck, { isLoading }] = useCodeCheckMutation();
+  const { handleNotification } = useDialogNotification();
+
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    try {
+      const userId = await codeCheck({
+        email: data.email,
+        password: data.password,
+        name: data.name,
+      }).unwrap();
+      navigation.navigate(
+        "ConfirmCode" as never,
+        {
+          userId: userId?.id,
+          email: data.email,
+          name: data.name,
+        } as never
+      );
+    } catch (error: any) {
+      handleNotification({
+        isOpen: true,
+        variant: "error",
+        title: "Falha no acesso",
+        message: error.data.messages[0],
+      });
+      console.log(error);
+    }
   };
 
   return (
@@ -181,8 +208,8 @@ export default function Register() {
                 <Button
                   type="fill"
                   size="large"
-                  // onPress={handleSubmit(onSubmit)}
-                  onPress={() => navigation.navigate("ConfirmCode")}
+                  isLoading={isLoading}
+                  onPress={handleSubmit(onSubmit)}
                 >
                   Criar conta{" "}
                 </Button>

@@ -94,7 +94,7 @@ const Buttons = ({ navigation }: ButtonsProps) => (
       Acessar minha conta{" "}
     </Button>
     <Button
-      onPress={() => navigation.navigate("Details")}
+      onPress={() => navigation.navigate("Register")}
       variant="primary"
       type="outlined"
       size="large"

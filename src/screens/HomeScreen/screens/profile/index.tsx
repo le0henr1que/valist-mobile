@@ -16,11 +16,15 @@ import BellIcon from "../../../../../assets/icons/bell";
 import InformationIcon from "../../../../../assets/icons/information";
 import { colors } from "../../../../styles/colors";
 import Button from "../../../../components/Button";
+import { useAuth } from "../../../../auth";
 
 function Profile() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const notificationCount = 1;
+
+  const { signOut, isLoading } = useAuth();
+
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -462,7 +466,9 @@ function Profile() {
           <Button
             variant="neutral"
             size="medium"
-            onPress={() => navigation.navigate("Login")}
+            onPress={() => {
+              signOut();
+            }}
           >
             Sair do Aplicativo
           </Button>
