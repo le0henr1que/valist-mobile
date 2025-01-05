@@ -13,7 +13,7 @@ export const Input = StyleSheet.create({
     borderRadius: 8,
     borderColor: colors.neutral["300"],
     fontSize: typography.size.base,
-    lineHeight: typography.lineHeight.base,
+    // lineHeight: typography.lineHeight.base,
     color: colors.neutral["900"],
   },
   inputPassword: {

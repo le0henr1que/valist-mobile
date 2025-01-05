@@ -39,7 +39,10 @@ export default function Register() {
     control,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm();
+
+  const password = watch("password");
 
   const onSubmit = async (data: any) => {
     try {
@@ -135,7 +138,15 @@ export default function Register() {
                 <Text style={Input.label}>Senha</Text>
                 <Controller
                   control={control}
-                  rules={{ required: true }}
+                  rules={{
+                    required: true,
+                    pattern: {
+                      value:
+                        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                      message:
+                        "A senha deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma letra minúscula, um número e um caractere especial.",
+                    },
+                  }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TouchableOpacity style={Input.inputPassword}>
                       <TextInput
@@ -159,14 +170,20 @@ export default function Register() {
                   name="password"
                 />
                 {errors.password && (
-                  <Text style={Input.errorText}>Senha é obrigatória.</Text>
+                  <Text style={Input.errorText}>
+                    {errors.password.message || "Senha é obrigatória."}
+                  </Text>
                 )}
               </View>
               <View style={Input.inputView}>
                 <Text style={Input.label}>Repita sua senha</Text>
                 <Controller
                   control={control}
-                  rules={{ required: true }}
+                  rules={{
+                    required: true,
+                    validate: (value) =>
+                      value === password || "As senhas não coincidem.",
+                  }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TouchableOpacity style={Input.inputPassword}>
                       <TextInput
@@ -200,7 +217,9 @@ export default function Register() {
                   name="confirmPassword"
                 />
                 {errors.confirmPassword && (
-                  <Text style={Input.errorText}>Senha é obrigatória.</Text>
+                  <Text style={Input.errorText}>
+                    {errors.confirmPassword.message || "Senha é obrigatória."}
+                  </Text>
                 )}
               </View>
 

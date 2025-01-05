@@ -1,5 +1,5 @@
 import { Ionicons } from "@expo/vector-icons";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import React, { useRef, useState } from "react";
 import { Controller, useForm } from "react-hook-form";
@@ -21,9 +21,14 @@ import { RootStackParamList } from "../HomeScreen";
 import { styles } from "./NewPassword";
 
 import { Modalize } from "react-native-modalize";
+import { useRecoveryPasswordMutation } from "../../auth/slice/auth-api";
+import { useDialogNotification } from "../../hook/notification/hooks/actions";
 
 export default function NewPassword() {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
+  const route = useRoute();
+  const { access_token } = route.params || ({} as any);
+
   const [
     isPasswordVisibleConfirmPassword,
     setIsPasswordVisibleConfirmPassword,
@@ -31,15 +36,40 @@ export default function NewPassword() {
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
   const {
     control,
     handleSubmit,
     formState: { errors },
+    watch,
   } = useForm();
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const password = watch("password");
+  const [recoveryPassword, { isLoading }] = useRecoveryPasswordMutation();
+  const { handleNotification } = useDialogNotification();
+
+  const onSubmit = async (data: any) => {
+    try {
+      await recoveryPassword({
+        accessToken: access_token,
+        newPassword: data.password,
+      }).unwrap();
+      navigation.navigate("Login");
+      handleNotification({
+        isOpen: true,
+        variant: "success",
+        title: "Senha alterada com sucesso",
+        message: "Sua senha foi alterada com sucesso, faça login.",
+      });
+    } catch (error: any) {
+      navigation.navigate("Login");
+      handleNotification({
+        isOpen: true,
+        variant: "error",
+        title: "Falha no acesso",
+        message: error.data.messages[0] || "Ocorreu um erro",
+      });
+      console.log(error);
+    }
   };
 
   const modalizeRef = useRef<{ open: () => void } | null>(null);
@@ -66,7 +96,7 @@ export default function NewPassword() {
           >
             <View style={styles.textHeader}>
               <Image
-                source={require("../../../assets/logo.png")}
+                source={require("../../../assets/logo-white.png")}
                 style={styles.image}
               />
               <Text style={styles.title}>Resetar senha</Text>
@@ -78,7 +108,15 @@ export default function NewPassword() {
                 <Text style={Input.label}>Senha</Text>
                 <Controller
                   control={control}
-                  rules={{ required: true }}
+                  rules={{
+                    required: true,
+                    pattern: {
+                      value:
+                        /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                      message:
+                        "A senha deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma letra minúscula, um número e um caractere especial.",
+                    },
+                  }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TouchableOpacity style={Input.inputPassword}>
                       <TextInput
@@ -89,7 +127,6 @@ export default function NewPassword() {
                         onChangeText={onChange}
                         value={value}
                       />
-
                       <Ionicons
                         onPress={() => setPasswordVisible(!isPasswordVisible)}
                         name={isPasswordVisible ? "eye" : "eye-off"}
@@ -102,14 +139,21 @@ export default function NewPassword() {
                   name="password"
                 />
                 {errors.password && (
-                  <Text style={Input.errorText}>Senha é obrigatória.</Text>
+                  <Text style={Input.errorText}>
+                    {errors.password?.message?.toString() ||
+                      "Senha é obrigatória."}
+                  </Text>
                 )}
               </View>
               <View style={Input.inputView}>
                 <Text style={Input.label}>Repita sua senha</Text>
                 <Controller
                   control={control}
-                  rules={{ required: true }}
+                  rules={{
+                    required: true,
+                    validate: (value) =>
+                      value === password || "As senhas não coincidem.",
+                  }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TouchableOpacity style={Input.inputPassword}>
                       <TextInput
@@ -124,7 +168,6 @@ export default function NewPassword() {
                         onChangeText={onChange}
                         value={value}
                       />
-
                       <Ionicons
                         onPress={() =>
                           setIsPasswordVisibleConfirmPassword(
@@ -143,7 +186,10 @@ export default function NewPassword() {
                   name="confirmPassword"
                 />
                 {errors.confirmPassword && (
-                  <Text style={Input.errorText}>Senha é obrigatória.</Text>
+                  <Text style={Input.errorText}>
+                    {errors.confirmPassword?.message?.toString() ||
+                      "Confirmação de senha é obrigatória."}
+                  </Text>
                 )}
               </View>
 
@@ -151,10 +197,10 @@ export default function NewPassword() {
                 <Button
                   type="fill"
                   size="large"
-                  // onPress={handleSubmit(onSubmit)}
-                  onPress={(event) => openModal(event)}
+                  isLoading={isLoading}
+                  onPress={handleSubmit(onSubmit)}
                 >
-                  Continuar{" "}
+                  Continuar
                 </Button>
               </View>
               <View />
@@ -169,7 +215,7 @@ export default function NewPassword() {
                     marginTop: 16,
                   }}
                 >
-                  Não possui conta?{" "}
+                  Não possui conta?
                   <Text
                     onPress={(event) => {
                       navigation.navigate("Register");
@@ -190,79 +236,6 @@ export default function NewPassword() {
             </View>
           </View>
         </View>
-        <Modalize
-          ref={modalizeRef}
-          handleStyle={{ backgroundColor: "#007F5F" }}
-          modalStyle={styles.modal}
-          adjustToContentHeight={true}
-        >
-          <View
-            style={{
-              height: 324,
-              backgroundColor: "#FFF",
-              borderTopRightRadius: 16,
-              borderTopLeftRadius: 16,
-            }}
-          >
-            <View
-              style={{
-                flex: 1,
-                flexDirection: "column",
-                justifyContent: "space-between",
-                alignItems: "center",
-                padding: 20,
-              }}
-            >
-              <View
-                style={{
-                  flex: 1,
-                  flexDirection: "column",
-                  justifyContent: "flex-start",
-                  alignItems: "center",
-                  gap: 12,
-                }}
-              >
-                <Image source={require("../../../assets/success-icon.png")} />
-                <Text
-                  style={{
-                    fontSize: 18,
-                    color: colors.black,
-                    fontWeight: 600,
-                    lineHeight: 28,
-                  }}
-                >
-                  Senha resetada com sucesso!
-                </Text>
-                <View>
-                  <Text
-                    style={{
-                      fontSize: 16,
-                      color: colors.neutral["600"],
-                      fontWeight: 600,
-                      lineHeight: 28,
-                      textAlign: "center",
-                    }}
-                  >
-                    Sua senha foi alterada com sucesso! Use a nova senha para
-                    acessar sua conta.{" "}
-                  </Text>
-                </View>
-              </View>
-              <View
-                style={{
-                  width: "100%",
-                  borderTopWidth: 1,
-                  paddingTop: 16,
-                  borderTopColor: colors.neutral["100"],
-                }}
-              >
-                <Button onPress={() => navigation.navigate("Home")}>
-                  Acessar minha loja
-                </Button>
-              </View>
-            </View>
-          </View>
-        </Modalize>
       </ScrollView>
     </KeyboardAvoidingView>
   );

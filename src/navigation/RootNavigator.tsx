@@ -5,6 +5,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import PublicRoute from "./public";
 import PrivateRoute from "./private";
 import { setToken, clearToken } from "../auth/slice/auth-slice";
+import LoadingScreen from "../components/Load/Load";
+import * as Linking from "expo-linking";
 
 export const MyTheme = {
   ...DefaultTheme,
@@ -39,11 +41,22 @@ export default function RootNavigator() {
   }, [dispatch]);
 
   if (loading) {
-    return null; // or a loading spinner
+    return <LoadingScreen />; // or a loading spinner
   }
+  const prefix = Linking.createURL("/");
 
   return (
-    <NavigationContainer theme={MyTheme}>
+    <NavigationContainer
+      linking={{
+        prefixes: [prefix, "app://"],
+        config: {
+          screens: {
+            NewPassword: "recover-password",
+          },
+        },
+      }}
+      theme={MyTheme}
+    >
       {isAuthenticated ? <PrivateRoute /> : <PublicRoute />}
     </NavigationContainer>
   );

@@ -135,7 +135,7 @@ export default function Login() {
           >
             <View style={styles.textHeader}>
               <Image
-                source={require("../../../assets/logo.png")}
+                source={require("../../../assets/logo-white.png")}
                 style={styles.image}
               />
               <Text style={styles.title}>Entre com sua conta</Text>

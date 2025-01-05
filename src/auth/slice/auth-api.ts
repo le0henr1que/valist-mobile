@@ -11,7 +11,7 @@ export const authApi = loginSlice.injectEndpoints({
       }),
     }),
     forgotPassword: builder.mutation({
-      query: (body: { email: string; userBoingEditedId: string }) => ({
+      query: (body: { email: string; userBeingEditedId: string }) => ({
         url: "/auth/forgot/password",
         method: "POST",
         body: body,
@@ -20,7 +20,7 @@ export const authApi = loginSlice.injectEndpoints({
     recoveryPassword: builder.mutation({
       query: (body: { newPassword: string; accessToken: string }) => ({
         url: "/auth/recovery/password",
-        method: "POST",
+        method: "PATCH",
         body: body,
       }),
     }),
@@ -38,6 +38,25 @@ export const authApi = loginSlice.injectEndpoints({
         body: body,
       }),
     }),
+    verifyByPassword: builder.mutation({
+      query: (body: { email: string; token: string }) => ({
+        url: "/auth/verify-code/password",
+        method: "POST",
+        body: body,
+      }),
+    }),
+    register: builder.mutation({
+      query: (body: {
+        access_token: string;
+        isNotification: boolean;
+        notificationInterval: string;
+        organization_name: string;
+      }) => ({
+        url: "/auth/register",
+        method: "POST",
+        body: body,
+      }),
+    }),
   }),
 
   overrideExisting: true,
@@ -49,4 +68,6 @@ export const {
   useForgotPasswordMutation,
   useRecoveryPasswordMutation,
   useVerifyMutation,
+  useRegisterMutation,
+  useVerifyByPasswordMutation,
 } = authApi;

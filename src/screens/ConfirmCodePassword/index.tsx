@@ -11,14 +11,17 @@ import {
 import Button from "../../components/Button";
 import { colors } from "../../styles/colors";
 import { RootStackParamList } from "../HomeScreen";
-import { useVerifyMutation } from "../../auth/slice/auth-api";
+import {
+  useVerifyByPasswordMutation,
+  useVerifyMutation,
+} from "../../auth/slice/auth-api";
 import { useDialogNotification } from "../../hook/notification/hooks/actions";
 
-export default function RegisterCode() {
+export default function RegisterCodePassword() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const route = useRoute();
-  const { email, name } = route.params as any;
+  const { email } = route.params as any;
 
   const [code, setCode] = useState(["", "", "", ""]);
   const [timer, setTimer] = useState(62);
@@ -55,20 +58,17 @@ export default function RegisterCode() {
     timer % 60 < 10 ? "0" : ""
   }${timer % 60}`;
 
-  const [verify, { isLoading }] = useVerifyMutation();
+  const [verifyByPassword, { isLoading }] = useVerifyByPasswordMutation();
   const { handleNotification } = useDialogNotification();
 
   const handleValidateCode = async (code: string) => {
     try {
-      const result = await verify({
+      const result = await verifyByPassword({
         email,
         token: code,
       }).unwrap();
-      console.log(result);
-      navigation.navigate(
-        "InformationStore" as never,
-        { ...result, name } as never
-      );
+
+      navigation.navigate("NewPassword" as never, { ...result } as never);
     } catch (error: any) {
       handleNotification({
         isOpen: true,

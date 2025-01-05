@@ -13,8 +13,17 @@ export default function Header() {
   const notificationCount = 1;
   return (
     <View style={styles.container}>
-      <View style={{ padding: 0 }}>
-        <LogoIcon />
+      <View style={{}}>
+        <Text
+          style={{
+            color: colors.neutral["900"],
+            fontSize: 16,
+            fontWeight: "600",
+            lineHeight: 24,
+          }}
+        >
+          Olá, usuário
+        </Text>
       </View>
       <View
         style={{
@@ -47,7 +56,7 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    height: 76,
+    height: 80,
     padding: 20,
     paddingTop: 40,
     width: "100%",

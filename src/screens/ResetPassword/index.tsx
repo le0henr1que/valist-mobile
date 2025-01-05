@@ -1,43 +1,60 @@
-import React, { useState } from "react";
+import { useNavigation } from "@react-navigation/native";
+import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import { useState } from "react";
 import { Controller, useForm } from "react-hook-form";
 import {
   Image,
   ImageBackground,
-  Text,
-  TextInput,
-  View,
   KeyboardAvoidingView,
   Platform,
   ScrollView,
-  TouchableOpacity,
+  Text,
+  TextInput,
+  View,
 } from "react-native";
+import { v4 as uuidv4 } from "uuid";
+import { useForgotPasswordMutation } from "../../auth/slice/auth-api";
 import Button from "../../components/Button";
 import { Input } from "../../components/Input/Input.style";
 import { colors } from "../../styles/colors";
-import { styles } from "./ResetPassword.styles";
-import { Ionicons } from "@expo/vector-icons";
-import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "../HomeScreen";
+import { styles } from "./ResetPassword.styles";
+import { useDialogNotification } from "../../hook/notification/hooks/actions";
 
 export default function ResetPassword() {
-  const [isPasswordVisible, setPasswordVisible] = useState(false);
-  const [
-    isPasswordVisibleConfirmPassword,
-    setIsPasswordVisibleConfirmPassword,
-  ] = useState(false);
-
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
+  const [forgotPassword, { isLoading }] = useForgotPasswordMutation();
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm();
+  const { handleNotification } = useDialogNotification();
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    try {
+      const userBeingEditedId = "";
+
+      await forgotPassword({
+        email: data.email,
+        userBeingEditedId,
+      }).unwrap();
+      navigation.navigate(
+        "ConfirmCodePassword" as never,
+        {
+          email: data.email,
+        } as never
+      );
+    } catch (error: any) {
+      console.log(error);
+      handleNotification({
+        isOpen: true,
+        variant: "error",
+        title: "Erro ao enviar código",
+        message: error?.data?.messages[0] || "Ocorreu um erro",
+      });
+    }
   };
 
   return (
@@ -56,7 +73,7 @@ export default function ResetPassword() {
           >
             <View style={styles.textHeader}>
               <Image
-                source={require("../../../assets/logo.png")}
+                source={require("../../../assets/logo-white.png")}
                 style={styles.image}
               />
               <Text style={styles.title}>Esqueci a senha</Text>
@@ -89,8 +106,9 @@ export default function ResetPassword() {
                 <Button
                   type="fill"
                   size="large"
-                  // onPress={handleSubmit(onSubmit)}
-                  onPress={() => navigation.navigate("NewPassword")}
+                  onPress={handleSubmit(onSubmit)}
+                  isLoading={isLoading}
+                  // onPress={() => navigation.navigate("NewPassword")}
                 >
                   Recuperar Senha{" "}
                 </Button>

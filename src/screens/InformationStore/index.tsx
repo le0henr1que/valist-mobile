@@ -19,6 +19,14 @@ import { Controller, useForm } from "react-hook-form";
 import Button from "../../components/Button";
 import LottieView from "lottie-react-native";
 import animation from "../../../assets/lotload.json";
+import { useRegisterMutation } from "../../auth/slice/auth-api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import { setToken } from "../../auth/slice/auth-slice";
+import { useDispatch } from "react-redux";
+import {
+  labelNotificationTimeEnum,
+  NotificationTimeEnum,
+} from "../../enum/notification";
 
 const Stack = createNativeStackNavigator();
 
@@ -46,7 +54,7 @@ function EstablishmentScreen({
     handleSubmit,
     formState: { errors },
   } = formMethods;
-
+  console.log("AQUI EU TENHO", route);
   const onSubmit = (data: any) => {
     navigation.navigate("Notifications", { ...data, ...route });
   };
@@ -105,12 +113,14 @@ function NotificationsScreen({
   navigation: any;
   formMethods: any;
 }) {
-  const [checked, setChecked] = useState("sim");
+  const [checked, setChecked] = useState("yes");
   const { setValue, handleSubmit } = formMethods;
   setValue("notifications", checked);
+  const route = useRoute();
+  const params = route.params;
 
   const onSubmit = (data: any) => {
-    navigation.navigate("Expiration", { ...data });
+    navigation.navigate("Expiration", { ...data, ...params });
   };
 
   return (
@@ -127,26 +137,39 @@ function NotificationsScreen({
             alterar isso depois.
           </Text>
         </View>
-        <RadioButton.Group
-          onValueChange={(newValue) => setChecked(newValue)}
-          value={checked}
-        >
-          <View style={styles.radioItem}>
+        <View style={styles.radioGroup}>
+          <TouchableOpacity
+            style={styles.radioItem}
+            onPress={() => setChecked("yes")}
+          >
             <Image source={require("../../../assets/bell.png")} />
             <Text style={styles.radioItemText}>
               Sim, desejo receber notificações pelo{" "}
               <Text style={{ fontWeight: "bold" }}>aplicativo</Text>
             </Text>
-            <RadioButton value="yes" color={colors.primary["600"]} />
-          </View>
-          <View style={styles.radioItem}>
+            <RadioButton
+              value="yes"
+              status={checked === "yes" ? "checked" : "unchecked"}
+              onPress={() => setChecked("yes")}
+              color={colors.primary["600"]}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={styles.radioItem}
+            onPress={() => setChecked("not")}
+          >
             <Image source={require("../../../assets/not-bell.png")} />
             <Text style={styles.radioItemText}>
               Não desejo receber notificações
             </Text>
-            <RadioButton value="not" color={colors.primary["600"]} />
-          </View>
-        </RadioButton.Group>
+            <RadioButton
+              value="not"
+              status={checked === "not" ? "checked" : "unchecked"}
+              onPress={() => setChecked("not")}
+              color={colors.primary["600"]}
+            />
+          </TouchableOpacity>
+        </View>
       </View>
       <View style={{ gap: 16 }}>
         <Button type="fill" size="large" onPress={handleSubmit(onSubmit)}>
@@ -173,16 +196,20 @@ function ExpirationScreen({
   navigation: any;
   formMethods: any;
 }) {
-  const [selected, setSelected] = useState("");
+  const [selected, setSelected] = useState("DAILY");
   const [customDays, setCustomDays] = useState("");
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = formMethods;
-
+  const route = useRoute();
+  const params = route.params;
   const onSubmit = (data: any) => {
-    navigation.navigate("Loading", { ...data });
+    navigation.navigate("Loading", {
+      amount: selected === NotificationTimeEnum.OTHER ? data.amount : selected,
+      ...params,
+    });
   };
 
   return (
@@ -201,11 +228,12 @@ function ExpirationScreen({
         </View>
         <View style={{ marginBottom: 32 }}>
           {[
-            "Diariamente",
-            "A cada 7 dias",
-            "A cada 15 dias",
-            "A cada 30 dias",
-            "A cada 90 dias",
+            NotificationTimeEnum.DAILY,
+            NotificationTimeEnum.WEEKLY,
+            NotificationTimeEnum.HALF_MONTHLY,
+            NotificationTimeEnum.MONTHLY,
+            NotificationTimeEnum.THIRTY_MONTHLY,
+            NotificationTimeEnum.OTHER,
           ].map((option, index) => (
             <TouchableOpacity
               key={index}
@@ -216,6 +244,7 @@ function ExpirationScreen({
                 value={option}
                 color={colors.primary["600"]}
                 status={selected === option ? "checked" : "unchecked"}
+                onPress={() => setSelected(option)}
               />
               <Text
                 style={{
@@ -225,7 +254,7 @@ function ExpirationScreen({
                   fontWeight: 500,
                 }}
               >
-                {option}
+                {labelNotificationTimeEnum[option as string] as any}
               </Text>
             </TouchableOpacity>
           ))}
@@ -234,7 +263,9 @@ function ExpirationScreen({
           <Text style={Input.label}>Outra quantidade? Digite abaixo</Text>
           <Controller
             control={control}
-            rules={{ required: true }}
+            rules={{
+              required: selected === NotificationTimeEnum.OTHER,
+            }}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 style={errors.amount ? Input.styleError : Input.style}
@@ -273,16 +304,27 @@ function ExpirationScreen({
 // Tela 4: Carregando
 function LoadingScreen({ navigation, route }: { navigation: any; route: any }) {
   const { params } = route;
+  const [register, { isLoading }] = useRegisterMutation();
+  const dispatch = useDispatch();
 
-  const onSubmit = () => {
-    const register = {
+  const onSubmit = async () => {
+    const data = {
       organization_name: params?.storeName,
       isNotification: params?.notifications !== "not",
       notificationInterval: params?.amount,
       access_token: params?.access_token,
     };
-    console.log(register);
-    // navigation.navigate("Home");
+    try {
+      const dataRegister = await register(data).unwrap();
+      const { accessToken, refreshToken } = dataRegister;
+      await AsyncStorage.setItem("@vencify:token", accessToken);
+      await AsyncStorage.setItem("@vencify:refresh_token", refreshToken);
+      dispatch(setToken(accessToken));
+      navigation.navigate("Home");
+    } catch (error) {
+      navigation.navigate("Login");
+      return;
+    }
   };
 
   useEffect(() => {
@@ -426,6 +468,7 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     lineHeight: 20,
   },
+  radioGroup: {},
   option: {
     flexDirection: "row",
     alignItems: "center",

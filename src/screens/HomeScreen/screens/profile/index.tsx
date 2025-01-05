@@ -37,7 +37,7 @@ function Profile() {
         <SafeAreaView style={{ width: "100%", flex: 1 }}>
           <View style={styles.header}>
             <Image
-              source={require("../../../../../assets/logo-white.png")}
+              source={require("../../../../../assets/only-logo.png")}
               style={styles.logoWhite}
             />
             <View style={styles.iconsHeader}>

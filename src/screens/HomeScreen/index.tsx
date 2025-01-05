@@ -1,49 +1,33 @@
+import { Ionicons } from "@expo/vector-icons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import React from "react";
-import ClockIcon from "../../../assets/icons/clock";
-import StoreIcon from "../../../assets/icons/store";
-import UserIcon from "../../../assets/icons/user";
 import ExpirationsRoute from "./screens/expirations/expirations.route";
 import MyStore from "./screens/my-store";
 import Profile from "./screens/profile";
+import { colors } from "../../styles/colors";
 
 const Tab = createBottomTabNavigator();
-
-export type RootStackParamList = {
-  [key: string]: undefined;
-};
 
 export default function HomeScreen() {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         headerShown: false,
-        tabBarIcon: ({ color, size }) => {
-          const icons = {
-            Vencimentos: <ClockIcon color={color} size={size} />,
-            "Minha Loja": <StoreIcon color={color} size={size} />,
-            Perfil: <UserIcon color={color} size={size} />,
-          };
-          return icons[route.name as keyof typeof icons];
-        },
-        tabBarActiveTintColor: "#0D9488",
-        tabBarInactiveTintColor: "gray",
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
 
-        tabBarStyle: {
-          height: 64,
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-          borderWidth: 0,
-          borderColor: "transparent",
+          if (route.name === "Vencimentos") {
+            iconName = focused ? "timer-sharp" : "timer-outline";
+          } else if (route.name === "Minha Loja") {
+            iconName = focused ? "storefront-sharp" : "storefront-outline";
+          } else if (route.name === "Perfil") {
+            iconName = focused ? "person-sharp" : "person-outline";
+          }
+
+          // You can return any component that you like here!
+          return <Ionicons name={iconName as any} size={size} color={color} />;
         },
-        tabBarLabelStyle: {
-          fontSize: 12,
-          lineHeight: 16,
-          fontWeight: "medium",
-          borderWidth: 0,
-          borderColor: "transparent",
-        },
+        tabBarActiveTintColor: colors.primary["600"],
+        tabBarInactiveTintColor: "gray",
       })}
     >
       <Tab.Screen name="Vencimentos" component={ExpirationsRoute} />

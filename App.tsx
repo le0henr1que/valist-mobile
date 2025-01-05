@@ -14,6 +14,9 @@ import Modal from "./src/components/Modalize";
 import ModalNotification from "./src/components/Notification";
 import RootNavigator from "./src/navigation/RootNavigator";
 import { store } from "./store";
+import "./ignoreWarnings"; // Importe o arquivo ignoreWarnings.js
+import { AppRegistry } from "react-native";
+import { name as appName } from "./app.json";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -64,3 +67,4 @@ export default function App() {
     </GestureHandlerRootView>
   );
 }
+AppRegistry.registerComponent(appName, () => App);

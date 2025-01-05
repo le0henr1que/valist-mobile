@@ -8,6 +8,7 @@ import NewPassword from "../../screens/NewPassword";
 import RegisterCode from "../../screens/ConfirmCode";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import InformationStore from "../../screens/InformationStore";
+import RegisterCodePassword from "../../screens/ConfirmCodePassword";
 
 const Stack = createNativeStackNavigator();
 
@@ -48,6 +49,11 @@ export default function PublicRoute() {
         <Stack.Screen
           name="ConfirmCode"
           component={RegisterCode}
+          options={{ headerShown: false }}
+        />
+        <Stack.Screen
+          name="ConfirmCodePassword"
+          component={RegisterCodePassword}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

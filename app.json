@@ -7,12 +7,12 @@
     "orientation": "portrait",
     "icon": "./assets/logo-white.png",
     "userInterfaceStyle": "light",
-    "platforms": ["ios", "android", "web"], 
+    "platforms": ["ios", "android", "web"],
     "scheme": "le0henr1que",
     "splash": {
       "image": "./assets/logo-white.png",
       "resizeMode": "contain",
-      "backgroundColor": "#0d9488"
+      "backgroundColor": "#0891B2"
     },
     "ios": {
       "supportsTablet": true,
@@ -26,7 +26,7 @@
       "adaptiveIcon": {
         "image": "./assets/logo-white.png",
         "resizeMode": "contain",
-        "backgroundColor": "#0d9488"
+        "backgroundColor": "#0891B2"
       },
       "permissions": [
         "android.permission.CAMERA",
@@ -56,5 +56,6 @@
         "projectId": "66b7c251-b77e-4c4b-861d-1637158f441a"
       }
     }
-  }
+  },
+  "name": "app"
 }
