@@ -7,6 +7,8 @@ import PrivateRoute from "./private";
 import { setToken, clearToken } from "../auth/slice/auth-slice";
 import LoadingScreen from "../components/Load/Load";
 import * as Linking from "expo-linking";
+import { useMeQuery } from "../services/me";
+import { navigationRef } from "./navigationService";
 
 export const MyTheme = {
   ...DefaultTheme,
@@ -20,7 +22,6 @@ export default function RootNavigator() {
   const [loading, setLoading] = useState(true);
   const dispatch = useDispatch();
   const isAuthenticated = useSelector((state: any) => !!state.auth.token);
-
   useEffect(() => {
     const checkToken = async () => {
       try {
@@ -47,6 +48,7 @@ export default function RootNavigator() {
 
   return (
     <NavigationContainer
+      ref={navigationRef}
       linking={{
         prefixes: [prefix, "app://"],
         config: {

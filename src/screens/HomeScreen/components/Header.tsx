@@ -6,11 +6,15 @@ import { colors } from "../../../styles/colors";
 import { useNavigation } from "@react-navigation/native";
 import { RootStackParamList } from "..";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import userMe from "../../../hook/user";
 
 export default function Header() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const notificationCount = 1;
+  const user = userMe();
+
   return (
     <View style={styles.container}>
       <View style={{}}>
@@ -22,7 +26,7 @@ export default function Header() {
             lineHeight: 24,
           }}
         >
-          Olá, usuário
+          Olá, {user?.name}
         </Text>
       </View>
       <View

@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import HomeScreen from "../../screens/HomeScreen";
 import DetailsScreen from "../../screens/DetailsScreen";
@@ -15,10 +15,16 @@ import BarcodeScannerApp from "../../screens/ScamProduct";
 import DeleteStore from "../../screens/DeleteStore";
 import ExportReport from "../../screens/ExportReport";
 import FAQ from "../../screens/FAQ";
+import { useMeQuery } from "../../services/me";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Stack = createNativeStackNavigator();
 
 export default function PrivateRoute() {
+  const { data: user } = useMeQuery();
+  useEffect(() => {
+    AsyncStorage.setItem("@vencify:user", JSON.stringify(user));
+  }, [user]);
   return (
     <Stack.Navigator initialRouteName="Home">
       <Stack.Screen

@@ -17,6 +17,8 @@ import InformationIcon from "../../../../../assets/icons/information";
 import { colors } from "../../../../styles/colors";
 import Button from "../../../../components/Button";
 import { useAuth } from "../../../../auth";
+import userMe from "../../../../hook/user";
+import { roles } from "../../../../enum/role";
 
 function Profile() {
   const navigation =
@@ -24,6 +26,7 @@ function Profile() {
   const notificationCount = 1;
 
   const { signOut, isLoading } = useAuth();
+  const user = userMe();
 
   return (
     <View style={styles.container}>
@@ -106,7 +109,7 @@ function Profile() {
                   textAlign: "left",
                 }}
               >
-                Bruninho do grau
+                {user?.name}
               </Text>
               <Text
                 style={{
@@ -117,7 +120,7 @@ function Profile() {
                   textAlign: "left",
                 }}
               >
-                Administrador
+                {roles[user?.roles[0]]}
               </Text>
             </View>
           </View>

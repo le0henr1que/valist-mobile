@@ -23,6 +23,8 @@ import { RootStackParamList } from "../HomeScreen";
 import { styles } from "./Login.styles";
 import * as AuthSession from "expo-auth-session";
 import { useDialogNotification } from "../../hook/notification/hooks/actions";
+import { useMeQuery } from "../../services/me";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const discovery = {
   authorizationEndpoint: "https://accounts.google.com/o/oauth2/v2/auth",
@@ -99,7 +101,6 @@ export default function Login() {
         email: data?.email || "",
         password: data?.password || "",
       });
-      navigation.navigate("Home");
     } catch (e: any) {
       if (e.data.statusCode === 401) {
         setError("email", {

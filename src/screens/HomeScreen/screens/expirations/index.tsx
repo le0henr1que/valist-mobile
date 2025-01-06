@@ -101,6 +101,7 @@ export const productList = [
 
 function Expirations() {
   const { control, handleSubmit } = useForm();
+
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const isFocused = useIsFocused();
