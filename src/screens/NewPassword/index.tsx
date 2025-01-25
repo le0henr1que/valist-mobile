@@ -50,23 +50,19 @@ export default function NewPassword() {
   const password = watch("password");
   const [recoveryPassword, { isLoading }] = useRecoveryPasswordMutation();
 
- 
   const { handleModal } = useDialogModal();
 
- const handleValidateField = () => {
-    handleModal({
-      isOpen: true, 
-      element: <NotPass navigation={navigation} />,
-    });
-  };
   const onSubmit = async (data: any) => {
     try {
-      await recoveryPassword({
-        accessToken: access_token,
-        newPassword: data.password,
-      }).unwrap();
-      navigation.navigate("Login");
-      handleValidateField();
+      // await recoveryPassword({
+      //   accessToken: access_token,
+      //   newPassword: data.password,
+      // }).unwrap();
+      // navigation.navigate("Login");
+      handleModal({
+        isOpen: true,
+        element: <NotPass navigation={navigation} />,
+      });
     } catch (error: any) {
       navigation.navigate("Login");
       /* handleNotification({
