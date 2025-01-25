@@ -37,7 +37,7 @@ export const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
-    // resizeMode: "stretch",
+    resizeMode: "stretch",
   },
   modalBackground: {
     flex: 1,
@@ -105,4 +105,8 @@ export const styles = StyleSheet.create({
     backgroundColor: "white",
     width: "100%",
   },
+  button:{
+    height: "100%",
+    color: "pink",
+  }
 });

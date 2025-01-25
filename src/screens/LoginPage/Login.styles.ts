@@ -63,5 +63,6 @@ export const styles = StyleSheet.create({
     flex: 3,
     backgroundColor: "white",
     width: "100%",
+    height: 415,
   },
 });

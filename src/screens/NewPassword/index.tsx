@@ -24,6 +24,10 @@ import { Modalize } from "react-native-modalize";
 import { useRecoveryPasswordMutation } from "../../auth/slice/auth-api";
 import { useDialogNotification } from "../../hook/notification/hooks/actions";
 
+import { useDialogModal } from "../../hook/handle-modal/hooks/actions";
+
+import NotPass from "../components/ResetNotification";
+
 export default function NewPassword() {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
   const route = useRoute();
@@ -45,8 +49,16 @@ export default function NewPassword() {
 
   const password = watch("password");
   const [recoveryPassword, { isLoading }] = useRecoveryPasswordMutation();
-  const { handleNotification } = useDialogNotification();
 
+ 
+  const { handleModal } = useDialogModal();
+
+ const handleValidateField = () => {
+    handleModal({
+      isOpen: true, 
+      element: <NotPass navigation={navigation} />,
+    });
+  };
   const onSubmit = async (data: any) => {
     try {
       await recoveryPassword({
@@ -54,20 +66,16 @@ export default function NewPassword() {
         newPassword: data.password,
       }).unwrap();
       navigation.navigate("Login");
-      handleNotification({
-        isOpen: true,
-        variant: "success",
-        title: "Senha alterada com sucesso",
-        message: "Sua senha foi alterada com sucesso, faça login.",
-      });
+      handleValidateField();
     } catch (error: any) {
       navigation.navigate("Login");
-      handleNotification({
+      /* handleNotification({
         isOpen: true,
         variant: "error",
         title: "Falha no acesso",
+        message: error.data.messages title: "Falha no acesso",
         message: error.data.messages[0] || "Ocorreu um erro",
-      });
+      }); */
       console.log(error);
     }
   };
