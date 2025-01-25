@@ -27,6 +27,8 @@ import {
   labelNotificationTimeEnum,
   NotificationTimeEnum,
 } from "../../enum/notification";
+import Svg, { Path, Rect } from "react-native-svg";
+import CustomIcon from "../../../assets/icons/logo2";
 
 const Stack = createNativeStackNavigator();
 
@@ -38,6 +40,80 @@ const ProgressHeader = ({ progress }: { progress: number }) => (
     style={styles.progressBar}
   />
 );
+
+
+//tela1: Objetivo do estabelcimento
+
+function ObjectiveScreen ({ navigation, formMethods } :{ navigation: any; formMethods: any; }) {
+
+  const [checked, setChecked] = useState("owners");
+  const { setValue, handleSubmit } = formMethods;
+  setValue("Objective", checked);
+  const onSubmit = (data: any) => {
+    navigation.navigate("Establishment", { ...data });
+  };
+
+  return (
+    <View style={styles.container}>
+      <View
+        style={{
+          marginTop: 24,
+          marginBottom: 32,
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}>
+          <CustomIcon />
+        </View>
+      <View>
+       <Text style={styles.title}>
+            Antes de começarmos, 
+            qual seu objetivo com o aplicativo.
+          </Text>
+      <Text style={styles.subtitle}>
+            Selecione se você é o dono da sua própria 
+            loja, promotor de merchandising se foi
+            convidado para acessar uma loja existente.
+          </Text>
+          </View>
+          <View>
+            <TouchableOpacity
+            style={[styles.radioItem,
+            checked === 'owner' && styles.checked,
+            ]}
+            onPress={()=>setChecked("owner")}>
+            <View  style={styles.radioGroup}>
+            <Image source={require("../../../assets/bell.png")} />
+            <Text style={styles.titleButton}>Sou dono da loja</Text>
+            <Text style={styles.radioText}>
+              Quero gerenciar e administrar meu {'\n'}
+              próprio estabelecimento.</Text> 
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+            style={[styles.radioItem,
+            checked === 'member' && styles.checked,
+            ]}
+            onPress={()=>setChecked("member")}>
+            <View  style={styles.radioGroup}>
+            <Image source={require("../../../assets/bell.png")} />
+            <Text style={styles.titleButton}>Sou membro (convidado)</Text>
+            <Text style={styles.radioText}>
+              Fui convidado para colaborar em uma {'\n'} loja e possuo o código de acesso.</Text>  
+            </View>    
+            </TouchableOpacity>
+            
+          </View>
+      <View style={{ gap: 16 }}>
+        <Button type="fill" size="large" onPress={handleSubmit(onSubmit)}>
+          Continuar
+        </Button>
+      </View>
+    </View>
+  );
+}
+
+
+
 
 // Tela 1: Nome do Estabelecimento
 function EstablishmentScreen({
@@ -368,6 +444,14 @@ export default function InformationStore() {
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Objective">
+        {(props) => (
+          <ObjectiveScreen
+            {...props}
+            formMethods={formMethods}
+          />
+        )}
+      </Stack.Screen>
       <Stack.Screen name="Establishment">
         {(props) => (
           <EstablishmentScreen
@@ -404,7 +488,7 @@ const styles = StyleSheet.create({
   },
   title: {
     fontSize: 20,
-    marginTop: 32,
+    marginTop: -50,
     fontWeight: "bold",
     color: colors.neutral["900"],
     lineHeight: 28,
@@ -416,7 +500,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     color: "#71727A",
     fontWeight: "normal",
-    lineHeight: 20,
+    lineHeight: 24,
     textAlign: "left",
   },
   highlight: {
@@ -481,5 +565,30 @@ const styles = StyleSheet.create({
     textAlign: "center",
     lineHeight: 24,
     fontWeight: "medium",
+  },
+   titleButton: {
+    fontSize: 14,
+    color: colors.neutral["900"],
+    fontWeight: 600,
+    fontStyle: "normal",
+    lineHeight: 20,
+    
+  },
+   radioText: {
+    fontSize: 14,
+    fontStyle: "normal",
+    color: colors.neutral["500"],
+    lineHeight: 20,
+    fontWeight: "normal", 
+  },
+  checked: {
+    borderWidth: 2,
+    borderColor: '#0891B2', 
+    backgroundColor: '#FFF',
+  },
+  logo: {
+    alignItems: "center",
+    marginTop: 3,
+    marginBottom: 32,
   },
 });
