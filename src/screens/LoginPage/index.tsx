@@ -116,7 +116,6 @@ export default function Login() {
         message:
           "Ocorreu um erro ao tentar acessar o app. Tente novamente mais tarde.",
       });
-      // console.log(e);
     }
   };
 

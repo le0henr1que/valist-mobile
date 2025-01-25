@@ -17,8 +17,8 @@ import InformationIcon from "../../../../../assets/icons/information";
 import { colors } from "../../../../styles/colors";
 import Button from "../../../../components/Button";
 import { useAuth } from "../../../../auth";
-import userMe from "../../../../hook/user";
 import { roles } from "../../../../enum/role";
+import { useMeQuery } from "../../../../services/me";
 
 function Profile() {
   const navigation =
@@ -26,8 +26,7 @@ function Profile() {
   const notificationCount = 1;
 
   const { signOut, isLoading } = useAuth();
-  const user = userMe();
-
+  const { data: user } = useMeQuery();
   return (
     <View style={styles.container}>
       <ImageBackground
