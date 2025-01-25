@@ -4,6 +4,7 @@ import {
   Text,
   TextInput,
   StyleSheet,
+  Modal,
   TouchableOpacity,
   ScrollView,
   ActivityIndicator,
@@ -27,6 +28,11 @@ import {
   labelNotificationTimeEnum,
   NotificationTimeEnum,
 } from "../../enum/notification";
+import Svg, { Path, Rect } from "react-native-svg";
+import { MaterialIcons } from '@expo/vector-icons'; 
+import CustomIcon from "../../../assets/icons/logo2";
+import StoreIcon2 from "../../../assets/icons/store-icon2";
+import PersonIcon2 from "../../../assets/icons/person-icon2";
 
 const Stack = createNativeStackNavigator();
 
@@ -38,6 +44,127 @@ const ProgressHeader = ({ progress }: { progress: number }) => (
     style={styles.progressBar}
   />
 );
+
+//tela0: Objetivo do estabelcimento
+
+function ObjectiveScreen ({ navigation, formMethods } :{ navigation: any; formMethods: any; }) {
+
+  const [checked, setChecked] = useState("owners");
+  const { setValue, handleSubmit, formState: { errors },} = formMethods;
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  setValue("Objective", checked);
+  const onSubmit = (data: any) => {
+    if (checked === "member") {
+      setIsModalVisible(true); // Exibe o modal
+    } else {
+      navigation.navigate("Establishment", { ...data });
+    }
+  };
+  
+
+  return (
+    <View style={styles.container}>
+      <View
+        style={{
+          marginTop: 24,
+          marginBottom: 32,
+          justifyContent: "space-between",
+          alignItems: "center",
+        }}>
+          <View>
+          <CustomIcon/>
+          </View>
+      <View>
+       <Text style={styles.title}>
+            Antes de começarmos, 
+            qual seu objetivo com o aplicativo.
+          </Text>
+      <Text style={styles.subtitle}>
+            Selecione se você é o dono da sua própria 
+            loja, promotor de merchandising se foi
+            convidado para acessar uma loja existente.
+          </Text>
+          </View>
+        
+            <TouchableOpacity
+            style={[styles.radioItem,
+            checked === 'owner' && styles.checked,
+            ]}
+            onPress={()=>setChecked("owner")}>
+            <View style={styles.radioGroup}>
+              <View style={styles.icon}>
+              <StoreIcon2/>
+              </View>
+              <View>
+            <Text style={styles.titleButton}>Sou dono da loja</Text>
+            <Text style={styles.radioText}>
+              Quero gerenciar e administrar meu {'\n'}
+              próprio estabelecimento.</Text> 
+              </View>
+              </View>
+            </TouchableOpacity>
+            <TouchableOpacity
+            style={[styles.radioItem,
+            checked === 'member' && styles.checked,
+            ]}
+            onPress={()=>setChecked("member")}>
+            <View  style={styles.radioGroup}>
+            <View style={styles.icon}>
+              <PersonIcon2/>
+              </View>
+              <View>
+            <Text style={styles.titleButton}>Sou membro (convidado)</Text>
+            <Text style={styles.radioText}>
+              Fui convidado para colaborar em uma {'\n'}loja e possuo o código de acesso.</Text>  
+            </View>    
+            </View>
+            </TouchableOpacity>
+         
+          </View>
+      <View style={{ gap: 16 }}>
+        <Button style={styles.button} type="fill" size="large" onPress={handleSubmit(onSubmit)}>
+          Continuar
+        </Button>
+      </View>
+
+    <Modal
+        visible={isModalVisible}
+        animationType="slide"
+        transparent={true}
+        onRequestClose={() => setIsModalVisible(false)}
+      >
+        <View style={styles.modalContainer}>
+          <View style={styles.modalContent}>
+            <Text style={styles.modalTitle}>Insira abaixo o código recebido</Text>
+            <View style={styles.divider} />
+            <View style={Input.inputView}>
+            <TextInput  style={Input.style}
+                placeholder="Ex: 12345344343"                
+              />
+            </View>
+            <View style={styles.divider2} />
+            <View style={styles.buttonModalG}>
+            <Button style={styles.button3}
+          type="fill"
+          size="medium"
+          variant="neutral"
+          onPress={() => navigation.goBack()}
+        >
+          Cancelar
+        </Button>
+            <Button style={styles.button2} type="fill" size="large" onPress={handleSubmit(onSubmit)}>
+          Continuar
+        </Button>
+          </View>
+        </View>
+        </View>
+      </Modal>
+    </View>
+
+  );
+}
+
+
 
 // Tela 1: Nome do Estabelecimento
 function EstablishmentScreen({
@@ -53,16 +180,27 @@ function EstablishmentScreen({
     control,
     handleSubmit,
     formState: { errors },
+    watch,
   } = formMethods;
+  const [isFocused, setIsFocused] = useState(false);
+  const [checked, setChecked] = useState("")
+  const storeName = watch("storeName");
   console.log("AQUI EU TENHO", route);
   const onSubmit = (data: any) => {
     navigation.navigate("Notifications", { ...data, ...route });
   };
+  useEffect(() => {
+    if (storeName && storeName.trim() !== "") {
+      setChecked(storeName);
+    } else {
+      setChecked("");
+    }
+  }, [storeName]);
 
   return (
     <View style={styles.container}>
       <View>
-        <ProgressHeader progress={0.25} />
+        <ProgressHeader progress={0.0} />
 
         <View>
           <Text style={styles.title}>
@@ -82,7 +220,11 @@ function EstablishmentScreen({
               <TextInput
                 style={errors.storeName ? Input.styleError : Input.style}
                 placeholder="Ex: Loja Estrela"
-                onBlur={onBlur}
+                onBlur={() => {
+                  setIsFocused(false);
+                  onBlur();
+                }}
+                onFocus={() => setIsFocused(true)}
                 onChangeText={onChange}
                 value={value}
               />
@@ -97,7 +239,8 @@ function EstablishmentScreen({
         </View>
       </View>
       <View>
-        <Button type="fill" size="large" onPress={handleSubmit(onSubmit)}>
+        <Button style={[styles.button, checked === "" && { opacity: 0.5 } ]} 
+        type="fill" size="large" onPress={handleSubmit(onSubmit)} disabled={checked === ""}>
           Continuar
         </Button>
       </View>
@@ -113,15 +256,31 @@ function NotificationsScreen({
   navigation: any;
   formMethods: any;
 }) {
-  const [checked, setChecked] = useState("yes");
+  
+  const [checked, setChecked] = useState("");
   const { setValue, handleSubmit } = formMethods;
-  setValue("notifications", checked);
   const route = useRoute();
   const params = route.params;
+  useEffect(() => {
+    setValue("notifications", checked);
+  }, [checked]);
+
 
   const onSubmit = (data: any) => {
     navigation.navigate("Expiration", { ...data, ...params });
   };
+
+  const CustomIcon = () => (
+    <Svg width="11" height="10" viewBox="0 0 11 10" fill="none">
+      <Path
+        d="M2.0625 5.625L4.25 7.8125L9.25 2.8125"
+        stroke="white"
+        strokeWidth="1.5"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
+    </Svg>
+  );
 
   return (
     <View style={styles.container}>
@@ -139,41 +298,66 @@ function NotificationsScreen({
         </View>
         <View style={styles.radioGroup}>
           <TouchableOpacity
-            style={styles.radioItem}
-            onPress={() => setChecked("yes")}
-          >
+            style={[styles.radioItem, 
+              checked === 'yes' && styles.checked,
+              ]}
+              onPress={()=>setChecked("yes")}
+              > 
             <Image source={require("../../../assets/bell.png")} />
             <Text style={styles.radioItemText}>
               Sim, desejo receber notificações pelo{" "}
               <Text style={{ fontWeight: "bold" }}>aplicativo</Text>
             </Text>
-            <RadioButton
-              value="yes"
-              status={checked === "yes" ? "checked" : "unchecked"}
-              onPress={() => setChecked("yes")}
-              color={colors.primary["600"]}
+            <View style={styles.radioButton}>
+            {checked === "yes" && (
+            <View style={styles.radioButtonChecked}>
+            <Svg width="11" height="10" viewBox="0 0 11 10" fill="none">
+             <Path
+            d="M2.0625 5.625L4.25 7.8125L9.25 2.8125"
+            stroke="white"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             />
+        </Svg>
+      </View>
+    )}
+  </View>
           </TouchableOpacity>
           <TouchableOpacity
-            style={styles.radioItem}
-            onPress={() => setChecked("not")}
-          >
+            style={[styles.radioItem,
+              checked === 'not' && styles.checked,
+              { justifyContent: 'center', alignItems: 'center' } 
+              ]}
+              onPress={()=>setChecked("not")}
+              > 
             <Image source={require("../../../assets/not-bell.png")} />
             <Text style={styles.radioItemText}>
               Não desejo receber notificações
             </Text>
-            <RadioButton
-              value="not"
-              status={checked === "not" ? "checked" : "unchecked"}
-              onPress={() => setChecked("not")}
-              color={colors.primary["600"]}
+            {checked === "not" && <Text style={styles.checkMark}>✔</Text>}
+            <View style={styles.radioButton}>
+            {checked === "not" && (
+            <View style={styles.radioButtonChecked}>
+            <Svg width="11" height="10" viewBox="0 0 11 10" fill="none">
+             <Path
+            d="M2.0625 5.625L4.25 7.8125L9.25 2.8125"
+            stroke="white"
+            strokeWidth="1.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
             />
+        </Svg>
+      </View>
+    )}
+  </View>
           </TouchableOpacity>
         </View>
       </View>
       <View style={{ gap: 16 }}>
-        <Button type="fill" size="large" onPress={handleSubmit(onSubmit)}>
-          Continuar
+        <Button style={[styles.button, checked === "" && { opacity: 0.5 } ]}
+        type="fill" size="large" onPress={handleSubmit(onSubmit)} disabled={checked === ""}>
+         Continuar
         </Button>
         <Button
           type="fill"
@@ -196,7 +380,8 @@ function ExpirationScreen({
   navigation: any;
   formMethods: any;
 }) {
-  const [selected, setSelected] = useState("DAILY");
+  const [checked,setChecked] = useState("")
+  const [selected, setSelected] = useState("");
   const [customDays, setCustomDays] = useState("");
   const {
     control,
@@ -206,17 +391,28 @@ function ExpirationScreen({
   const route = useRoute();
   const params = route.params;
   const onSubmit = (data: any) => {
+
+    const amount = selected || customDays || data.amount;  // Exemplo de fallback
     navigation.navigate("Loading", {
-      amount: selected === NotificationTimeEnum.OTHER ? data.amount : selected,
+      amount: amount,
       ...params,
     });
   };
+  
+
+  useEffect(() => {
+    if (selected !== "" || customDays !== "") {
+      setChecked("valid");  
+    } else {
+      setChecked(""); 
+    }
+  }, [selected, customDays]);
 
   return (
     <ScrollView contentContainerStyle={styles.container}>
       <View>
         <View>
-          <ProgressHeader progress={0.75} />
+          <ProgressHeader progress={1} />
           <Text style={styles.title}>
             Quase lá! Em quantos dias antes do vencimento você deseja ser
             notificado?
@@ -232,8 +428,8 @@ function ExpirationScreen({
             NotificationTimeEnum.WEEKLY,
             NotificationTimeEnum.HALF_MONTHLY,
             NotificationTimeEnum.MONTHLY,
+            NotificationTimeEnum.FORTY_FIVE_DAYS,
             NotificationTimeEnum.THIRTY_MONTHLY,
-            NotificationTimeEnum.OTHER,
           ].map((option, index) => (
             <TouchableOpacity
               key={index}
@@ -259,44 +455,24 @@ function ExpirationScreen({
             </TouchableOpacity>
           ))}
         </View>
-        <View style={Input.inputView}>
-          <Text style={Input.label}>Outra quantidade? Digite abaixo</Text>
-          <Controller
-            control={control}
-            rules={{
-              required: selected === NotificationTimeEnum.OTHER,
-            }}
-            render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={errors.amount ? Input.styleError : Input.style}
-                placeholder="0 dias"
-                onBlur={onBlur}
-                onChangeText={onChange}
-                value={value}
-              />
-            )}
-            name="amount"
-          />
-          {errors.amount && (
-            <Text style={Input.errorText}>Quantidade obrigatória</Text>
-          )}
-        </View>
       </View>
       <View>
-        <View style={{ gap: 16 }}>
-          <Button type="fill" size="large" onPress={handleSubmit(onSubmit)}>
-            Continuar
-          </Button>
-          <Button
-            type="fill"
-            size="medium"
-            variant="neutral"
-            onPress={() => navigation.goBack()}
-          >
-            Voltar
-          </Button>
-        </View>
+      <View style={{ gap: 16 }}>
+        <Button style={[styles.button, checked === "" && { opacity: 0.5 } ]}
+        type="fill" size="large" onPress={handleSubmit(onSubmit)} disabled={checked === ""}>
+         Continuar
+        </Button>
+        <Button
+          type="fill"
+          size="medium"
+          variant="neutral"
+          onPress={() => navigation.goBack()}
+        >
+          Voltar
+        </Button>
       </View>
+      </View>
+      
     </ScrollView>
   );
 }
@@ -368,6 +544,15 @@ export default function InformationStore() {
 
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="Objective">
+        {(props) => (
+          <ObjectiveScreen
+            {...props}
+            formMethods={formMethods}
+          />
+        )}
+      </Stack.Screen>
+
       <Stack.Screen name="Establishment">
         {(props) => (
           <EstablishmentScreen
@@ -405,7 +590,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     marginTop: 32,
-    fontWeight: "bold",
+    fontWeight: "800",
     color: colors.neutral["900"],
     lineHeight: 28,
     marginBottom: 16,
@@ -434,7 +619,7 @@ const styles = StyleSheet.create({
     padding: 15,
     borderRadius: 8,
     alignItems: "center",
-    marginTop: 20,
+    marginTop: 24,
   },
   buttonText: {
     color: "#fff",
@@ -467,8 +652,10 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "normal",
     lineHeight: 20,
+    
   },
-  radioGroup: {},
+  radioGroup: {
+  },
   option: {
     flexDirection: "row",
     alignItems: "center",
@@ -482,4 +669,133 @@ const styles = StyleSheet.create({
     lineHeight: 24,
     fontWeight: "medium",
   },
+  titleButton: {
+    fontSize: 14,
+    color: colors.neutral["900"],
+    fontWeight: 600,
+    fontStyle: "normal",
+    lineHeight: 20,
+    
+  },
+   radioText: {
+    fontSize: 14,
+    fontStyle: "normal",
+    color: colors.neutral["500"],
+    lineHeight: 20,
+    fontWeight: "normal", 
+  },
+  checked: {
+    borderWidth: 2,
+    borderColor: '#0891B2', 
+    backgroundColor: '#FFF',
+  },
+  logo: {
+    alignItems: "center",
+    marginTop: 3,
+    marginBottom: 32,
+  },
+  checkMark: {
+    color: "white",
+    fontSize: 16,
+    fontWeight: "bold",
+  },
+  radioButton: {
+    height: 16,
+    width: 16,
+    borderRadius: 100,
+    borderWidth: 1,
+    borderColor: colors.neutral["400"],
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  radioButtonChecked: {
+    height: 16,
+    width: 16,
+    borderRadius: 10,
+    backgroundColor: colors.primary["600"],
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  icon:{
+    marginRight:12,
+    padding: 10,
+    height: 40,
+    width: 40,
+    justifyContent: "center",
+    flexShrink: 0,
+    display: "flex",
+    borderRadius: 20,
+    backgroundColor: colors.primary["50"],
+  },
+  modalContainer: {
+    flex: 1,
+    justifyContent: "flex-end",
+    backgroundColor: "rgba(0, 0, 0, 0.5)",  
+          
+              
+  },
+  modalContent: {
+    width: "100%",
+    height: 335,
+    borderTopLeftRadius: 24, // Apenas os cantos superiores arredondados
+    borderTopRightRadius: 24,
+    backgroundColor: "#FFF",
+    padding: 16,
+    alignItems: "center",
+  },
+  modalTitle: { 
+    fontSize: 18,
+    fontWeight: 600,
+    lineHeight: 28 ,
+    marginBottom: 20,
+    marginTop:16,
+  },
+  modalText: { 
+  fontSize: 14,
+  textAlign: "center",
+  marginBottom: 16
+},
+  buttonModalG:{
+    padding:16,
+    justifyContent: "flex-end",
+    alignItems: "flex-start",
+    gap: 8,
+    alignSelf:"stretch",
+    flexDirection: "row",
+    marginTop: 16,
+  },
+  button2:{
+    backgroundColor: colors.primary["600"],
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    height: 48,
+    borderRadius: 8,
+    gap: 8,
+    flex: 1,     
+    flexShrink: 0,
+    flexBasis: 0,
+  },
+  button3:{
+    backgroundColor: colors.neutral["100"],
+    display: "flex",
+    paddingVertical: 12,
+    paddingHorizontal: 16,
+    width: 139,
+    borderRadius: 8,
+    justifyContent: "center",
+    
+  },
+  divider: {
+    height: 1, 
+    backgroundColor: colors.neutral["200"], 
+   marginBottom:24,
+   width: 400, 
+  },
+  divider2: {
+    height: 1, 
+    backgroundColor: colors.neutral["200"],
+    marginTop: 74,
+    width: 400, 
+    
+  }
 });
