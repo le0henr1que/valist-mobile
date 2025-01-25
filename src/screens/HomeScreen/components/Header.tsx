@@ -8,13 +8,14 @@ import { RootStackParamList } from "..";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import userMe from "../../../hook/user";
+import { useMeQuery } from "../../../services/me";
 
 export default function Header() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
   const notificationCount = 1;
-  const user = userMe();
-
+  // const user = userMe();
+  const { data: user } = useMeQuery();
   return (
     <View style={styles.container}>
       <View style={{}}>

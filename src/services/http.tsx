@@ -35,6 +35,7 @@ const fetchIP = async () => {
 
 export const loginSlice = createApi({
   reducerPath: "api-login",
+  tagTypes: Object.values(Tags),
   baseQuery: fetchBaseQuery({
     baseUrl: API_URL,
     prepareHeaders: async (headers) => {

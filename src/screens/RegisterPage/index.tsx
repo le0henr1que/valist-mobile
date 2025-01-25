@@ -44,6 +44,15 @@ export default function Register() {
 
   const password = watch("password");
 
+
+    const [isFocused, setIsFocused] = useState(false);
+    const formValues = watch();
+    const isFormValid = () => {
+     return Object.values(formValues).every(value => value !== undefined && value !== null && value !== '');   
+  };
+
+
+
   const onSubmit = async (data: any) => {
     try {
       const userId = await codeCheck({
@@ -86,7 +95,7 @@ export default function Register() {
           >
             <View style={styles.textHeader}>
               <Image
-                source={require("../../../assets/logo.png")}
+                source={require("../../../assets/logo-white.png")}
                 style={styles.image}
               />
               <Text style={styles.title}>Cadastre-se</Text>
@@ -102,7 +111,7 @@ export default function Register() {
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
                       style={errors.name ? Input.styleError : Input.style}
-                      placeholder="name"
+                      placeholder="Digite seu nome"
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
@@ -122,7 +131,7 @@ export default function Register() {
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
                       style={errors.email ? Input.styleError : Input.style}
-                      placeholder="Email"
+                      placeholder="Digite seu email"
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
@@ -151,7 +160,7 @@ export default function Register() {
                     <TouchableOpacity style={Input.inputPassword}>
                       <TextInput
                         style={errors.password ? Input.styleError : Input.style}
-                        placeholder="Senha"
+                        placeholder="Digite sua senha"
                         secureTextEntry={!isPasswordVisible}
                         onBlur={onBlur}
                         onChangeText={onChange}
@@ -192,7 +201,7 @@ export default function Register() {
                             ? Input.styleError
                             : Input.style
                         }
-                        placeholder="Senha"
+                        placeholder="Digite sua senha"
                         secureTextEntry={!isPasswordVisibleConfirmPassword}
                         onBlur={onBlur}
                         onChangeText={onChange}
@@ -229,7 +238,8 @@ export default function Register() {
                   size="large"
                   isLoading={isLoading}
                   onPress={handleSubmit(onSubmit)}
-                >
+                          disabled={Object.keys(errors).length > 0 || !isFormValid()}
+                   >
                   Criar conta{" "}
                 </Button>
               </View>

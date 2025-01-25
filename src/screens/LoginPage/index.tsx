@@ -19,7 +19,7 @@ import { useAuth } from "../../auth";
 import Button from "../../components/Button";
 import { Input } from "../../components/Input/Input.style";
 import { colors } from "../../styles/colors";
-import { RootStackParamList } from "../HomeScreen";
+import { RootStackParamList } from "../HomeScreen"; 
 import { styles } from "./Login.styles";
 import * as AuthSession from "expo-auth-session";
 import { useDialogNotification } from "../../hook/notification/hooks/actions";
@@ -87,13 +87,20 @@ export default function Login() {
   };
 
   const { signIn, isLoading } = useAuth();
-
+  
   const {
     control,
     handleSubmit,
     formState: { errors },
     setError,
   } = useForm();
+
+
+  const [focusedField, setFocusedField] = useState<string | null>(null);
+
+  const handleFocus = (fieldName: string) => {
+    setFocusedField(fieldName); 
+  };
 
   const onSubmit = async (data: any) => {
     try {
@@ -116,7 +123,6 @@ export default function Login() {
         message:
           "Ocorreu um erro ao tentar acessar o app. Tente novamente mais tarde.",
       });
-      // console.log(e);
     }
   };
 
@@ -151,9 +157,16 @@ export default function Login() {
                   rules={{ required: true }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
-                      style={errors.email ? Input.styleError : Input.style}
-                      placeholder="Email"
-                      onBlur={onBlur}
+                      style={[
+                         focusedField === "email"
+                         ?{...Input.focusedStyle}
+                        : errors.email ? Input.styleError : Input.style]}
+                      placeholder="Digite seu email"
+                       onBlur={()=>{
+                          onBlur();
+                           setFocusedField(null);
+                        }}
+                        onFocus={()=>{handleFocus("email")}}
                       onChangeText={onChange}
                       value={value}
                     />
@@ -177,10 +190,17 @@ export default function Login() {
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TouchableOpacity style={Input.inputPassword}>
                       <TextInput
-                        style={errors.password ? Input.styleError : Input.style}
-                        placeholder="Senha"
+                        style={[
+                          focusedField === "password"
+                          ?{...Input.focusedStyle}
+                          : errors.password ? Input.styleError : Input.style]}
+                        placeholder="Digite sua senha"
                         secureTextEntry={!isPasswordVisible}
-                        onBlur={onBlur}
+                        onBlur={()=>{
+                          onBlur();
+                           setFocusedField(null);
+                        }}
+                        onFocus={()=>{handleFocus("password")}}
                         onChangeText={onChange}
                         value={value}
                       />
@@ -199,24 +219,25 @@ export default function Login() {
                 {errors.password && (
                   <Text style={Input.errorText}>Senha é obrigatória.</Text>
                 )}
-              </View>
-              <View
-                style={{
-                  display: "flex",
-                  justifyContent: "flex-end",
-                  width: "100%",
-                  alignItems: "flex-end",
-                  marginLeft: 27,
-                }}
-              >
-                <Button
-                  variant="white"
-                  type="fill"
-                  size="small"
-                  onPress={() => navigation.navigate("ResetPassword")}
+              
+                <View
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    width: "100%",
+                    alignItems: "flex-end",
+                    marginLeft: 15,
+                  }}
                 >
-                  Esqueceu a senha?
-                </Button>
+                  <Button
+                    variant="white"
+                    type="fill"
+                    size="small"
+                    onPress={() => navigation.navigate("ResetPassword")}
+                  >
+                    Esqueceu a senha?
+                  </Button>
+                </View>
               </View>
               <View style={{ width: "100%", marginTop: 22 }}>
                 <Button
@@ -235,7 +256,7 @@ export default function Login() {
                   justifyContent: "center",
                   alignItems: "center",
                   flexDirection: "row",
-                  marginTop: 16,
+                  marginTop: 8,
                 }}
               >
                 <View style={styles.line} />
@@ -261,7 +282,7 @@ export default function Login() {
                   gap: 15,
                 }}
               >
-                <View style={{ width: "48.5%", marginTop: 22 }}>
+                <View style={{ width: "48.5%", marginTop: 8 }}>
                   <Button
                     variant="neutral"
                     type="outlined"
@@ -271,7 +292,7 @@ export default function Login() {
                     Google
                   </Button>
                 </View>
-                <View style={{ width: "48.5%", marginTop: 22 }}>
+                <View style={{ width: "48.5%", marginTop: 8 }}>
                   <Button variant="neutral" type="outlined">
                     <Image source={require("../../../assets/facebook.png")} />
                     Facebook
@@ -287,7 +308,7 @@ export default function Login() {
                     fontWeight: "normal",
                     lineHeight: 20,
                     textAlign: "center",
-                    marginTop: 16,
+                    marginTop: 24,
                   }}
                 >
                   Não possui conta?{" "}

@@ -552,7 +552,6 @@ export default function InformationStore() {
           />
         )}
       </Stack.Screen>
-
       <Stack.Screen name="Establishment">
         {(props) => (
           <EstablishmentScreen
@@ -601,7 +600,7 @@ const styles = StyleSheet.create({
     marginBottom: 32,
     color: "#71727A",
     fontWeight: "normal",
-    lineHeight: 20,
+    lineHeight: 24,
     textAlign: "left",
   },
   highlight: {
