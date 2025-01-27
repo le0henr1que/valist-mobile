@@ -21,6 +21,7 @@ import { useDialogNotification } from "../../hook/notification/hooks/actions";
 import { colors } from "../../styles/colors";
 import { RootStackParamList } from "../HomeScreen";
 import { styles } from "./Register.styles";
+import { CustomInput } from "../../components/Input";
 
 export default function Register() {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
@@ -44,14 +45,13 @@ export default function Register() {
 
   const password = watch("password");
 
-
-    const [isFocused, setIsFocused] = useState(false);
-    const formValues = watch();
-    const isFormValid = () => {
-     return Object.values(formValues).every(value => value !== undefined && value !== null && value !== '');   
+  const [isFocused, setIsFocused] = useState(false);
+  const formValues = watch();
+  const isFormValid = () => {
+    return Object.values(formValues).every(
+      (value) => value !== undefined && value !== null && value !== ""
+    );
   };
-
-
 
   const onSubmit = async (data: any) => {
     try {
@@ -109,8 +109,8 @@ export default function Register() {
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={errors.name ? Input.styleError : Input.style}
+                    <CustomInput
+                      errors={errors}
                       placeholder="Digite seu nome"
                       onBlur={onBlur}
                       onChangeText={onChange}
@@ -129,8 +129,8 @@ export default function Register() {
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={errors.email ? Input.styleError : Input.style}
+                    <CustomInput
+                      errors={errors}
                       placeholder="Digite seu email"
                       onBlur={onBlur}
                       onChangeText={onChange}
@@ -158,8 +158,8 @@ export default function Register() {
                   }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TouchableOpacity style={Input.inputPassword}>
-                      <TextInput
-                        style={errors.password ? Input.styleError : Input.style}
+                      <CustomInput
+                        errors={errors}
                         placeholder="Digite sua senha"
                         secureTextEntry={!isPasswordVisible}
                         onBlur={onBlur}
@@ -195,12 +195,8 @@ export default function Register() {
                   }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TouchableOpacity style={Input.inputPassword}>
-                      <TextInput
-                        style={
-                          errors.confirmPassword
-                            ? Input.styleError
-                            : Input.style
-                        }
+                      <CustomInput
+                        errors={errors}
                         placeholder="Digite sua senha"
                         secureTextEntry={!isPasswordVisibleConfirmPassword}
                         onBlur={onBlur}
@@ -238,8 +234,8 @@ export default function Register() {
                   size="large"
                   isLoading={isLoading}
                   onPress={handleSubmit(onSubmit)}
-                          disabled={Object.keys(errors).length > 0 || !isFormValid()}
-                   >
+                  disabled={Object.keys(errors).length > 0 || !isFormValid()}
+                >
                   Criar conta{" "}
                 </Button>
               </View>
