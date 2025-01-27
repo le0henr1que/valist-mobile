@@ -8,20 +8,29 @@ import {
   TouchableOpacity,
   View,
 } from "react-native";
-import { Controller, useForm } from "react-hook-form";
+import { Controller, set, useForm } from "react-hook-form";
 import * as ImagePicker from "expo-image-picker";
 import { Ionicons } from "@expo/vector-icons";
 import Button from "../../components/Button";
 import { colors } from "../../styles/colors";
 import { Input } from "../../components/Input/Input.style";
-import { useMeQuery, useUpdateUserMutation } from "../../services/me";
+import {
+  useMeQuery,
+  useUpdateUserMutation,
+  useUploadUserFileMutation,
+} from "../../services/me";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useDialogNotification } from "../../hook/notification/hooks/actions";
 import { useDispatch } from "react-redux";
+import {
+  useSignedUrlMutation,
+  useUploadFileMutation,
+} from "../../services/file";
 
 export default function PersonInformation() {
   const [imageUri, setImageUri] = useState<string | null>(null);
+  const [file, setFile] = useState<any>(null);
   const [hasPermission, setHasPermission] = useState<boolean>(false);
   const { data: user } = useMeQuery();
   const {
@@ -102,22 +111,27 @@ export default function PersonInformation() {
       setImageUri(result.assets[0].uri);
     }
   };
+
   const [updateUser, { isLoading }] = useUpdateUserMutation();
   const { handleNotification } = useDialogNotification();
   const dispatch = useDispatch();
+  const [uploadUserFile] = useUploadUserFileMutation();
 
   const onSubmit = async (data: any) => {
-    // if (!imageUri) {
-    //   Alert.alert("Erro", "Por favor, selecione ou tire uma foto.");
-    //   return;
-    // }
-
-    // Criar FormData com a imagem
-    const formData = new FormData();
     if (imageUri) {
-      const response = await fetch(imageUri);
-      const blob = await response.blob();
-      formData.append("image", blob, "photo.jpg");
+      try {
+        const formData = new FormData();
+        const file = {
+          uri: imageUri,
+          type: "image/jpeg",
+          name: "photo.jpg",
+        };
+        await uploadUserFile({
+          file: file,
+        }).unwrap();
+      } catch (error) {
+        console.log("Upload file error:", error);
+      }
     }
     try {
       const updatedUser = await updateUser({
@@ -127,6 +141,7 @@ export default function PersonInformation() {
         id: user?.id,
         version: user?.version,
       }).unwrap();
+
       dispatch({
         type: "UPDATE_USER",
         payload: updatedUser,
@@ -157,6 +172,7 @@ export default function PersonInformation() {
     setValue("username", user?.name);
     setValue("whatsapp", user?.whatsapp_number);
     setValue("phone", user?.phone_number);
+    setImageUri(user?.avatar);
   }, [user]);
 
   return (

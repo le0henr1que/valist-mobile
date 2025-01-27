@@ -29,7 +29,7 @@ import Header from "../../components/Header";
 export const productList = [
   {
     name: "Desod Rexona invisible Men 150ml",
-    price: 20.0,
+    price: 200.0,
     code: "1234567890",
     expiryDate: "12/12/2023",
     image: "https://via.placeholder.com/60",
