@@ -20,6 +20,7 @@ import { colors } from "../../styles/colors";
 import { RootStackParamList } from "../HomeScreen";
 import { styles } from "./ResetPassword.styles";
 import { useDialogNotification } from "../../hook/notification/hooks/actions";
+import { CustomInput } from "../../components/Input";
 
 export default function ResetPassword() {
   const navigation =
@@ -28,9 +29,17 @@ export default function ResetPassword() {
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
   const { handleNotification } = useDialogNotification();
+
+  const formValues = watch();
+  const isFormValid = () => {
+    return Object.values(formValues).every(
+      (value) => value !== undefined && value !== null && value !== ""
+    );
+  };
 
   const onSubmit = async (data: any) => {
     try {
@@ -87,9 +96,9 @@ export default function ResetPassword() {
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={errors.email ? Input.styleError : Input.style}
-                      placeholder="Email"
+                    <CustomInput
+                      errors={errors}
+                      placeholder="Digite seu email"
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
@@ -108,6 +117,7 @@ export default function ResetPassword() {
                   size="large"
                   onPress={handleSubmit(onSubmit)}
                   isLoading={isLoading}
+                  disabled={Object.keys(errors).length > 0 || !isFormValid()}
                   // onPress={() => navigation.navigate("NewPassword")}
                 >
                   Recuperar Senha{" "}

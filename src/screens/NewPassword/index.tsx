@@ -26,6 +26,8 @@ import { useDialogNotification } from "../../hook/notification/hooks/actions";
 
 import { useDialogModal } from "../../hook/handle-modal/hooks/actions";
 
+import { CustomInput } from "../../components/Input";
+
 import NotPass from "../components/ResetNotification";
 
 export default function NewPassword() {
@@ -50,15 +52,22 @@ export default function NewPassword() {
   const password = watch("password");
   const [recoveryPassword, { isLoading }] = useRecoveryPasswordMutation();
 
+  const formValues = watch();
+  const isFormValid = () => {
+    return Object.values(formValues).every(
+      (value) => value !== undefined && value !== null && value !== ""
+    );
+  };
+
   const { handleModal } = useDialogModal();
 
   const onSubmit = async (data: any) => {
     try {
-      // await recoveryPassword({
-      //   accessToken: access_token,
-      //   newPassword: data.password,
-      // }).unwrap();
-      // navigation.navigate("Login");
+      await recoveryPassword({
+        accessToken: access_token,
+        newPassword: data.password,
+      }).unwrap();
+      navigation.navigate("Login");
       handleModal({
         isOpen: true,
         element: <NotPass navigation={navigation} />,
@@ -123,8 +132,8 @@ export default function NewPassword() {
                   }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TouchableOpacity style={Input.inputPassword}>
-                      <TextInput
-                        style={errors.password ? Input.styleError : Input.style}
+                      <CustomInput
+                        errors={errors}
                         placeholder="Senha"
                         secureTextEntry={!isPasswordVisible}
                         onBlur={onBlur}
@@ -160,12 +169,8 @@ export default function NewPassword() {
                   }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TouchableOpacity style={Input.inputPassword}>
-                      <TextInput
-                        style={
-                          errors.confirmPassword
-                            ? Input.styleError
-                            : Input.style
-                        }
+                      <CustomInput
+                        errors={errors}
                         placeholder="Senha"
                         secureTextEntry={!isPasswordVisibleConfirmPassword}
                         onBlur={onBlur}
@@ -203,6 +208,7 @@ export default function NewPassword() {
                   size="large"
                   isLoading={isLoading}
                   onPress={handleSubmit(onSubmit)}
+                  disabled={Object.keys(errors).length > 0 || !isFormValid()}
                 >
                   Continuar
                 </Button>

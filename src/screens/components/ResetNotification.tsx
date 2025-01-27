@@ -1,7 +1,9 @@
 import React from "react";
 import { StyleSheet, Text, View, TouchableOpacity } from "react-native";
-import { colors } from "../../styles/colors"; // Ajuste o caminho conforme necessário
+import { colors } from "../../styles/colors";
 import { Ionicons } from "@expo/vector-icons";
+import Button from "../../components/Button";
+import Confetti from "../../../assets/icons/confetti";
 
 const NotPass = ({ navigation }: any) => {
   return (
@@ -25,24 +27,28 @@ const NotPass = ({ navigation }: any) => {
             justifyContent: "center",
             alignItems: "center",
             marginBottom: 20,
+            marginTop: 24,
           }}
         >
-          <Ionicons
+          {/*    <Ionicons
             name="checkmark-sharp"
             size={40}
             color={colors.success["600"]}
-          />
+          /> */}
+          <Confetti />
         </View>
       </View>
+      <Text style={styles.titleStyle}>Senha resetada com sucesso!</Text>
       <View style={styles.containerText}>
-        <Text style={styles.titleStyle}>Senha resetada com sucesso!</Text>
-      </View>
-
-      <View style={styles.container}>
         <Text style={styles.textMessage}>
           Sua senha foi alterada com sucesso! Use a nova senha para acessar sua
           conta.
         </Text>
+      </View>
+      <View style={{ marginTop: 16, width: 343 }}>
+        <Button type="fill" variant="primary" size="large">
+          Entendido
+        </Button>
       </View>
     </View>
   );
@@ -51,10 +57,14 @@ const NotPass = ({ navigation }: any) => {
 const styles = StyleSheet.create({
   button: {
     backgroundColor: colors.primary["600"],
-    paddingVertical: 10,
-    paddingHorizontal: 20,
+    height: 48,
+    paddingVertical: 12,
+    paddingHorizontal: 16,
     borderRadius: 4,
-    marginTop: 10,
+    justifyContent: "center",
+    alignItems: "center",
+    alignSelf: "stretch",
+    marginTop: 16,
   },
   buttonText: {
     color: "white",
@@ -71,6 +81,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingBottom: 48,
+    height: 324,
   },
   textMessage: {
     color: "#4B5563",
@@ -79,6 +90,7 @@ const styles = StyleSheet.create({
     fontStyle: "normal",
     fontWeight: "400",
     lineHeight: 24,
+    marginHorizontal: 16,
   },
   titleStyle: {
     color: "#212121",
@@ -90,20 +102,21 @@ const styles = StyleSheet.create({
   },
   containerText: {
     display: "flex",
-    // marginTop: 10,
-    flex: 1,
+    marginTop: 10,
+
     justifyContent: "center",
     alignItems: "center",
     width: "100%",
     textAlign: "center",
-    // height: 76,
-    // borderBottomColor: "#DEDEDE",
-    // borderBottomWidth: 1,
+    height: 76,
+    borderBottomColor: "#DEDEDE",
+    borderBottomWidth: 1,
   },
   container: {
     // padding: 20,
     marginBottom: 48,
     alignItems: "center",
+    backgroundColor: "red",
   },
   overlay: {
     zIndex: 1000,
