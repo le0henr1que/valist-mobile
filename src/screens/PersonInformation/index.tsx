@@ -4,6 +4,8 @@ import {
   Image,
   StyleSheet,
   Text,
+  KeyboardAvoidingView,
+  Platform,
   TextInput,
   TouchableOpacity,
   View,
@@ -19,6 +21,7 @@ import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { useDialogNotification } from "../../hook/notification/hooks/actions";
 import { useDispatch } from "react-redux";
+import { CustomInput } from "../../components/Input";
 
 export default function PersonInformation() {
   const [imageUri, setImageUri] = useState<string | null>(null);
@@ -161,131 +164,140 @@ export default function PersonInformation() {
   }, [user]);
 
   return (
-    <View style={styles.container}>
-      <View style={{ padding: 20 }}>
-        <View>
-          <View style={styles.bannerContainer}>
-            <View style={styles.avatarWrapper}>
-              <Image
-                source={{
-                  uri: imageUri || "https://via.placeholder.com/100",
-                }}
-                style={styles.avatar}
-              />
-              <TouchableOpacity
-                style={styles.cameraButton}
-                onPress={handleCameraOrGallery}
-              >
-                <Ionicons
-                  name="camera-outline"
-                  size={24}
-                  color={colors.white}
+    <KeyboardAvoidingView
+      behavior={Platform.OS === "ios" ? "padding" : "height"}
+      style={{ flex: 1 }}
+    >
+      <View style={styles.container}>
+        <View style={{ padding: 20 }}>
+          <View>
+            <View style={styles.bannerContainer}>
+              <View style={styles.avatarWrapper}>
+                <Image
+                  source={{
+                    uri: imageUri || "https://via.placeholder.com/100",
+                  }}
+                  style={styles.avatar}
                 />
-              </TouchableOpacity>
+                <TouchableOpacity
+                  style={styles.cameraButton}
+                  onPress={handleCameraOrGallery}
+                >
+                  <Ionicons
+                    name="camera-outline"
+                    size={24}
+                    color={colors.white}
+                  />
+                </TouchableOpacity>
+              </View>
             </View>
-          </View>
 
-          {/* Formulário */}
-          <View style={styles.form}>
-            <View>
-              <Text style={styles.label}>Nome do usuário</Text>
-              <Controller
-                control={control}
-                rules={{ required: "Nome é obrigatório" }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    style={errors.username ? Input.styleError : Input.style}
-                    placeholder="Digite seu nome"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                  />
+            {/* Formulário */}
+            <View style={styles.form}>
+              <View>
+                <Text style={styles.label}>Nome do usuário</Text>
+                <Controller
+                  control={control}
+                  rules={{ required: "Nome é obrigatório" }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <CustomInput
+                      errors={errors}
+                      name="username"
+                      placeholder="Digite seu nome"
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                    />
+                  )}
+                  name="username"
+                />
+                {errors.username && (
+                  <Text style={styles.errorText}>
+                    {errors.username?.message?.toString()}
+                  </Text>
                 )}
-                name="username"
-              />
-              {errors.username && (
-                <Text style={styles.errorText}>
-                  {errors.username?.message?.toString()}
-                </Text>
-              )}
-            </View>
-            <View>
-              <Text style={styles.label}>Email</Text>
-              <Controller
-                control={control}
-                rules={{ required: "Email é obrigatório" }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    style={errors.email ? Input.styleError : Input.style}
-                    placeholder="Ex: 987654321"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                  />
+              </View>
+              <View>
+                <Text style={styles.label}>Email</Text>
+                <Controller
+                  control={control}
+                  rules={{ required: "Email é obrigatório" }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <CustomInput
+                      errors={errors}
+                      name="email"
+                      placeholder="Ex: 987654321"
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                    />
+                  )}
+                  name="email"
+                />
+                {errors.email && (
+                  <Text style={styles.errorText}>
+                    {errors.email?.message?.toString()}
+                  </Text>
                 )}
-                name="email"
-              />
-              {errors.email && (
-                <Text style={styles.errorText}>
-                  {errors.email?.message?.toString()}
-                </Text>
-              )}
-            </View>
-            <View>
-              <Text style={styles.label}>Número (Whatsapp)</Text>
-              <Controller
-                control={control}
-                rules={{ required: "Número é obrigatório" }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    style={errors.whatsapp ? Input.styleError : Input.style}
-                    placeholder="Ex: 1199999999"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                  />
+              </View>
+              <View>
+                <Text style={styles.label}>Número (Whatsapp)</Text>
+                <Controller
+                  control={control}
+                  rules={{ required: "Número é obrigatório" }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <CustomInput
+                      errors={errors}
+                      name="whatsapp"
+                      placeholder="Ex: 1199999999"
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                    />
+                  )}
+                  name="whatsapp"
+                />
+                {errors.whatsapp && (
+                  <Text style={styles.errorText}>
+                    {errors.whatsapp.message?.toString()}
+                  </Text>
                 )}
-                name="whatsapp"
-              />
-              {errors.whatsapp && (
-                <Text style={styles.errorText}>
-                  {errors.whatsapp.message?.toString()}
-                </Text>
-              )}
-            </View>
-            <View>
-              <Text style={styles.label}>Número de telefone</Text>
-              <Controller
-                control={control}
-                rules={{ required: "Número é obrigatório" }}
-                render={({ field: { onChange, onBlur, value } }) => (
-                  <TextInput
-                    style={errors.phone ? Input.styleError : Input.style}
-                    placeholder="Ex: 987654321"
-                    onBlur={onBlur}
-                    onChangeText={onChange}
-                    value={value}
-                  />
+              </View>
+              <View>
+                <Text style={styles.label}>Número de telefone</Text>
+                <Controller
+                  control={control}
+                  rules={{ required: "Número é obrigatório" }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <CustomInput
+                      errors={errors}
+                      name="phone"
+                      placeholder="Ex: 987654321"
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                    />
+                  )}
+                  name="phone"
+                />
+                {errors.phone && (
+                  <Text style={styles.errorText}>
+                    {errors.phone?.message?.toString()}
+                  </Text>
                 )}
-                name="phone"
-              />
-              {errors.phone && (
-                <Text style={styles.errorText}>
-                  {errors.phone?.message?.toString()}
-                </Text>
-              )}
+              </View>
             </View>
           </View>
         </View>
-      </View>
-      <View style={{ width: "100%" }}>
-        <View style={styles.footerButtom}>
-          <Button onPress={handleSubmit(onSubmit)} isLoading={isLoading}>
-            Salvar dados
-          </Button>
+        <View style={{ width: "100%" }}>
+          <View style={styles.footerButtom}>
+            <Button onPress={handleSubmit(onSubmit)} isLoading={isLoading}>
+              Salvar dados
+            </Button>
+          </View>
         </View>
       </View>
-    </View>
+    </KeyboardAvoidingView>
   );
 }
 

@@ -159,6 +159,7 @@ export default function Login() {
                   rules={{ required: true }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <CustomInput
+                      name="email"
                       errors={errors}
                       placeholder="Digite seu email"
                       onChangeText={onChange}
@@ -185,6 +186,7 @@ export default function Login() {
                     <TouchableOpacity style={Input.inputPassword}>
                       <CustomInput
                         errors={errors}
+                        name="email"
                         placeholder="Digite sua senha"
                         secureTextEntry={!isPasswordVisible}
                         onChangeText={onChange}

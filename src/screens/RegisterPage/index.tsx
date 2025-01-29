@@ -110,6 +110,7 @@ export default function Register() {
                   render={({ field: { onChange, onBlur, value } }) => (
                     <CustomInput
                       errors={errors}
+                      name="name"
                       placeholder="Digite seu nome"
                       onBlur={onBlur}
                       onChangeText={onChange}
@@ -126,10 +127,17 @@ export default function Register() {
                 <Text style={Input.label}>Email</Text>
                 <Controller
                   control={control}
-                  rules={{ required: true }}
+                  rules={{
+                    required: "O e-mail é obrigatório.",
+                    pattern: {
+                      value: /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/,
+                      message: "Email inválido",
+                    },
+                  }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <CustomInput
                       errors={errors}
+                      name="email"
                       placeholder="Digite seu email"
                       onBlur={onBlur}
                       onChangeText={onChange}
@@ -139,7 +147,7 @@ export default function Register() {
                   name="email"
                 />
                 {errors.email && (
-                  <Text style={Input.errorText}>Email é obrigatório.</Text>
+                  <Text style={Input.errorText}>{errors.email.message}</Text>
                 )}
               </View>
               <View style={Input.inputView}>
@@ -159,6 +167,7 @@ export default function Register() {
                     <TouchableOpacity style={Input.inputPassword}>
                       <CustomInput
                         errors={errors}
+                        name="password"
                         placeholder="Digite sua senha"
                         secureTextEntry={!isPasswordVisible}
                         onBlur={onBlur}
@@ -196,6 +205,7 @@ export default function Register() {
                     <TouchableOpacity style={Input.inputPassword}>
                       <CustomInput
                         errors={errors}
+                        name="confirmPassword"
                         placeholder="Digite sua senha"
                         secureTextEntry={!isPasswordVisibleConfirmPassword}
                         onBlur={onBlur}
