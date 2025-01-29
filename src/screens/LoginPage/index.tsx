@@ -94,13 +94,15 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
     setError,
+    watch,
   } = useForm();
 
-  // const [focusedField, setFocusedField] = useState<string | null>(null);
-
-  // const handleFocus = (fieldName: string) => {
-  //   setFocusedField(fieldName);
-  // };
+  const formValues = watch();
+  const isFormValid = () => {
+    return Object.values(formValues).every(
+      (value) => value !== undefined && value !== null && value !== ""
+    );
+  };
 
   const onSubmit = async (data: any) => {
     try {
@@ -229,6 +231,7 @@ export default function Login() {
                   size="large"
                   isLoading={isLoading}
                   onPress={handleSubmit(onSubmit)}
+                  disabled={Object.keys(errors).length > 0 || !isFormValid()}
                 >
                   Entrar
                 </Button>

@@ -45,7 +45,6 @@ export default function Register() {
 
   const password = watch("password");
 
-  const [isFocused, setIsFocused] = useState(false);
   const formValues = watch();
   const isFormValid = () => {
     return Object.values(formValues).every(
