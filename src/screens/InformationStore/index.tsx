@@ -153,7 +153,11 @@ function ObjectiveScreen({
             </Text>
             <View style={styles.divider} />
             <View style={Input.inputView}>
-              <TextInput style={Input.style} placeholder="Ex: 12345344343" />
+              <CustomInput
+                errors={errors}
+                name="cod"
+                placeholder="Ex: 12345344343"
+              />
             </View>
             <View style={styles.divider2} />
             <View style={styles.buttonModalG}>
@@ -673,7 +677,15 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     lineHeight: 20,
   },
-  radioGroup: {},
+  radioGroup: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 12,
+    flex: 1,
+    flexBasis: 0,
+    flexShrink: 0,
+  },
   option: {
     flexDirection: "row",
     alignItems: "center",
@@ -700,6 +712,7 @@ const styles = StyleSheet.create({
     color: colors.neutral["500"],
     lineHeight: 20,
     fontWeight: "normal",
+    marginTop: 6,
   },
   checked: {
     borderWidth: 2,
@@ -789,6 +802,8 @@ const styles = StyleSheet.create({
     flex: 1,
     flexShrink: 0,
     flexBasis: 0,
+    alignItems: "center",
+    justifyContent: "center",
   },
   button3: {
     backgroundColor: colors.neutral["100"],
@@ -797,6 +812,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     width: 139,
     borderRadius: 8,
+    alignItems: "center",
     justifyContent: "center",
   },
   divider: {
