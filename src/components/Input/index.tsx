@@ -2,15 +2,17 @@ import React, { useState } from "react";
 import { TextInput, StyleSheet } from "react-native";
 import { Input } from "./Input.style";
 
-export const CustomInput = ({ errors, ...props }: any) => {
+export const CustomInput = ({ errors, name, ...props }: any) => {
   const [isFocused, setIsFocused] = useState(false);
+
+  const hasError = errors && errors[name];
 
   return (
     <TextInput
       style={[
         isFocused
           ? { ...Input.focusedStyle }
-          : errors.email
+          : hasError
           ? Input.styleError
           : Input.style,
       ]}

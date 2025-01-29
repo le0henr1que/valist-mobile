@@ -33,6 +33,7 @@ import { MaterialIcons } from "@expo/vector-icons";
 import CustomIcon from "../../../assets/icons/logo2";
 import StoreIcon2 from "../../../assets/icons/store-icon2";
 import PersonIcon2 from "../../../assets/icons/person-icon2";
+import { CustomInput } from "../../components/Input";
 
 const Stack = createNativeStackNavigator();
 
@@ -232,8 +233,9 @@ function EstablishmentScreen({
             control={control}
             rules={{ required: true }}
             render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={errors.storeName ? Input.styleError : Input.style}
+              <CustomInput
+                errors={errors}
+                name="storeName"
                 placeholder="Ex: Loja Estrela"
                 onBlur={() => {
                   setIsFocused(false);

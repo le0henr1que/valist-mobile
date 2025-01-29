@@ -136,6 +136,7 @@ export default function NewPassword() {
                     <TouchableOpacity style={Input.inputPassword}>
                       <CustomInput
                         errors={errors}
+                        name="password"
                         placeholder="Senha"
                         secureTextEntry={!isPasswordVisible}
                         onBlur={onBlur}
@@ -173,6 +174,7 @@ export default function NewPassword() {
                     <TouchableOpacity style={Input.inputPassword}>
                       <CustomInput
                         errors={errors}
+                        name="confirmPassword"
                         placeholder="Senha"
                         secureTextEntry={!isPasswordVisibleConfirmPassword}
                         onBlur={onBlur}
