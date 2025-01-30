@@ -10,6 +10,7 @@ import {
   ScrollView,
   Text,
   TextInput,
+  TouchableOpacity,
   View,
 } from "react-native";
 import { v4 as uuidv4 } from "uuid";
@@ -21,6 +22,8 @@ import { RootStackParamList } from "../HomeScreen";
 import { styles } from "./ResetPassword.styles";
 import { useDialogNotification } from "../../hook/notification/hooks/actions";
 import { CustomInput } from "../../components/Input";
+
+import BackIconV3 from "../../../assets/icons/backIcon-v3";
 
 export default function ResetPassword() {
   const navigation =
@@ -81,10 +84,9 @@ export default function ResetPassword() {
             imageStyle={{ left: 140 }}
           >
             <View style={styles.textHeader}>
-              <Image
-                source={require("../../../assets/logo-white.png")}
-                style={styles.image}
-              />
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <BackIconV3 />
+              </TouchableOpacity>
               <Text style={styles.title}>Esqueci a senha</Text>
             </View>
           </ImageBackground>
@@ -98,6 +100,7 @@ export default function ResetPassword() {
                   render={({ field: { onChange, onBlur, value } }) => (
                     <CustomInput
                       errors={errors}
+                      name="email "
                       placeholder="Digite seu email"
                       onBlur={onBlur}
                       onChangeText={onChange}
@@ -120,11 +123,11 @@ export default function ResetPassword() {
                   disabled={Object.keys(errors).length > 0 || !isFormValid()}
                   // onPress={() => navigation.navigate("NewPassword")}
                 >
-                  Recuperar Senha{" "}
+                  Recuperar Conta
                 </Button>
               </View>
               <View />
-              <View style={{ flex: 1, justifyContent: "flex-end" }}>
+              <View style={{ flex: 1, justifyContent: "flex-start" }}>
                 <Text
                   style={{
                     color: colors.neutral["500"],
@@ -132,7 +135,7 @@ export default function ResetPassword() {
                     fontWeight: "normal",
                     lineHeight: 20,
                     textAlign: "center",
-                    marginTop: 16,
+                    marginTop: 24,
                   }}
                 >
                   Não possui conta?{" "}
@@ -144,7 +147,7 @@ export default function ResetPassword() {
                       fontWeight: "bold",
                       lineHeight: 20,
                       textAlign: "center",
-                      marginTop: 16,
+                      marginTop: 24,
                     }}
                   >
                     Registre-se

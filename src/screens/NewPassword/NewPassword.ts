@@ -12,6 +12,7 @@ export const styles = StyleSheet.create({
   bodyContent: {
     flex: 1,
     justifyContent: "flex-start",
+    alignSelf: "stretch",
     alignItems: "center",
     width: "100%",
     gap: 16,
@@ -105,8 +106,8 @@ export const styles = StyleSheet.create({
     backgroundColor: "white",
     width: "100%",
   },
-  button:{
+  button: {
     height: "100%",
     color: "pink",
-  }
+  },
 });

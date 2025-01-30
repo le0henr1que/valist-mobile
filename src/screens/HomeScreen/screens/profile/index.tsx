@@ -1,3 +1,4 @@
+import React, { useState, useCallback, useEffect } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -10,6 +11,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  RefreshControl,
 } from "react-native";
 import { RootStackParamList } from "../..";
 import BellIcon from "../../../../../assets/icons/bell";
@@ -18,7 +20,9 @@ import { colors } from "../../../../styles/colors";
 import Button from "../../../../components/Button";
 import { useAuth } from "../../../../auth";
 import { roles } from "../../../../enum/role";
-import { useMeQuery } from "../../../../services/me";
+import { useMeQuery, userInformations } from "../../../../services/me";
+import { Tags } from "../../../../utils/Tags";
+import { useDispatch } from "react-redux";
 
 function Profile() {
   const navigation =
@@ -26,7 +30,22 @@ function Profile() {
   const notificationCount = 1;
 
   const { signOut, isLoading } = useAuth();
-  const { data: user } = useMeQuery();
+  const [avatar, setAvatar] = useState<string | null>(null);
+  const { data: user, refetch, isFetching } = useMeQuery();
+  const [refreshing, setRefreshing] = useState(false);
+  const dispatch = useDispatch();
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    setAvatar(user?.avatar);
+    refetch().finally(() => setRefreshing(false));
+  }, [refetch]);
+
+  useEffect(() => {
+    if (user) {
+      setAvatar(user.avatar);
+    }
+  }, [user]);
   return (
     <View style={styles.container}>
       <ImageBackground
@@ -68,8 +87,14 @@ function Profile() {
               }}
             >
               <Image
-                source={require("../../../../../assets/profile.png")}
+                key={refreshing ? "refreshing" : "avatar"}
+                source={{
+                  uri: avatar || "https://via.placeholder.com/64",
+                }}
                 style={styles.image}
+                onError={(error) =>
+                  console.log("Image load error:", error.nativeEvent.error)
+                }
               />
               <View
                 style={{
@@ -165,7 +190,11 @@ function Profile() {
         >
           Configurações da conta
         </Text>
-        <ScrollView>
+        <ScrollView
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+        >
           <TouchableOpacity
             onPress={() => navigation.navigate("PersonInformation")}
             style={{
@@ -479,6 +508,7 @@ function Profile() {
     </View>
   );
 }
+
 const styles = StyleSheet.create({
   avatarContainer: {
     paddingHorizontal: 20,
@@ -512,7 +542,9 @@ const styles = StyleSheet.create({
   image: {
     width: 64,
     height: 64,
-    resizeMode: "contain",
+    borderRadius: 32,
+    resizeMode: "cover",
+    backgroundColor: colors.neutral["200"],
   },
   badge: {
     position: "absolute",
@@ -556,4 +588,5 @@ const styles = StyleSheet.create({
     gap: 12,
   },
 });
+
 export default Profile;

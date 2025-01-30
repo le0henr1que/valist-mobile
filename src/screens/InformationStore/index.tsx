@@ -29,10 +29,11 @@ import {
   NotificationTimeEnum,
 } from "../../enum/notification";
 import Svg, { Path, Rect } from "react-native-svg";
-import { MaterialIcons } from '@expo/vector-icons'; 
+import { MaterialIcons } from "@expo/vector-icons";
 import CustomIcon from "../../../assets/icons/logo2";
 import StoreIcon2 from "../../../assets/icons/store-icon2";
 import PersonIcon2 from "../../../assets/icons/person-icon2";
+import { CustomInput } from "../../components/Input";
 
 const Stack = createNativeStackNavigator();
 
@@ -47,10 +48,19 @@ const ProgressHeader = ({ progress }: { progress: number }) => (
 
 //tela0: Objetivo do estabelcimento
 
-function ObjectiveScreen ({ navigation, formMethods } :{ navigation: any; formMethods: any; }) {
-
+function ObjectiveScreen({
+  navigation,
+  formMethods,
+}: {
+  navigation: any;
+  formMethods: any;
+}) {
   const [checked, setChecked] = useState("owners");
-  const { setValue, handleSubmit, formState: { errors },} = formMethods;
+  const {
+    setValue,
+    handleSubmit,
+    formState: { errors },
+  } = formMethods;
   const [isModalVisible, setIsModalVisible] = useState(false);
   setValue("Objective", checked);
   const onSubmit = (data: any) => {
@@ -60,7 +70,6 @@ function ObjectiveScreen ({ navigation, formMethods } :{ navigation: any; formMe
       navigation.navigate("Establishment", { ...data });
     }
   };
-  
 
   return (
     <View style={styles.container}>
@@ -70,64 +79,68 @@ function ObjectiveScreen ({ navigation, formMethods } :{ navigation: any; formMe
           marginBottom: 32,
           justifyContent: "space-between",
           alignItems: "center",
-        }}>
-          <View>
-          <CustomIcon/>
-          </View>
-      <View>
-       <Text style={styles.title}>
-            Antes de começarmos, 
-            qual seu objetivo com o aplicativo.
+        }}
+      >
+        <View>
+          <CustomIcon />
+        </View>
+        <View>
+          <Text style={styles.title}>
+            Antes de começarmos, qual seu objetivo com o aplicativo.
           </Text>
-      <Text style={styles.subtitle}>
-            Selecione se você é o dono da sua própria 
-            loja, promotor de merchandising se foi
-            convidado para acessar uma loja existente.
+          <Text style={styles.subtitle}>
+            Selecione se você é o dono da sua própria loja, promotor de
+            merchandising se foi convidado para acessar uma loja existente.
           </Text>
-          </View>
-        
-            <TouchableOpacity
-            style={[styles.radioItem,
-            checked === 'owner' && styles.checked,
-            ]}
-            onPress={()=>setChecked("owner")}>
-            <View style={styles.radioGroup}>
-              <View style={styles.icon}>
-              <StoreIcon2/>
-              </View>
-              <View>
-            <Text style={styles.titleButton}>Sou dono da loja</Text>
-            <Text style={styles.radioText}>
-              Quero gerenciar e administrar meu {'\n'}
-              próprio estabelecimento.</Text> 
-              </View>
-              </View>
-            </TouchableOpacity>
-            <TouchableOpacity
-            style={[styles.radioItem,
-            checked === 'member' && styles.checked,
-            ]}
-            onPress={()=>setChecked("member")}>
-            <View  style={styles.radioGroup}>
+        </View>
+
+        <TouchableOpacity
+          style={[styles.radioItem, checked === "owner" && styles.checked]}
+          onPress={() => setChecked("owner")}
+        >
+          <View style={styles.radioGroup}>
             <View style={styles.icon}>
-              <PersonIcon2/>
-              </View>
-              <View>
-            <Text style={styles.titleButton}>Sou membro (convidado)</Text>
-            <Text style={styles.radioText}>
-              Fui convidado para colaborar em uma {'\n'}loja e possuo o código de acesso.</Text>  
-            </View>    
+              <StoreIcon2 />
             </View>
-            </TouchableOpacity>
-         
+            <View>
+              <Text style={styles.titleButton}>Sou dono da loja</Text>
+              <Text style={styles.radioText}>
+                Quero gerenciar e administrar meu {"\n"}
+                próprio estabelecimento.
+              </Text>
+            </View>
           </View>
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={[styles.radioItem, checked === "member" && styles.checked]}
+          onPress={() => setChecked("member")}
+        >
+          <View style={styles.radioGroup}>
+            <View style={styles.icon}>
+              <PersonIcon2 />
+            </View>
+            <View>
+              <Text style={styles.titleButton}>Sou membro (convidado)</Text>
+              <Text style={styles.radioText}>
+                Fui convidado para colaborar em uma {"\n"}loja e possuo o código
+                de acesso.
+              </Text>
+            </View>
+          </View>
+        </TouchableOpacity>
+      </View>
       <View style={{ gap: 16 }}>
-        <Button style={styles.button} type="fill" size="large" onPress={handleSubmit(onSubmit)}>
+        <Button
+          style={styles.button}
+          type="fill"
+          size="large"
+          onPress={handleSubmit(onSubmit)}
+        >
           Continuar
         </Button>
       </View>
 
-    <Modal
+      <Modal
         visible={isModalVisible}
         animationType="slide"
         transparent={true}
@@ -135,36 +148,43 @@ function ObjectiveScreen ({ navigation, formMethods } :{ navigation: any; formMe
       >
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
-            <Text style={styles.modalTitle}>Insira abaixo o código recebido</Text>
+            <Text style={styles.modalTitle}>
+              Insira abaixo o código recebido
+            </Text>
             <View style={styles.divider} />
             <View style={Input.inputView}>
-            <TextInput  style={Input.style}
-                placeholder="Ex: 12345344343"                
+              <CustomInput
+                errors={errors}
+                name="cod"
+                placeholder="Ex: 12345344343"
               />
             </View>
             <View style={styles.divider2} />
             <View style={styles.buttonModalG}>
-            <Button style={styles.button3}
-          type="fill"
-          size="medium"
-          variant="neutral"
-          onPress={() => navigation.goBack()}
-        >
-          Cancelar
-        </Button>
-            <Button style={styles.button2} type="fill" size="large" onPress={handleSubmit(onSubmit)}>
-          Continuar
-        </Button>
+              <Button
+                style={styles.button3}
+                type="fill"
+                size="medium"
+                variant="neutral"
+                onPress={() => navigation.goBack()}
+              >
+                Cancelar
+              </Button>
+              <Button
+                style={styles.button2}
+                type="fill"
+                size="large"
+                onPress={handleSubmit(onSubmit)}
+              >
+                Continuar
+              </Button>
+            </View>
           </View>
-        </View>
         </View>
       </Modal>
     </View>
-
   );
 }
-
-
 
 // Tela 1: Nome do Estabelecimento
 function EstablishmentScreen({
@@ -183,7 +203,7 @@ function EstablishmentScreen({
     watch,
   } = formMethods;
   const [isFocused, setIsFocused] = useState(false);
-  const [checked, setChecked] = useState("")
+  const [checked, setChecked] = useState("");
   const storeName = watch("storeName");
   console.log("AQUI EU TENHO", route);
   const onSubmit = (data: any) => {
@@ -217,8 +237,9 @@ function EstablishmentScreen({
             control={control}
             rules={{ required: true }}
             render={({ field: { onChange, onBlur, value } }) => (
-              <TextInput
-                style={errors.storeName ? Input.styleError : Input.style}
+              <CustomInput
+                errors={errors}
+                name="storeName"
                 placeholder="Ex: Loja Estrela"
                 onBlur={() => {
                   setIsFocused(false);
@@ -239,8 +260,13 @@ function EstablishmentScreen({
         </View>
       </View>
       <View>
-        <Button style={[styles.button, checked === "" && { opacity: 0.5 } ]} 
-        type="fill" size="large" onPress={handleSubmit(onSubmit)} disabled={checked === ""}>
+        <Button
+          style={[styles.button, checked === "" && { opacity: 0.5 }]}
+          type="fill"
+          size="large"
+          onPress={handleSubmit(onSubmit)}
+          disabled={checked === ""}
+        >
           Continuar
         </Button>
       </View>
@@ -256,7 +282,6 @@ function NotificationsScreen({
   navigation: any;
   formMethods: any;
 }) {
-  
   const [checked, setChecked] = useState("");
   const { setValue, handleSubmit } = formMethods;
   const route = useRoute();
@@ -264,7 +289,6 @@ function NotificationsScreen({
   useEffect(() => {
     setValue("notifications", checked);
   }, [checked]);
-
 
   const onSubmit = (data: any) => {
     navigation.navigate("Expiration", { ...data, ...params });
@@ -298,66 +322,70 @@ function NotificationsScreen({
         </View>
         <View style={styles.radioGroup}>
           <TouchableOpacity
-            style={[styles.radioItem, 
-              checked === 'yes' && styles.checked,
-              ]}
-              onPress={()=>setChecked("yes")}
-              > 
+            style={[styles.radioItem, checked === "yes" && styles.checked]}
+            onPress={() => setChecked("yes")}
+          >
             <Image source={require("../../../assets/bell.png")} />
             <Text style={styles.radioItemText}>
               Sim, desejo receber notificações pelo{" "}
               <Text style={{ fontWeight: "bold" }}>aplicativo</Text>
             </Text>
             <View style={styles.radioButton}>
-            {checked === "yes" && (
-            <View style={styles.radioButtonChecked}>
-            <Svg width="11" height="10" viewBox="0 0 11 10" fill="none">
-             <Path
-            d="M2.0625 5.625L4.25 7.8125L9.25 2.8125"
-            stroke="white"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            />
-        </Svg>
-      </View>
-    )}
-  </View>
+              {checked === "yes" && (
+                <View style={styles.radioButtonChecked}>
+                  <Svg width="11" height="10" viewBox="0 0 11 10" fill="none">
+                    <Path
+                      d="M2.0625 5.625L4.25 7.8125L9.25 2.8125"
+                      stroke="white"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </Svg>
+                </View>
+              )}
+            </View>
           </TouchableOpacity>
           <TouchableOpacity
-            style={[styles.radioItem,
-              checked === 'not' && styles.checked,
-              { justifyContent: 'center', alignItems: 'center' } 
-              ]}
-              onPress={()=>setChecked("not")}
-              > 
+            style={[
+              styles.radioItem,
+              checked === "not" && styles.checked,
+              { justifyContent: "center", alignItems: "center" },
+            ]}
+            onPress={() => setChecked("not")}
+          >
             <Image source={require("../../../assets/not-bell.png")} />
             <Text style={styles.radioItemText}>
               Não desejo receber notificações
             </Text>
             {checked === "not" && <Text style={styles.checkMark}>✔</Text>}
             <View style={styles.radioButton}>
-            {checked === "not" && (
-            <View style={styles.radioButtonChecked}>
-            <Svg width="11" height="10" viewBox="0 0 11 10" fill="none">
-             <Path
-            d="M2.0625 5.625L4.25 7.8125L9.25 2.8125"
-            stroke="white"
-            strokeWidth="1.5"
-            strokeLinecap="round"
-            strokeLinejoin="round"
-            />
-        </Svg>
-      </View>
-    )}
-  </View>
+              {checked === "not" && (
+                <View style={styles.radioButtonChecked}>
+                  <Svg width="11" height="10" viewBox="0 0 11 10" fill="none">
+                    <Path
+                      d="M2.0625 5.625L4.25 7.8125L9.25 2.8125"
+                      stroke="white"
+                      strokeWidth="1.5"
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                    />
+                  </Svg>
+                </View>
+              )}
+            </View>
           </TouchableOpacity>
         </View>
       </View>
       <View style={{ gap: 16 }}>
-        <Button style={[styles.button, checked === "" && { opacity: 0.5 } ]}
-        type="fill" size="large" onPress={handleSubmit(onSubmit)} disabled={checked === ""}>
-         Continuar
+        <Button
+          style={[styles.button, checked === "" && { opacity: 0.5 }]}
+          type="fill"
+          size="large"
+          onPress={handleSubmit(onSubmit)}
+          disabled={checked === ""}
+        >
+          Continuar
         </Button>
         <Button
           type="fill"
@@ -380,7 +408,7 @@ function ExpirationScreen({
   navigation: any;
   formMethods: any;
 }) {
-  const [checked,setChecked] = useState("")
+  const [checked, setChecked] = useState("");
   const [selected, setSelected] = useState("");
   const [customDays, setCustomDays] = useState("");
   const {
@@ -391,20 +419,18 @@ function ExpirationScreen({
   const route = useRoute();
   const params = route.params;
   const onSubmit = (data: any) => {
-
-    const amount = selected || customDays || data.amount;  // Exemplo de fallback
+    const amount = selected || customDays || data.amount; // Exemplo de fallback
     navigation.navigate("Loading", {
       amount: amount,
       ...params,
     });
   };
-  
 
   useEffect(() => {
     if (selected !== "" || customDays !== "") {
-      setChecked("valid");  
+      setChecked("valid");
     } else {
-      setChecked(""); 
+      setChecked("");
     }
   }, [selected, customDays]);
 
@@ -450,29 +476,33 @@ function ExpirationScreen({
                   fontWeight: 500,
                 }}
               >
-                {labelNotificationTimeEnum[option as string] as any}
+                {/*   {labelNotificationTimeEnum[option as string] as any} */}
               </Text>
             </TouchableOpacity>
           ))}
         </View>
       </View>
       <View>
-      <View style={{ gap: 16 }}>
-        <Button style={[styles.button, checked === "" && { opacity: 0.5 } ]}
-        type="fill" size="large" onPress={handleSubmit(onSubmit)} disabled={checked === ""}>
-         Continuar
-        </Button>
-        <Button
-          type="fill"
-          size="medium"
-          variant="neutral"
-          onPress={() => navigation.goBack()}
-        >
-          Voltar
-        </Button>
+        <View style={{ gap: 16 }}>
+          <Button
+            style={[styles.button, checked === "" && { opacity: 0.5 }]}
+            type="fill"
+            size="large"
+            onPress={handleSubmit(onSubmit)}
+            disabled={checked === ""}
+          >
+            Continuar
+          </Button>
+          <Button
+            type="fill"
+            size="medium"
+            variant="neutral"
+            onPress={() => navigation.goBack()}
+          >
+            Voltar
+          </Button>
+        </View>
       </View>
-      </View>
-      
     </ScrollView>
   );
 }
@@ -545,12 +575,7 @@ export default function InformationStore() {
   return (
     <Stack.Navigator screenOptions={{ headerShown: false }}>
       <Stack.Screen name="Objective">
-        {(props) => (
-          <ObjectiveScreen
-            {...props}
-            formMethods={formMethods}
-          />
-        )}
+        {(props) => <ObjectiveScreen {...props} formMethods={formMethods} />}
       </Stack.Screen>
       <Stack.Screen name="Establishment">
         {(props) => (
@@ -651,9 +676,15 @@ const styles = StyleSheet.create({
     fontSize: 14,
     fontWeight: "normal",
     lineHeight: 20,
-    
   },
   radioGroup: {
+    display: "flex",
+    flexDirection: "row",
+    alignItems: "flex-start",
+    gap: 12,
+    flex: 1,
+    flexBasis: 0,
+    flexShrink: 0,
   },
   option: {
     flexDirection: "row",
@@ -674,19 +705,19 @@ const styles = StyleSheet.create({
     fontWeight: 600,
     fontStyle: "normal",
     lineHeight: 20,
-    
   },
-   radioText: {
+  radioText: {
     fontSize: 14,
     fontStyle: "normal",
     color: colors.neutral["500"],
     lineHeight: 20,
-    fontWeight: "normal", 
+    fontWeight: "normal",
+    marginTop: 6,
   },
   checked: {
     borderWidth: 2,
-    borderColor: '#0891B2', 
-    backgroundColor: '#FFF',
+    borderColor: "#0891B2",
+    backgroundColor: "#FFF",
   },
   logo: {
     alignItems: "center",
@@ -715,8 +746,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  icon:{
-    marginRight:12,
+  icon: {
+    marginRight: 12,
     padding: 10,
     height: 40,
     width: 40,
@@ -729,9 +760,7 @@ const styles = StyleSheet.create({
   modalContainer: {
     flex: 1,
     justifyContent: "flex-end",
-    backgroundColor: "rgba(0, 0, 0, 0.5)",  
-          
-              
+    backgroundColor: "rgba(0, 0, 0, 0.5)",
   },
   modalContent: {
     width: "100%",
@@ -742,59 +771,60 @@ const styles = StyleSheet.create({
     padding: 16,
     alignItems: "center",
   },
-  modalTitle: { 
+  modalTitle: {
     fontSize: 18,
     fontWeight: 600,
-    lineHeight: 28 ,
+    lineHeight: 28,
     marginBottom: 20,
-    marginTop:16,
+    marginTop: 16,
   },
-  modalText: { 
-  fontSize: 14,
-  textAlign: "center",
-  marginBottom: 16
-},
-  buttonModalG:{
-    padding:16,
+  modalText: {
+    fontSize: 14,
+    textAlign: "center",
+    marginBottom: 16,
+  },
+  buttonModalG: {
+    padding: 16,
     justifyContent: "flex-end",
     alignItems: "flex-start",
     gap: 8,
-    alignSelf:"stretch",
+    alignSelf: "stretch",
     flexDirection: "row",
     marginTop: 16,
   },
-  button2:{
+  button2: {
     backgroundColor: colors.primary["600"],
     paddingVertical: 12,
     paddingHorizontal: 16,
     height: 48,
     borderRadius: 8,
     gap: 8,
-    flex: 1,     
+    flex: 1,
     flexShrink: 0,
     flexBasis: 0,
+    alignItems: "center",
+    justifyContent: "center",
   },
-  button3:{
+  button3: {
     backgroundColor: colors.neutral["100"],
     display: "flex",
     paddingVertical: 12,
     paddingHorizontal: 16,
     width: 139,
     borderRadius: 8,
+    alignItems: "center",
     justifyContent: "center",
-    
   },
   divider: {
-    height: 1, 
-    backgroundColor: colors.neutral["200"], 
-   marginBottom:24,
-   width: 400, 
+    height: 1,
+    backgroundColor: colors.neutral["200"],
+    marginBottom: 24,
+    width: 400,
   },
   divider2: {
-    height: 1, 
+    height: 1,
     backgroundColor: colors.neutral["200"],
     marginTop: 74,
-    width: 400, 
-    
-  }
+    width: 400,
+  },
 });

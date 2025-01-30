@@ -30,6 +30,9 @@ import { CustomInput } from "../../components/Input";
 
 import NotPass from "../components/ResetNotification";
 
+import BackIconcon from "../../../assets/icons/backIcon";
+import BackIconV3 from "../../../assets/icons/backIcon-v3";
+
 export default function NewPassword() {
   const [isPasswordVisible, setPasswordVisible] = useState(false);
   const route = useRoute();
@@ -108,10 +111,9 @@ export default function NewPassword() {
             imageStyle={{ left: 140 }}
           >
             <View style={styles.textHeader}>
-              <Image
-                source={require("../../../assets/logo-white.png")}
-                style={styles.image}
-              />
+              <TouchableOpacity onPress={() => navigation.goBack()}>
+                <BackIconV3 />
+              </TouchableOpacity>
               <Text style={styles.title}>Resetar senha</Text>
             </View>
           </ImageBackground>
@@ -134,6 +136,7 @@ export default function NewPassword() {
                     <TouchableOpacity style={Input.inputPassword}>
                       <CustomInput
                         errors={errors}
+                        name="password"
                         placeholder="Senha"
                         secureTextEntry={!isPasswordVisible}
                         onBlur={onBlur}
@@ -171,6 +174,7 @@ export default function NewPassword() {
                     <TouchableOpacity style={Input.inputPassword}>
                       <CustomInput
                         errors={errors}
+                        name="confirmPassword"
                         placeholder="Senha"
                         secureTextEntry={!isPasswordVisibleConfirmPassword}
                         onBlur={onBlur}
@@ -210,7 +214,7 @@ export default function NewPassword() {
                   onPress={handleSubmit(onSubmit)}
                   disabled={Object.keys(errors).length > 0 || !isFormValid()}
                 >
-                  Continuar
+                  Salvar Senha
                 </Button>
               </View>
               <View />
@@ -225,11 +229,9 @@ export default function NewPassword() {
                     marginTop: 16,
                   }}
                 >
-                  Não possui conta?
+                  Não possui conta?{" "}
                   <Text
-                    onPress={(event) => {
-                      navigation.navigate("Register");
-                    }}
+                    onPress={() => navigation.navigate("Register")}
                     style={{
                       color: colors.primary["600"],
                       fontSize: 14,

@@ -14,19 +14,46 @@ import Button from "../../components/Button";
 import { Input } from "../../components/Input/Input.style";
 import { colors } from "../../styles/colors";
 import { RootStackParamList } from "../HomeScreen";
+import { useModifyPasswordMutation } from "../../services/me";
+import { CustomInput } from "../../components/Input";
+import { useDialogNotification } from "../../hook/notification/hooks/actions";
 
 export default function ModifyPassword() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-
+  const [modifyPassword, { isLoading }] = useModifyPasswordMutation();
   const {
     control,
     handleSubmit,
+    watch,
     formState: { errors },
   } = useForm();
+  const { handleNotification } = useDialogNotification();
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const newPassword = watch("newPassword");
+
+  const onSubmit = async (data: any) => {
+    try {
+      await modifyPassword({
+        newPassword: data?.newPassword,
+        oldPassword: data?.oldPassword,
+      }).unwrap();
+      handleNotification({
+        isOpen: true,
+        variant: "success",
+        title: "Senha alterada!",
+        message: "Senha alterada com sucesso.",
+      });
+    } catch (error) {
+      handleNotification({
+        isOpen: true,
+        variant: "error",
+        title: "Falha no acesso",
+        message:
+          "Ocorreu um erro ao tentar alterar a senha, verifique os dados e tente novamente.",
+      });
+      console.log(error);
+    }
   };
 
   return (
@@ -39,37 +66,45 @@ export default function ModifyPassword() {
               control={control}
               rules={{ required: true }}
               render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={errors.qtdItems ? Input.styleError : Input.style}
-                  placeholder="Ex: 12"
+                <CustomInput
+                  errors={errors}
+                  placeholder="***********"
+                  variant="password"
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
                 />
               )}
-              name="qtdItems"
+              name="oldPassword"
             />
             {errors.name && (
-              <Text style={Input.errorText}>
-                Qauntidade de items é obrigatório.
-              </Text>
+              <Text style={Input.errorText}>Senha atual é obrigatório.</Text>
             )}
           </View>
           <View style={Input.inputView}>
             <Text style={Input.label}>Nova Senha</Text>
             <Controller
               control={control}
-              rules={{ required: true }}
+              rules={{
+                required: true,
+                pattern: {
+                  value:
+                    /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*?&])[A-Za-z\d@$!%*?&]{8,}$/,
+                  message:
+                    "A senha deve ter pelo menos 8 caracteres, incluindo uma letra maiúscula, uma letra minúscula, um número e um caractere especial.",
+                },
+              }}
               render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={errors.qtdItems ? Input.styleError : Input.style}
-                  placeholder="Ex: 12"
+                <CustomInput
+                  errors={errors}
+                  placeholder="***********"
+                  variant="password"
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
                 />
               )}
-              name="qtdItems"
+              name="newPassword"
             />
             {errors.name && (
               <Text style={Input.errorText}>
@@ -81,17 +116,22 @@ export default function ModifyPassword() {
             <Text style={Input.label}>Confirmar nova senha</Text>
             <Controller
               control={control}
-              rules={{ required: true }}
+              rules={{
+                required: true,
+                validate: (value) =>
+                  value === newPassword || "As senhas não coincidem.",
+              }}
               render={({ field: { onChange, onBlur, value } }) => (
-                <TextInput
-                  style={errors.qtdItems ? Input.styleError : Input.style}
-                  placeholder="Ex: 12"
+                <CustomInput
+                  errors={errors}
+                  placeholder="***********"
+                  variant="password"
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
                 />
               )}
-              name="qtdItems"
+              name="confirmNewPassword"
             />
             {errors.name && (
               <Text style={Input.errorText}>
@@ -103,7 +143,7 @@ export default function ModifyPassword() {
       </View>
       {/* Botão */}
       <View style={styles.footerButtom}>
-        <Button onPress={() => navigation.navigate("Home")}>
+        <Button onPress={handleSubmit(onSubmit)} isLoading={isLoading}>
           Alterar Senha
         </Button>
       </View>

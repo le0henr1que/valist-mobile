@@ -94,13 +94,15 @@ export default function Login() {
     handleSubmit,
     formState: { errors },
     setError,
+    watch,
   } = useForm();
 
-  // const [focusedField, setFocusedField] = useState<string | null>(null);
-
-  // const handleFocus = (fieldName: string) => {
-  //   setFocusedField(fieldName);
-  // };
+  const formValues = watch();
+  const isFormValid = () => {
+    return Object.values(formValues).every(
+      (value) => value !== undefined && value !== null && value !== ""
+    );
+  };
 
   const onSubmit = async (data: any) => {
     try {
@@ -157,6 +159,7 @@ export default function Login() {
                   rules={{ required: true }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <CustomInput
+                      name="email"
                       errors={errors}
                       placeholder="Digite seu email"
                       onChangeText={onChange}
@@ -183,6 +186,7 @@ export default function Login() {
                     <TouchableOpacity style={Input.inputPassword}>
                       <CustomInput
                         errors={errors}
+                        name="email"
                         placeholder="Digite sua senha"
                         secureTextEntry={!isPasswordVisible}
                         onChangeText={onChange}
@@ -229,6 +233,7 @@ export default function Login() {
                   size="large"
                   isLoading={isLoading}
                   onPress={handleSubmit(onSubmit)}
+                  disabled={Object.keys(errors).length > 0 || !isFormValid()}
                 >
                   Entrar
                 </Button>
