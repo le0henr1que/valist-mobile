@@ -63,5 +63,7 @@ export const CustomInput = ({
     ),
   };
 
-  return inputVariant[variant as Variant]() || inputVariant.normal();
+  return inputVariant[variant as any]
+    ? inputVariant[variant as any]()
+    : inputVariant.normal();
 };
