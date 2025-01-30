@@ -98,7 +98,7 @@ function ObjectiveScreen({
           style={[styles.radioItem, checked === "owner" && styles.checked]}
           onPress={() => setChecked("owner")}
         >
-          <View style={styles.radioGroup}>
+          <View style={styles.radioGroup1}>
             <View style={styles.icon}>
               <StoreIcon2 />
             </View>
@@ -115,7 +115,7 @@ function ObjectiveScreen({
           style={[styles.radioItem, checked === "member" && styles.checked]}
           onPress={() => setChecked("member")}
         >
-          <View style={styles.radioGroup}>
+          <View style={styles.radioGroup1}>
             <View style={styles.icon}>
               <PersonIcon2 />
             </View>
@@ -322,7 +322,10 @@ function NotificationsScreen({
         </View>
         <View style={styles.radioGroup}>
           <TouchableOpacity
-            style={[styles.radioItem, checked === "yes" && styles.checked]}
+            style={[
+              styles.radioItemNotification,
+              checked === "yes" && styles.checked,
+            ]}
             onPress={() => setChecked("yes")}
           >
             <Image source={require("../../../assets/bell.png")} />
@@ -348,7 +351,7 @@ function NotificationsScreen({
           </TouchableOpacity>
           <TouchableOpacity
             style={[
-              styles.radioItem,
+              styles.radioItemNotification,
               checked === "not" && styles.checked,
               { justifyContent: "center", alignItems: "center" },
             ]}
@@ -476,7 +479,7 @@ function ExpirationScreen({
                   fontWeight: 500,
                 }}
               >
-                {/*   {labelNotificationTimeEnum[option as string] as any} */}
+                {labelNotificationTimeEnum[option as string] as any}
               </Text>
             </TouchableOpacity>
           ))}
@@ -657,7 +660,7 @@ const styles = StyleSheet.create({
     color: colors.primary["600"],
   },
   radioItem: {
-    gap: 12,
+    gap: 8,
     alignSelf: "stretch",
     justifyContent: "space-between",
     borderWidth: 1,
@@ -669,6 +672,19 @@ const styles = StyleSheet.create({
     padding: 16,
     position: "relative",
   },
+  radioItemNotification: {
+    gap: 8,
+    alignSelf: "stretch",
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: colors.neutral["300"],
+    borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    padding: 16,
+    position: "relative",
+  },
+
   radioItemText: {
     flex: 1,
     flexWrap: "wrap",
@@ -677,7 +693,7 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     lineHeight: 20,
   },
-  radioGroup: {
+  radioGroup1: {
     display: "flex",
     flexDirection: "row",
     alignItems: "flex-start",
@@ -685,6 +701,12 @@ const styles = StyleSheet.create({
     flex: 1,
     flexBasis: 0,
     flexShrink: 0,
+  },
+  radioGroup: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: 16,
   },
   option: {
     flexDirection: "row",
