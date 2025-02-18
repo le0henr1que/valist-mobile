@@ -1,5 +1,6 @@
 import {
   Inter_400Regular,
+  Inter_500Medium,
   Inter_600SemiBold,
   Inter_700Bold,
   Inter_800ExtraBold,
@@ -18,9 +19,11 @@ import "./ignoreWarnings"; // Importe o arquivo ignoreWarnings.js
 import { AppRegistry } from "react-native";
 import { name as appName } from "./app.json";
 
+
 export default function App() {
   const [fontsLoaded] = useFonts({
     Inter_400Regular,
+    Inter_500Medium,
     Inter_600SemiBold,
     Inter_700Bold,
     Inter_800ExtraBold,
