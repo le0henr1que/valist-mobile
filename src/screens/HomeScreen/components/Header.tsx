@@ -9,6 +9,8 @@ import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import userMe from "../../../hook/user";
 import { useMeQuery } from "../../../services/me";
+import { Ionicons } from 'react-native-vector-icons';
+import { typography } from "../../../styles/typography";
 
 export default function Header() {
   const navigation =
@@ -24,6 +26,7 @@ export default function Header() {
             color: colors.neutral["900"],
             fontSize: 16,
             fontWeight: "600",
+            fontFamily: typography.fontFamily.semibold,
             lineHeight: 24,
           }}
         >
@@ -33,14 +36,14 @@ export default function Header() {
       <View
         style={{
           display: "flex",
-          alignItems: "center",
+          alignItems: "flex-start",
           flexDirection: "row",
           gap: 12,
         }}
       >
-        <InformationIcon size={40} />
+        <Ionicons name="help-circle-outline" size={24} color="#343330" style={styles.icon} />
         <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
-          <BellIcon size={40} color="black" />
+          <Ionicons name="notifications-outline" size={24} color="#343330" style={styles.icon} />
 
           {notificationCount > 0 && (
             <View style={styles.badge}>
@@ -61,9 +64,9 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     justifyContent: "space-between",
-    height: 80,
+    height: 96,
     padding: 20,
-    paddingTop: 40,
+    paddingTop: 55,
     width: "100%",
     borderBottomColor: colors.neutral["200"],
     borderBottomWidth: 1,
@@ -85,5 +88,14 @@ const styles = StyleSheet.create({
     color: "white",
     fontSize: 12,
     fontWeight: "bold",
+  },
+  icon:{
+    width:40,
+    height:40,
+    padding:8,
+    backgroundColor: colors.neutral["100"],
+    borderRadius: 22.5,
+    alignItems:"center",
+    display:"flex",
   },
 });
