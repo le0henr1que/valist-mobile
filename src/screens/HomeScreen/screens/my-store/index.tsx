@@ -27,182 +27,32 @@ import LinearGradient from "react-native-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../..";
+import { Ionicons } from 'react-native-vector-icons';
+import { FlatList } from 'react-native';
 
-const Avatar = ({ uri }) => (
-  <View style={styles.avatarContainer}>
-    <Image source={{ uri }} style={styles.avatar} />
-  </View>
-);
 
-const InfoCard = ({ title, value, Icon }) => (
-  <View style={styles.card}>
-    <Text style={styles.titleCard}>{title}</Text>
-    <View style={styles.cardContent}>
-      <Icon />
-      <Text style={styles.valueCard}>{value}</Text>
-    </View>
-  </View>
-);
-
-const StoreInformation = () => (
-  <View style={styles.information}>
-    <View style={styles.informationHeader}>
-      <View>
-        <Text style={styles.title1}>Você está em:</Text>
-        <Text style={styles.title2}>Clóvis mercadiho</Text>
-        <Text style={styles.title3}>Rua Pelicano, 13, Jardim Aliança</Text>
-      </View>
-      <Avatar uri="https://via.placeholder.com/150" />
-    </View>
-    <View style={styles.informationContent}>
-      <View style={styles.contentRow}>
-        <InfoCard title="Total de produtos" value="1.000" Icon={BoxIcon} />
-        <InfoCard title="Vencidos" value="1.000" Icon={CrashIcon} />
-      </View>
-      <View style={styles.contentRow}>
-        <InfoCard title="Próximos de vencer" value="1.000" Icon={DangerIcon} />
-        <InfoCard title="Membros da loja" value="1.000" Icon={PersonIcon} />
-      </View>
-    </View>
-  </View>
-);
-
-const options = [
-  {
-    title: "Editar dados",
-    description: "Atualize os dados da sua loja",
-    icon: <PencilIcon />,
-    isPro: true,
-    redirectTo: "EditStore",
-  },
-  {
-    title: "Gerenciar Lojas",
-    description: "Crie novas lojas e alterne entre elas",
-    icon: <StoreIcon />,
-    isPro: false,
-    redirectTo: "ManageStores",
-  },
-  {
-    title: "Gerenciar membros",
-    description: "Adicione membros as suas lojas",
-    icon: <PersonQIcon />,
-    isPro: false,
-    redirectTo: "ManageMembers",
-  },
-  {
-    title: "Gerenciar fornecedores",
-    description: "Adicione fornecedores em cada loja",
-    icon: <TruckIcon />,
-    isPro: false,
-    redirectTo: "ManageProviders",
-  },
-  {
-    title: "Exportar relatórios",
-    description: "Exporte relatórios detalhados da sua loja",
-    icon: <ReportIcon />,
-    isPro: true,
-    redirectTo: "ExportReport",
-  },
-  {
-    title: "Excluir loja",
-    description: "Apagar todos os dados dessa loja",
-    icon: <TrashQIcon />,
-    isPro: true,
-    redirectTo: "DeleteStore",
-  },
-];
-const StoreOptions = ({ options }: any) => {
-  const navigate = useNavigation();
-  return (
-    <TouchableOpacity
-      style={styles.cardOptions}
-      onPress={() => navigate.navigate(options.redirectTo)}
-    >
-      {options.icon}
-      <View>
-        <View style={styles.cardOptionsTitle}>
-          <Text style={styles.cardOptionsTextTitle}>{options?.title}</Text>
-          {options.isPro && (
-            <View style={styles.badgePro}>
-              <Text style={styles.badgeProTitle}>PRO</Text>
-            </View>
-          )}
-        </View>
-        <Text style={styles.cardOptionsTextDescription}>
-          {options?.description}
-        </Text>
-      </View>
-    </TouchableOpacity>
-  );
-};
-
-const MyStore = () => {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
-  const notificationCount = 1;
-  return (
-    <View style={styles.container}>
-      <ImageBackground
-        source={require("../../../../../assets/banner.png")}
-        style={styles.banner}
-        resizeMode="cover"
-      >
-        <SafeAreaView>
-          <View style={styles.header}>
-            <Image
-              source={require("../../../../../assets/logo-white.png")}
-              style={styles.logoWhite}
-            />
-            <View style={styles.iconsHeader}>
-              <InformationIcon size={40} />
-              <TouchableOpacity
-                onPress={() => navigation.navigate("Notification")}
-              >
-                <BellIcon size={40} color="black" />
-
-                {notificationCount > 0 && (
-                  <View style={styles.badge}>
-                    <Text style={styles.badgeText}>
-                      {notificationCount > 99 ? "99+" : notificationCount}
-                    </Text>
-                  </View>
-                )}
-              </TouchableOpacity>
-            </View>
-          </View>
-        </SafeAreaView>
-      </ImageBackground>
-      <View style={styles.containerInformations}>
-        <StoreInformation />
-      </View>
-      <View style={styles.containerOptions}>
-        <Text style={styles.titleOptions}>Serviços</Text>
-        <ScrollView showsVerticalScrollIndicator={false} style={{ flex: 1 }}>
-          {options.map((item) => {
-            return <StoreOptions key={item.title} options={item} />;
-          })}
-        </ScrollView>
-      </View>
-    </View>
-  );
-};
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: colors.neutral["50"]
   },
   badgePro: {
     display: "flex",
-    padding: 4,
+    height: 16,
+    paddingHorizontal: 4,
+    paddingVertical: 0,
     justifyContent: "center",
     alignItems: "center",
     backgroundColor: "#D9B600",
     borderRadius: 4,
+    top:3,
+    right: 3,
   },
   badge: {
     position: "absolute",
     right: 0,
-    top: -5,
+    top: 25,
     backgroundColor: "red",
     borderRadius: 10,
     height: 20,
@@ -222,6 +72,7 @@ const styles = StyleSheet.create({
     fontSize: 11,
     fontWeight: "700",
     lineHeight: 16,
+    letterSpacing:0,
   },
   banner: {
     width: "100%",
@@ -231,6 +82,8 @@ const styles = StyleSheet.create({
     display: "flex",
     flexDirection: "row",
     gap: 8,
+    fontSize:14,
+    fontWeight:500,
   },
   cardOptionsTextTitle: {
     color: colors.neutral["900"],
@@ -252,20 +105,19 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   header: {
-    flexDirection: "row",
-    justifyContent: "space-between",
-    alignItems: "center",
+    flexDirection: "row",    
     padding: 20,
     width: "100%",
+    justifyContent: "space-between", 
+    alignItems: "center",
   },
-  containerOptions: { paddingHorizontal: 20, flex: 1 },
+  containerOptions: { paddingHorizontal: 20, flex: 1},
   iconsHeader: {
     flexDirection: "row",
     gap: 12,
-  },
-  logoWhite: {
-    height: 40,
-    resizeMode: "contain",
+    alignItems: "center",
+    justifyContent: "flex-end", 
+    flex: 1,
   },
   containerInformations: {
     padding: 20,
@@ -281,7 +133,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.06,
     shadowRadius: 2,
     elevation: 1,
-    marginTop: -80,
+    marginTop: -100,
     height: 275,
     alignSelf: "stretch",
   },
@@ -336,10 +188,11 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     backgroundColor: "#FFF",
     shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
+    shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,
-    shadowRadius: 3,
+    shadowRadius: 4,
     elevation: 1,
+   
   },
   cardContent: {
     flexDirection: "row",
@@ -363,6 +216,8 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: "600",
     lineHeight: 16,
+    textAlignVertical: "center", 
+    includeFontPadding: false,
   },
   title2: {
     color: "#000",
@@ -376,6 +231,215 @@ const styles = StyleSheet.create({
     fontWeight: "500",
     lineHeight: 16,
   },
+  icon: {
+    padding: 4,
+    height: 32,
+    width: 32,
+    justifyContent: "center",
+    display: "flex",  
+    backgroundColor: colors.primary["50"],
+    borderRadius: 4,
+    flexShrink:0,
+  },
+  Ticon: {
+    padding: 4,
+    height: 32,
+    width: 32,
+    justifyContent: "center",
+    display: "flex",  
+    backgroundColor: colors.danger["50"],
+    borderRadius: 4,
+    flexShrink:0,
+  },
+    Hicon: {
+    marginTop: 36,
+    padding: 4,
+    height: 32,
+    width: 32,
+    justifyContent: "center",
+    flexShrink: 0,
+    display: "flex",
+    borderRadius: 22.5,
+    backgroundColor: colors.neutral["100"],
+    marginLeft: 'auto',  
+  },
 });
+
+
+
+const Avatar = ({ uri }) => (
+  <View style={styles.avatarContainer}>
+    <Image source={{ uri }} style={styles.avatar} />
+  </View>
+);
+
+type InfoCardTitle = "Total de produtos" | "Vencidos" | "Próximos de vencer" | "Membros da loja";
+
+const iconMap: Record<InfoCardTitle, JSX.Element> = {
+  "Total de produtos": <Ionicons name="cube" size={24} color={colors.primary[600]}/>,
+  "Vencidos": <Ionicons name="trash" size={24} color={colors.danger[600]}/>,
+  "Próximos de vencer": <Ionicons name="warning" size={24} color={colors.warning[600]}/>,
+  "Membros da loja": <Ionicons name="people" size={24} color="#118ACE"/>,
+};
+
+interface InfoCardProps {
+  title: InfoCardTitle;
+  value: string;
+}
+
+const InfoCard: React.FC<InfoCardProps> = ({ title, value,}) => {
+  const icon = iconMap[title];
+
+
+ return(
+  <View style={styles.card}>
+    <Text style={styles.titleCard}>{title}</Text>
+    <View style={styles.cardContent}>
+      {icon}
+      <Text style={styles.valueCard}>{value}</Text>
+    </View>
+  </View>
+)};
+
+const StoreInformation = () => (
+  <View style={styles.information}>
+    <View style={styles.informationHeader}>
+      <View>
+        <Text style={styles.title1}>Você está em:</Text>
+        <Text style={styles.title2}>Clóvis mercadinho</Text>
+        <Text style={styles.title3}>Rua Pelicano, 13, Jardim Aliança</Text>
+      </View>
+      <Avatar uri="https://via.placeholder.com/150" />
+    </View>
+    <View style={styles.informationContent}>
+      <View style={styles.contentRow}>
+        <InfoCard title="Total de produtos" value="1.000" />
+        <InfoCard title="Vencidos" value="1.000"  />
+      </View>
+      <View style={styles.contentRow}>
+        <InfoCard title="Próximos de vencer" value="1.000" />
+        <InfoCard title="Membros da loja" value="1.000" />
+      </View>
+    </View>
+  </View>
+);
+
+const options = [
+  {
+    title: "Editar dados",
+    description: "Atualize os dados da sua loja",
+    icon: <PencilIcon />,
+    isPro: false,
+    redirectTo: "EditStore",
+  },
+  {
+    title: "Gerenciar Lojas",
+    description: "Crie novas lojas e alterne entre elas",
+    icon: <Ionicons name="storefront" size={24} color={colors.primary[600]} style={styles.icon} />,
+    isPro: true,
+    redirectTo: "ManageStores",
+  },
+  {
+    title: "Gerenciar membros",
+    description: "Adicione membros as suas lojas",
+    icon:  <Ionicons name="people" size={24} color={colors.primary[600]} style={styles.icon}/>,
+    isPro: true,
+    redirectTo: "ManageMembers",
+  },
+  {
+    title: "Gerenciar fornecedores",
+    description: "Adicione fornecedores em cada loja",
+    icon: <TruckIcon />,
+    isPro: true,
+    redirectTo: "ManageProviders",
+  },
+  {
+    title: "Exportar relatórios",
+    description: "Exporte relatórios detalhados da sua loja",
+    icon: <Ionicons name="documents" size={24} color={colors.primary[600]} style={styles.icon}/>,
+    isPro: true,
+    redirectTo: "ExportReport",
+  },
+  {
+    title: "Excluir loja",
+    description: "Apagar todos os dados dessa loja",
+    icon:<Ionicons name="trash" size={24} color={colors.danger[600]} style={styles.Ticon}/>,
+    isPro: false,
+    redirectTo: "DeleteStore",
+  },
+];
+const StoreOptions = ({ options }: any) => {
+  const navigate = useNavigation();
+  return (
+    <TouchableOpacity
+      style={styles.cardOptions}
+      onPress={() => navigate.navigate(options.redirectTo)}
+    >
+      {options.icon}
+      <View>
+        <View style={styles.cardOptionsTitle}>
+          <Text style={styles.cardOptionsTextTitle}>{options?.title}</Text>
+          {options.isPro && (
+            <View style={styles.badgePro}>
+              <Text style={styles.badgeProTitle}>PRO</Text>
+            </View>
+          )}
+        </View>
+        <Text style={styles.cardOptionsTextDescription}>
+          {options?.description}
+        </Text>
+      </View>
+    </TouchableOpacity>
+  );
+};
+
+const MyStore = () => {
+  const navigation =
+    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const notificationCount = 1;
+  return (
+    <View style={styles.container}>
+      <ImageBackground
+        source={require("../../../../../assets/banner.png")}
+        style={styles.banner}
+        resizeMode="cover"
+      >
+        <SafeAreaView>
+          <View style={styles.header}>
+            <View style={styles.iconsHeader}>
+            <Ionicons name="help-circle-outline" size={24} color={colors.neutral[900]} style={styles.Hicon} />
+              <TouchableOpacity
+                onPress={() => navigation.navigate("Notification")}
+              >
+                <Ionicons name="notifications-outline" size={24} color={colors.neutral[900]} style={styles.Hicon} />
+
+                {notificationCount > 0 && (
+                  <View style={styles.badge}>
+                    <Text style={styles.badgeText}>
+                      {notificationCount > 99 ? "99+" : notificationCount}
+                    </Text>
+                  </View>
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </SafeAreaView>
+      </ImageBackground>
+      <View style={styles.containerInformations}>
+        <StoreInformation />
+      </View>
+      <View style={styles.containerOptions}>
+        <Text style={styles.titleOptions}>Serviços</Text>
+        <FlatList
+        data={options}
+         renderItem={({ item }) => <StoreOptions key={item.title} options={item} />}
+        keyExtractor={(item) => item.title}
+        showsVerticalScrollIndicator={false}
+        />
+      </View>
+    </View>
+  );
+};
+
 
 export default MyStore;
