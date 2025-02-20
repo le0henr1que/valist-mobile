@@ -9,7 +9,8 @@ import { useDialogModal } from "../../hook/handle-modal/hooks/actions";
 import { colors } from "../../styles/colors";
 import { RootStackParamList } from "../HomeScreen";
 import CardAction from "./CardProductAction";
-import { Ionicons } from 'react-native-vector-icons';
+import Ionicons  from 'react-native-vector-icons/Ionicons';
+import { typography } from "../../styles/typography";
 
 const ProductCard = ({ product }: any) => {
   const { handleModal } = useDialogModal();
@@ -40,7 +41,7 @@ const ProductCard = ({ product }: any) => {
                 alignItems: "center",
               }}
             >
-              <Ionicons name="trash" size={16} color={colors.white} marginLeft={8} />,
+              <Ionicons name="trash" size={16} color={colors.white} style={{ marginLeft: 8 }} />,
               <Text style={styles.expiredText}>
                 VENCIDO HÁ {product.expiredDays || 0} DIAS
               </Text>
@@ -116,6 +117,12 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
     borderWidth: 1,
     width: 344,
+    shadowColor: "#000", 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.6, 
+    shadowRadius:3, 
+    elevation: 2, 
+
     
   },
   header: {
@@ -130,8 +137,8 @@ const styles = StyleSheet.create({
   },
   expiredText: {
     color: "#fff",
-    fontWeight: 600,
     fontSize: 14,
+    fontFamily: typography.fontFamily.semibold,
   },
   body: {
     flexDirection: "row",
@@ -156,13 +163,14 @@ const styles = StyleSheet.create({
     fontSize: 14,
     width: "85%",
     lineHeight: 20,
-    flex: 1, // Configura o flex-grow
-    flexShrink: 0, // Configura o flex-shrink
+    fontFamily: typography.fontFamily.semibold,
+    flex: 1,
+    flexShrink: 0,
     flexBasis: 0,
   },
   price: {
     color: colors.primary["600"],
-    fontWeight: "bold",
+    fontFamily: typography.fontFamily.semibold,
     lineHeight: 20,
     marginVertical: 5,
     width: "30%",
@@ -172,10 +180,14 @@ const styles = StyleSheet.create({
   text: {
     fontSize: 12,
     color: colors.neutral["600"],
+    fontFamily: typography.fontFamily.medium,
+    lineHeight: 16,
   },
   text2:{
-    color: colors.neutral["900"],
-     fontWeight: 600 
+    color: colors.neutral["950"],
+    fontFamily: typography.fontFamily.semibold,
+    fontSize: 12,
+    lineHeight: 16,
   },
   footer: {
     flexDirection: "row",
@@ -185,12 +197,12 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
   },
   quantity: {
-    fontWeight: "bold",
+    fontFamily: typography.fontFamily.semibold,
     color: colors.primary["600"],
   },
   category: {
     fontSize: 12,
-    fontWeight: 600,
+    fontFamily: typography.fontFamily.semibold,
     backgroundColor: colors.neutral["100"],
     paddingVertical: 2,
     paddingHorizontal: 12,
