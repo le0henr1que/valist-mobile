@@ -178,6 +178,7 @@ export default function Login() {
                   </Text>
                 )}
               </View>
+
               <View style={Input.inputView}>
                 <Text style={Input.label}>Senha</Text>
                 <Controller
@@ -228,7 +229,12 @@ export default function Login() {
                   </Button>
                 </View>
               </View>
-              <View style={{ width: "100%", marginTop: 22 }}>
+              <View
+                style={{
+                  width: "100%",
+                  marginTop: 22,
+                }}
+              >
                 <Button
                   type="fill"
                   size="large"
@@ -255,6 +261,7 @@ export default function Login() {
                     color: colors.neutral["500"],
                     fontSize: 12,
                     fontWeight: "normal",
+                    fontFamily: typography.fontFamily.regular,
                     lineHeight: 16,
                     marginHorizontal: 10,
                   }}
@@ -295,6 +302,7 @@ export default function Login() {
                   style={{
                     color: colors.neutral["500"],
                     fontSize: 14,
+
                     fontFamily: typography.fontFamily.regular,
                     lineHeight: 20,
                     textAlign: "center",
@@ -307,6 +315,7 @@ export default function Login() {
                     style={{
                       color: colors.primary["600"],
                       fontSize: 14,
+
                       fontFamily: typography.fontFamily.bold,
                       lineHeight: 20,
                       textAlign: "center",

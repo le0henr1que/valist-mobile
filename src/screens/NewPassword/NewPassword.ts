@@ -39,6 +39,7 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     resizeMode: "stretch",
+    height: 188,
   },
   modalBackground: {
     flex: 1,
@@ -82,9 +83,9 @@ export const styles = StyleSheet.create({
     alignItems: "center",
   },
   textHeader: {
-    flex: 1,
+    flex: 0,
     width: "100%",
-    gap: 24,
+    gap: 28,
     justifyContent: "center",
     alignItems: "flex-start",
     textAlign: "left",

@@ -24,6 +24,8 @@ export default function RegisterCode() {
   const [timer, setTimer] = useState(62);
   const inputs = useRef<(TextInput | null)[]>([]);
 
+  const [focusIndex, setFocusIndex] = useState<number | null>(null);
+
   const handleInputChange = async (text: any, index: any) => {
     const newCode = [...code];
     newCode[index] = text.slice(-1);
@@ -95,11 +97,15 @@ export default function RegisterCode() {
             <TextInput
               key={index}
               ref={(ref) => (inputs.current[index] = ref)}
-              style={styles.input}
+              style={[
+                focusIndex === index ? styles.focusedStyle : styles.input,
+              ]}
               keyboardType="number-pad"
               textContentType="oneTimeCode"
               maxLength={1}
               value={digit}
+              onFocus={() => setFocusIndex(index)}
+              onBlur={() => setFocusIndex(null)}
               onChangeText={(text) => handleInputChange(text, index)}
               onKeyPress={({ nativeEvent }) => {
                 if (nativeEvent.key === "Backspace") {
@@ -196,5 +202,15 @@ const styles = StyleSheet.create({
     fontWeight: "normal",
     lineHeight: 24,
     color: colors.neutral["500"],
+  },
+  focusedStyle: {
+    width: 48,
+    height: 48,
+    borderWidth: 1,
+    borderColor: colors.primary["600"],
+    borderRadius: 8,
+    textAlign: "center",
+    fontSize: 18,
+    backgroundColor: "#fff",
   },
 });

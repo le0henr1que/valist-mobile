@@ -38,13 +38,13 @@ export const styles = StyleSheet.create({
     width: "100%",
     justifyContent: "center",
     alignItems: "center",
-
+    height: 188,
     // resizeMode: "stretch",
   },
   textHeader: {
     flex: 1,
     width: "100%",
-    gap: 24,
+    gap: 28,
     justifyContent: "center",
     alignItems: "flex-start",
     textAlign: "left",
@@ -58,7 +58,8 @@ export const styles = StyleSheet.create({
     width: "70%",
     fontSize: 32,
     fontStyle: "normal",
-    fontWeight: typography.weight.bold as any,
+    /*  fontWeight: typography.weight.bold as any, */
+    fontFamily: typography.fontFamily.bold as any,
     lineHeight: 41.6,
   },
   body: {

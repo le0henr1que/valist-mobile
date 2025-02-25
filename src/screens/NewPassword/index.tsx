@@ -101,7 +101,7 @@ export default function NewPassword() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
     >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 0 }}>
         <View style={styles.container}>
           <ImageBackground
             source={require("../../../assets/background.png")}
@@ -117,6 +117,7 @@ export default function NewPassword() {
               <Text style={styles.title}>Resetar senha</Text>
             </View>
           </ImageBackground>
+
           <View style={styles.body}>
             <View style={styles.bodyContent}>
               <View style={Input.inputView}>
