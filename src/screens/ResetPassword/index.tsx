@@ -24,6 +24,7 @@ import { useDialogNotification } from "../../hook/notification/hooks/actions";
 import { CustomInput } from "../../components/Input";
 
 import BackIconV3 from "../../../assets/icons/backIcon-v3";
+import { typography } from "../../styles/typography";
 
 export default function ResetPassword() {
   const navigation =
@@ -74,7 +75,7 @@ export default function ResetPassword() {
       behavior={Platform.OS === "ios" ? "padding" : "height"}
       style={{ flex: 1 }}
     >
-      <ScrollView contentContainerStyle={{ flexGrow: 1 }}>
+      <ScrollView contentContainerStyle={{ flexGrow: 0 }}>
         <View style={styles.container}>
           <ImageBackground
             source={require("../../../assets/background.png")}
@@ -132,7 +133,8 @@ export default function ResetPassword() {
                   style={{
                     color: colors.neutral["500"],
                     fontSize: 14,
-                    fontWeight: "normal",
+                    /* fontWeight: "normal", */
+                    fontFamily: typography.fontFamily.regular,
                     lineHeight: 20,
                     textAlign: "center",
                     marginTop: 24,
@@ -144,7 +146,8 @@ export default function ResetPassword() {
                     style={{
                       color: colors.primary["600"],
                       fontSize: 14,
-                      fontWeight: "bold",
+                      /* fontWeight: "bold", */
+                      fontFamily: typography.fontFamily.bold,
                       lineHeight: 20,
                       textAlign: "center",
                       marginTop: 24,
