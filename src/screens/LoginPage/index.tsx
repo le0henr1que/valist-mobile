@@ -302,11 +302,11 @@ export default function Login() {
                   style={{
                     color: colors.neutral["500"],
                     fontSize: 14,
-                    /*   fontWeight: "normal", */
+
                     fontFamily: typography.fontFamily.regular,
                     lineHeight: 20,
                     textAlign: "center",
-                    marginTop: 24,
+                    marginBottom:93,
                   }}
                 >
                   Não possui conta?{" "}
@@ -315,7 +315,7 @@ export default function Login() {
                     style={{
                       color: colors.primary["600"],
                       fontSize: 14,
-                      /* fontWeight: "bold", */
+
                       fontFamily: typography.fontFamily.bold,
                       lineHeight: 20,
                       textAlign: "center",

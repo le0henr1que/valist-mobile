@@ -1,24 +1,72 @@
 import React, { useState } from "react";
 import { TextInput, StyleSheet } from "react-native";
 import { Input } from "./Input.style";
+import { TouchableOpacity } from "react-native";
+import { Ionicons } from "@expo/vector-icons";
 
-export const CustomInput = ({ errors, name, ...props }: any) => {
+type Variant = "normal" | "password";
+interface CustomInputProps {
+  variant?: Variant;
+  errors?: any;
+  placeholder?: string;
+  onChangeText?: (text: string) => void;
+  value?: string;
+  onBlur?: () => void;
+  name: string;
+}
+
+export const CustomInput = ({
+  variant,
+  errors,
+  ...props
+}: CustomInputProps) => {
   const [isFocused, setIsFocused] = useState(false);
+  const [isPasswordVisible, setPasswordVisible] = useState(false);
 
-  const hasError = errors && errors[name];
+  const hasError = errors && errors[props?.name];
 
-  return (
-    <TextInput
-      style={[
-        isFocused
-          ? { ...Input.focusedStyle }
-          : hasError
-          ? Input.styleError
-          : Input.style,
-      ]}
-      {...props}
-      onFocus={() => setIsFocused(true)}
-      onBlur={() => setIsFocused(false)}
-    />
-  );
+  const inputVariant: any = {
+    normal: () => (
+      <TextInput
+        style={[
+          isFocused
+            ? { ...Input.focusedStyle }
+            : hasError
+            ? Input.styleError
+            : Input.style,
+        ]}
+        {...props}
+        onFocus={() => setIsFocused(true)}
+        onBlur={() => setIsFocused(false)}
+      />
+    ),
+    password: () => (
+      <TouchableOpacity style={Input.inputPassword}>
+        <TextInput
+          secureTextEntry={!isPasswordVisible}
+          style={[
+            isFocused
+              ? { ...Input.focusedStyle }
+              : hasError
+              ? Input.styleError
+              : Input.style,
+          ]}
+          {...props}
+          onFocus={() => setIsFocused(true)}
+          onBlur={() => setIsFocused(false)}
+        />
+        <Ionicons
+          onPress={() => setPasswordVisible(!isPasswordVisible)}
+          name={isPasswordVisible ? "eye" : "eye-off"}
+          size={20}
+          style={Input.iconEye}
+          color="gray"
+        />
+      </TouchableOpacity>
+    ),
+  };
+
+  return inputVariant[variant as any]
+    ? inputVariant[variant as any]()
+    : inputVariant.normal();
 };

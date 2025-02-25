@@ -31,10 +31,15 @@ import {
 import Svg, { Path, Rect } from "react-native-svg";
 import { MaterialIcons } from "@expo/vector-icons";
 import CustomIcon from "../../../assets/icons/logo2";
+import LoadingIcon1 from "../../../assets/icons/loading";
 import StoreIcon2 from "../../../assets/icons/store-icon2";
 import PersonIcon2 from "../../../assets/icons/person-icon2";
 import { CustomInput } from "../../components/Input";
+
 import { typography } from "../../styles/typography";
+
+import LogoIcon from "../../../assets/icons/logo";
+
 
 const Stack = createNativeStackNavigator();
 
@@ -90,8 +95,8 @@ function ObjectiveScreen({
             Antes de começarmos, qual seu objetivo com o aplicativo.
           </Text>
           <Text style={styles.subtitle}>
-            Selecione se você é o dono da sua própria loja, promotor de
-            merchandising se foi convidado para acessar uma loja existente.
+              Selecione se você é o dono da sua própria loja, promotor de
+              merchandising se foi convidado para acessar uma loja existente.
           </Text>
         </View>
 
@@ -556,19 +561,14 @@ function LoadingScreen({ navigation, route }: { navigation: any; route: any }) {
       }}
     >
       <View>
-        <Image source={require("../../../assets/logo-primary.png")} />
+      <CustomIcon />
       </View>
-      <View>
-        <LottieView
-          source={animation}
-          autoPlay
-          loop
-          style={{ width: 200, height: 200 }}
-        />
+       <View>
+       <LoadingIcon1/>
       </View>
       <View>
         <Text style={styles.loadingText}>
-          Tudo pronto! Estamos configurando sua conta...
+          Tudo pronto! {"\n"}Estamos configurando sua conta...
         </Text>
       </View>
     </View>

@@ -8,6 +8,7 @@ import { colors } from "../../styles/colors";
 import DotsVertical from "../../../assets/icons/dots-vertical";
 import TrashIcon from "../../../assets/icons/trash";
 import CardBatchAction from "./CardBatchAction";
+import { typography } from "../../styles/typography";
 
 const BatchCard = ({ batch }: any) => {
   const { handleModal } = useDialogModal();
@@ -146,6 +147,7 @@ const styles = StyleSheet.create({
   },
   text: {
     fontSize: 14,
+    fontFamily: typography.fontFamily.semibold,
     color: colors.neutral["600"],
   },
   footer: {

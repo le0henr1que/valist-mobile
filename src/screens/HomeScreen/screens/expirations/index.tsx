@@ -25,11 +25,12 @@ import FilterModalize from "../../../components/FilterModalize";
 import ProductCard from "../../../components/ProductCard";
 import SearchInput from "../../../components/SearchInput";
 import Header from "../../components/Header";
+import { typography } from "../../../../styles/typography";
 
 export const productList = [
   {
     name: "Desod Rexona invisible Men 150ml",
-    price: 20.0,
+    price: 200.0,
     code: "1234567890",
     expiryDate: "12/12/2023",
     image: "https://via.placeholder.com/60",
@@ -99,6 +100,10 @@ export const productList = [
   },
 ];
 
+interface Filters {
+  [key: string]: string[];
+}
+
 function Expirations() {
   const { control, handleSubmit } = useForm();
 
@@ -129,51 +134,47 @@ function Expirations() {
   };
 
   const [selectedFilter, setSelectedFilter] = useState("Todos");
+  const [selectedFilterItem, setSelectedFilterItem] = useState("Todos");
   const modalizeRefs = useRef<{ [key: string]: Modalize | null }>({});
   // const { isOpen, element, title } = useDialogModalState();
   const { handleModal } = useDialogModal();
 
-  const filters = [
-    "Todos",
-    "Categorias",
-    "Quantidade",
-    "Preço",
-    "Marca",
-    "Cor",
-  ];
+  const filters: { [key: string]: string[] }  = {
+    Todos: [],
+    Categorias: ["Todas as categorias",
+    "Mercearia",
+    "Padaria",
+    "Carnes",
+    "Frutas e Legumes",
+    "Frios e Laticínios",
+    "Higiene",
+    "Congelados",
+    "Material de Limpeza",
+    "Bebidas",
+    "Outros",],
+    Quantidade: ["Todas", "Com Lotes", "Unitário"],
+    Preço: ["Até R$10", "R$10 - R$50", "Acima de R$50"],
+    Marca: ["Marca A", "Marca B", "Marca C"],
+    Vencimento: ["Todas", "Vencidos", "Próximos ao vencimento", "Em dia"],
+  };
+  
 
   const handleFilterPress = (filter: string) => {
     setSelectedFilter(filter);
+    const selectedItems = filters[filter] || [];
+
     handleModal({
       isOpen: true,
       element: (
         <FilterModalize
-          filter={[
-            "item 1d",
-            "item 2",
-            "item 3",
-            "item 4",
-            "item 5",
-            "item 6",
-            "item 7",
-            "item 8",
-            "item 9",
-            "item 10",
-            "item 11",
-            "item 12",
-            "item 13",
-            "item 14",
-            "item 15",
-            "item 16",
-            "item 17",
-            "item 18",
-            "item 19",
-            "item 20",
-            "item 21",
-          ]}
+        filter={selectedItems} 
+        onSelectFilter={(item) => {
+          setSelectedFilterItem(item); 
+          console.log("Item selecionado:", item);
+          }}
         />
       ),
-      title: selectedFilter,
+      title: filter,
     });
   };
   return (
@@ -190,7 +191,7 @@ function Expirations() {
           <View style={{ height: 32, marginTop: 20 }}>
             <FilterCarousel
               onFilterPress={handleFilterPress}
-              filters={filters}
+              filters={Object.keys(filters)} 
               selectedFilter={selectedFilter}
             />
           </View>
@@ -234,8 +235,8 @@ function Expirations() {
           style={styles.floatingButton}
           onPress={handleFloatingButtonPress}
         >
-          <Ionicons name="add" size={24} color="white" />
-          <Text style={styles.floatingButtonText}>Adicionar produtos</Text>
+          <Ionicons name="add" size={16} color="white" />
+          <Text style={styles.floatingButtonText}> Adicionar produtos</Text>
         </TouchableOpacity>
       </View>
     </SafeAreaView>
@@ -262,6 +263,7 @@ export const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "center",
     alignItems: "center",
+    fontFamily: typography.fontFamily.medium,
     gap: 8,
     borderRadius: 4,
     borderWidth: 1,
@@ -281,13 +283,13 @@ export const styles = StyleSheet.create({
     color: "#000",
     fontSize: 14,
     fontStyle: "normal",
-    fontWeight: "semibold",
+    fontFamily: typography.fontFamily.medium,
     lineHeight: 20,
   },
   floatingButton: {
     display: "flex",
     flexDirection: "row",
-    gap: 4,
+    gap: 6,
     position: "absolute",
     bottom: 20,
     right: 15,
@@ -306,9 +308,9 @@ export const styles = StyleSheet.create({
   floatingButtonText: {
     color: "#FFF",
     textAlign: "center",
-    fontSize: 12,
+    fontSize: 13,
     fontStyle: "normal",
-    fontWeight: "600",
+    fontFamily: typography.fontFamily.semibold,
     lineHeight: 20,
   },
 });
