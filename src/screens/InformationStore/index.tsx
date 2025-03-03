@@ -34,6 +34,7 @@ import CustomIcon from "../../../assets/icons/logo2";
 import StoreIcon2 from "../../../assets/icons/store-icon2";
 import PersonIcon2 from "../../../assets/icons/person-icon2";
 import { CustomInput } from "../../components/Input";
+import { typography } from "../../styles/typography";
 
 const Stack = createNativeStackNavigator();
 
@@ -205,7 +206,6 @@ function EstablishmentScreen({
   const [isFocused, setIsFocused] = useState(false);
   const [checked, setChecked] = useState("");
   const storeName = watch("storeName");
-  console.log("AQUI EU TENHO", route);
   const onSubmit = (data: any) => {
     navigation.navigate("Notifications", { ...data, ...route });
   };
@@ -476,7 +476,11 @@ function ExpirationScreen({
                   fontWeight: 500,
                 }}
               >
-                {/*   {labelNotificationTimeEnum[option as string] as any} */}
+                {
+                  labelNotificationTimeEnum[
+                    option as keyof typeof labelNotificationTimeEnum
+                  ]
+                }
               </Text>
             </TouchableOpacity>
           ))}
@@ -614,7 +618,7 @@ const styles = StyleSheet.create({
   title: {
     fontSize: 20,
     marginTop: 32,
-    fontWeight: "800",
+    fontFamily: typography.fontFamily.extrabold,
     color: colors.neutral["900"],
     lineHeight: 28,
     marginBottom: 16,
@@ -672,6 +676,7 @@ const styles = StyleSheet.create({
   radioItemText: {
     flex: 1,
     flexWrap: "wrap",
+    // fontFamily: "Inter_400Regular",
     color: colors.neutral["900"],
     fontSize: 14,
     fontWeight: "normal",
