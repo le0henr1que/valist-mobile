@@ -1,4 +1,4 @@
-import React, { useState, useCallback, useEffect } from "react";
+import React, { useState, useCallback, useEffect, useRef } from "react";
 import { Ionicons } from "@expo/vector-icons";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
@@ -11,7 +11,8 @@ import {
   Text,
   TouchableOpacity,
   View,
-  RefreshControl,
+  ActivityIndicator,
+  PanResponder,
 } from "react-native";
 import { RootStackParamList } from "../..";
 import BellIcon from "../../../../../assets/icons/bell";
@@ -20,9 +21,11 @@ import { colors } from "../../../../styles/colors";
 import Button from "../../../../components/Button";
 import { useAuth } from "../../../../auth";
 import { roles } from "../../../../enum/role";
-import { useMeQuery, userInformations } from "../../../../services/me";
-import { Tags } from "../../../../utils/Tags";
+import { useMeQuery } from "../../../../services/me";
 import { useDispatch } from "react-redux";
+import { API_URL } from "@env";
+import { Plan } from "../../../../enum/plan";
+import { PremiumInformation } from "./components/PremiumInformation";
 
 function Profile() {
   const navigation =
@@ -32,22 +35,51 @@ function Profile() {
   const { signOut, isLoading } = useAuth();
   const [avatar, setAvatar] = useState<string | null>(null);
   const { data: user, refetch, isFetching } = useMeQuery();
+  const { name } = user?.subscription?.plan;
+
   const [refreshing, setRefreshing] = useState(false);
   const dispatch = useDispatch();
+
+  // PanResponder para detectar o gesto de puxar
+  const panResponder = useRef(
+    PanResponder.create({
+      onStartShouldSetPanResponder: () => true,
+      onPanResponderMove: (_, gestureState) => {
+        if (gestureState.dy > 0) {
+          // Só permite puxar para baixo
+        }
+      },
+      onPanResponderRelease: (_, gestureState) => {
+        if (gestureState.dy > 100) {
+          // Se o usuário puxar mais de 100 pixels, inicia o refresh
+          setRefreshing(true);
+          refetch().finally(() => {
+            setRefreshing(false);
+          });
+        }
+      },
+    })
+  ).current;
 
   const onRefresh = useCallback(() => {
     setRefreshing(true);
     setAvatar(user?.avatar);
     refetch().finally(() => setRefreshing(false));
-  }, [refetch]);
+  }, [refetch, user?.avatar]);
 
   useEffect(() => {
     if (user) {
-      setAvatar(user.avatar);
+      setAvatar(user.avatar ? `${API_URL}${user.avatar}` : null);
     }
   }, [user]);
+
   return (
-    <View style={styles.container}>
+    <View style={styles.container} {...panResponder.panHandlers}>
+      {refreshing && (
+        <View style={styles.loading}>
+          <ActivityIndicator size="large" color={"white"} />
+        </View>
+      )}
       <ImageBackground
         source={require("../../../../../assets/background.png")}
         style={styles.banner}
@@ -107,19 +139,19 @@ function Profile() {
                   alignSelf: "center",
                   padding: 4,
                   borderRadius: 4,
-                  backgroundColor: "white",
+                  backgroundColor: name === Plan.FREE ? "white" : "#E8CC3C",
                 }}
               >
                 <Text
                   style={{
-                    color: colors.primary["600"],
+                    color: name === Plan.FREE ? colors.primary["600"] : "white",
                     fontSize: 12,
                     fontWeight: "700",
                     lineHeight: 16,
                     textAlign: "center",
                   }}
                 >
-                  FREE
+                  {name}
                 </Text>
               </View>
             </View>
@@ -149,35 +181,22 @@ function Profile() {
             </View>
           </View>
           <View style={{ width: "100%", padding: 20 }}>
-            <View style={styles.premium}>
-              <Text
-                style={{
-                  color: colors.neutral["900"],
-                  fontSize: 14,
-                  fontWeight: "700",
-                  lineHeight: 20,
-                  textAlign: "left",
-                }}
-              >
-                Seja Premiume
-              </Text>
-              <Text
-                style={{
-                  color: colors.neutral["900"],
-                  fontSize: 12,
-                  fontWeight: "500",
-                  lineHeight: 20,
-                  textAlign: "left",
-                }}
-              >
-                Desbloqueie diversas funcionalidades para o seu app com nosso
-                plano pago.
-              </Text>
-            </View>
+            {name === Plan.FREE && <PremiumInformation />}
           </View>
         </SafeAreaView>
       </ImageBackground>
-      <View style={styles.containerOptions}>
+
+      {/* Conteúdo da Tela */}
+      <ScrollView
+        style={{
+          flex: 1.1,
+          backgroundColor: "#fff",
+          borderRadius: 24,
+          width: "100%",
+          marginTop: name === Plan.FREE ? -20 : -180,
+          padding: 20,
+        }}
+      >
         <Text
           style={{
             color: colors.neutral["500"],
@@ -190,354 +209,340 @@ function Profile() {
         >
           Configurações da conta
         </Text>
-        <ScrollView
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-          }
+        <TouchableOpacity
+          onPress={() => navigation.navigate("PersonInformation")}
+          style={{
+            paddingVertical: 16,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
         >
-          <TouchableOpacity
-            onPress={() => navigation.navigate("PersonInformation")}
-            style={{
-              paddingVertical: 16,
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
-              <Ionicons
-                name="person-circle-outline"
-                size={24}
-                color={colors.neutral["900"]}
-              />
-              <Text
-                style={{
-                  color: colors.neutral["900"],
-                  fontSize: 16,
-                  fontWeight: "500",
-                  lineHeight: 24,
-                  textAlign: "left",
-                }}
-              >
-                Informações Pessoais
-              </Text>
-            </View>
+          <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
             <Ionicons
-              name="chevron-forward"
+              name="person-circle-outline"
               size={24}
-              color={colors.neutral["500"]}
+              color={colors.neutral["900"]}
             />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 16,
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-            onPress={() => navigation.navigate("ModifyPassword")}
-          >
-            <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
-              <Ionicons
-                name="lock-closed-outline"
-                size={24}
-                color={colors.neutral["900"]}
-              />
-              <Text
-                style={{
-                  color: colors.neutral["900"],
-                  fontSize: 16,
-                  fontWeight: "500",
-                  lineHeight: 24,
-                  textAlign: "left",
-                }}
-              >
-                Alterar Senha
-              </Text>
-            </View>
-            <Ionicons
-              name="chevron-forward"
-              size={24}
-              color={colors.neutral["500"]}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 16,
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-            onPress={() => navigation.navigate("PlansManager")}
-          >
-            <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
-              <Ionicons
-                name="medal-outline"
-                size={24}
-                color={colors.neutral["900"]}
-              />
-              <Text
-                style={{
-                  color: colors.neutral["900"],
-                  fontSize: 16,
-                  fontWeight: "500",
-                  lineHeight: 24,
-                  textAlign: "left",
-                }}
-              >
-                Minhas assinaturas
-              </Text>
-            </View>
-            <Ionicons
-              name="chevron-forward"
-              size={24}
-              color={colors.neutral["500"]}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 16,
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-            onPress={() => navigation.navigate("ManageNotifications")}
-          >
-            <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
-              <Ionicons
-                name="notifications-outline"
-                size={24}
-                color={colors.neutral["900"]}
-              />
-              <Text
-                style={{
-                  color: colors.neutral["900"],
-                  fontSize: 16,
-                  fontWeight: "500",
-                  lineHeight: 24,
-                  textAlign: "left",
-                }}
-              >
-                Notificações
-              </Text>
-            </View>
-            <Ionicons
-              name="chevron-forward"
-              size={24}
-              color={colors.neutral["500"]}
-            />
-          </TouchableOpacity>
-
-          <View>
             <Text
               style={{
-                color: colors.neutral["500"],
+                color: colors.neutral["900"],
                 fontSize: 16,
                 fontWeight: "500",
                 lineHeight: 24,
                 textAlign: "left",
-                marginBottom: 12,
               }}
             >
-              Suporte
+              Informações Pessoais
             </Text>
           </View>
-
-          <TouchableOpacity
-            style={{
-              paddingVertical: 16,
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-            onPress={() => navigation.navigate("FAQ")}
-          >
-            <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
-              <Ionicons
-                name="help-circle-outline"
-                size={24}
-                color={colors.neutral["900"]}
-              />
-              <Text
-                style={{
-                  color: colors.neutral["900"],
-                  fontSize: 16,
-                  fontWeight: "500",
-                  lineHeight: 24,
-                  textAlign: "left",
-                }}
-              >
-                Central de ajuda
-              </Text>
-            </View>
+          <Ionicons
+            name="chevron-forward"
+            size={24}
+            color={colors.neutral["500"]}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            paddingVertical: 16,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+          onPress={() => navigation.navigate("ModifyPassword")}
+        >
+          <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
             <Ionicons
-              name="chevron-forward"
+              name="lock-closed-outline"
               size={24}
-              color={colors.neutral["500"]}
+              color={colors.neutral["900"]}
             />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 16,
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
-              <Ionicons
-                name="information-circle-outline"
-                size={24}
-                color={colors.neutral["900"]}
-              />
-              <Text
-                style={{
-                  color: colors.neutral["900"],
-                  fontSize: 16,
-                  fontWeight: "500",
-                  lineHeight: 24,
-                  textAlign: "left",
-                }}
-              >
-                Termos de uso
-              </Text>
-            </View>
-            <Ionicons
-              name="chevron-forward"
-              size={24}
-              color={colors.neutral["500"]}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 16,
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
-              <Ionicons
-                name="share-social-outline"
-                size={24}
-                color={colors.neutral["900"]}
-              />
-              <Text
-                style={{
-                  color: colors.neutral["900"],
-                  fontSize: 16,
-                  fontWeight: "500",
-                  lineHeight: 24,
-                  textAlign: "left",
-                }}
-              >
-                Compartilhe com um amigo
-              </Text>
-            </View>
-            <Ionicons
-              name="chevron-forward"
-              size={24}
-              color={colors.neutral["500"]}
-            />
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={{
-              paddingVertical: 16,
-              display: "flex",
-              flexDirection: "row",
-              justifyContent: "space-between",
-            }}
-          >
-            <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
-              <Ionicons
-                name="star-outline"
-                size={24}
-                color={colors.neutral["900"]}
-              />
-              <Text
-                style={{
-                  color: colors.neutral["900"],
-                  fontSize: 16,
-                  fontWeight: "500",
-                  lineHeight: 24,
-                  textAlign: "left",
-                }}
-              >
-                Avalie nosso app
-              </Text>
-            </View>
-            <Ionicons
-              name="chevron-forward"
-              size={24}
-              color={colors.neutral["500"]}
-            />
-          </TouchableOpacity>
-
-          <View
-            style={{
-              width: "100%",
-              padding: 20,
-              justifyContent: "center",
-              alignItems: "center",
-            }}
-          >
             <Text
               style={{
-                color: colors.neutral["500"],
-                fontSize: 14,
-                fontWeight: "400",
-                lineHeight: 20,
+                color: colors.neutral["900"],
+                fontSize: 16,
+                fontWeight: "500",
+                lineHeight: 24,
                 textAlign: "left",
-                marginBottom: 12,
               }}
             >
-              Versão 1.2.3 (3232832893298)
+              Alterar Senha
             </Text>
           </View>
-          <Button
-            variant="neutral"
-            size="medium"
-            onPress={() => {
-              signOut();
+          <Ionicons
+            name="chevron-forward"
+            size={24}
+            color={colors.neutral["500"]}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            paddingVertical: 16,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+          onPress={() => navigation.navigate("PlansManager")}
+        >
+          <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
+            <Ionicons
+              name="medal-outline"
+              size={24}
+              color={colors.neutral["900"]}
+            />
+            <Text
+              style={{
+                color: colors.neutral["900"],
+                fontSize: 16,
+                fontWeight: "500",
+                lineHeight: 24,
+                textAlign: "left",
+              }}
+            >
+              Minhas assinaturas
+            </Text>
+          </View>
+          <Ionicons
+            name="chevron-forward"
+            size={24}
+            color={colors.neutral["500"]}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            paddingVertical: 16,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+          onPress={() => navigation.navigate("ManageNotifications")}
+        >
+          <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
+            <Ionicons
+              name="notifications-outline"
+              size={24}
+              color={colors.neutral["900"]}
+            />
+            <Text
+              style={{
+                color: colors.neutral["900"],
+                fontSize: 16,
+                fontWeight: "500",
+                lineHeight: 24,
+                textAlign: "left",
+              }}
+            >
+              Notificações
+            </Text>
+          </View>
+          <Ionicons
+            name="chevron-forward"
+            size={24}
+            color={colors.neutral["500"]}
+          />
+        </TouchableOpacity>
+
+        <View>
+          <Text
+            style={{
+              color: colors.neutral["500"],
+              fontSize: 16,
+              fontWeight: "500",
+              lineHeight: 24,
+              textAlign: "left",
+              marginBottom: 12,
             }}
           >
-            Sair do Aplicativo
-          </Button>
-        </ScrollView>
-      </View>
+            Suporte
+          </Text>
+        </View>
+
+        <TouchableOpacity
+          style={{
+            paddingVertical: 16,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+          onPress={() => navigation.navigate("FAQ")}
+        >
+          <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
+            <Ionicons
+              name="help-circle-outline"
+              size={24}
+              color={colors.neutral["900"]}
+            />
+            <Text
+              style={{
+                color: colors.neutral["900"],
+                fontSize: 16,
+                fontWeight: "500",
+                lineHeight: 24,
+                textAlign: "left",
+              }}
+            >
+              Central de ajuda
+            </Text>
+          </View>
+          <Ionicons
+            name="chevron-forward"
+            size={24}
+            color={colors.neutral["500"]}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            paddingVertical: 16,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
+            <Ionicons
+              name="information-circle-outline"
+              size={24}
+              color={colors.neutral["900"]}
+            />
+            <Text
+              style={{
+                color: colors.neutral["900"],
+                fontSize: 16,
+                fontWeight: "500",
+                lineHeight: 24,
+                textAlign: "left",
+              }}
+            >
+              Termos de uso
+            </Text>
+          </View>
+          <Ionicons
+            name="chevron-forward"
+            size={24}
+            color={colors.neutral["500"]}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            paddingVertical: 16,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
+            <Ionicons
+              name="share-social-outline"
+              size={24}
+              color={colors.neutral["900"]}
+            />
+            <Text
+              style={{
+                color: colors.neutral["900"],
+                fontSize: 16,
+                fontWeight: "500",
+                lineHeight: 24,
+                textAlign: "left",
+              }}
+            >
+              Compartilhe com um amigo
+            </Text>
+          </View>
+          <Ionicons
+            name="chevron-forward"
+            size={24}
+            color={colors.neutral["500"]}
+          />
+        </TouchableOpacity>
+        <TouchableOpacity
+          style={{
+            paddingVertical: 16,
+            display: "flex",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <View style={{ display: "flex", flexDirection: "row", gap: 8 }}>
+            <Ionicons
+              name="star-outline"
+              size={24}
+              color={colors.neutral["900"]}
+            />
+            <Text
+              style={{
+                color: colors.neutral["900"],
+                fontSize: 16,
+                fontWeight: "500",
+                lineHeight: 24,
+                textAlign: "left",
+              }}
+            >
+              Avalie nosso app
+            </Text>
+          </View>
+          <Ionicons
+            name="chevron-forward"
+            size={24}
+            color={colors.neutral["500"]}
+          />
+        </TouchableOpacity>
+
+        <View
+          style={{
+            width: "100%",
+            padding: 20,
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Text
+            style={{
+              color: colors.neutral["500"],
+              fontSize: 14,
+              fontWeight: "400",
+              lineHeight: 20,
+              textAlign: "left",
+              marginBottom: 12,
+            }}
+          >
+            Versão 1.2.3 (3232832893298)
+          </Text>
+        </View>
+        <Button
+          variant="neutral"
+          size="medium"
+          onPress={() => {
+            signOut();
+          }}
+        >
+          Sair do Aplicativo
+        </Button>
+      </ScrollView>
     </View>
   );
 }
 
 const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    backgroundColor: "#fff",
+  },
+  loading: {
+    position: "absolute",
+    top: 50, // Ajuste a posição para ficar mais abaixo
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+  },
   avatarContainer: {
     paddingHorizontal: 20,
     marginTop: 8,
     display: "flex",
     flexDirection: "row",
     gap: 13,
-  },
-  premium: {
-    marginTop: 20,
-    width: "100%",
-    borderRadius: 8,
-    backgroundColor: "#E8CC3C",
-    paddingVertical: 8,
-    paddingHorizontal: 16,
-  },
-  container: {
-    flex: 1,
-    backgroundColor: "#fff",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  containerOptions: {
-    flex: 1.1,
-    backgroundColor: "#fff",
-    borderRadius: 24,
-    width: "100%",
-    marginTop: -20,
-    padding: 20,
   },
   image: {
     width: 64,
@@ -566,7 +571,6 @@ const styles = StyleSheet.create({
   },
   banner: {
     width: "100%",
-    // height: 200,
     flex: 1,
     backgroundColor: colors.primary["700"],
     justifyContent: "center",

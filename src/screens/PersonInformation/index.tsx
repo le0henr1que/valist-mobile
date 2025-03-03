@@ -24,6 +24,7 @@ import {
   useUploadUserFileMutation,
 } from "../../services/me";
 import { colors } from "../../styles/colors";
+import { API_URL } from "@env";
 
 export default function PersonInformation() {
   const [imageUri, setImageUri] = useState<string | null>(null);
@@ -170,7 +171,7 @@ export default function PersonInformation() {
     setValue("email", user?.email);
     setValue("whatsapp", user?.whatsapp_number);
     setValue("phone", user?.phone_number);
-    setImageUri(user?.avatar);
+    setImageUri(user.avatar ? `${API_URL}${user.avatar}` : null);
   }, [user]);
 
   return (

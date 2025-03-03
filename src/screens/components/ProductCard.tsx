@@ -9,7 +9,7 @@ import { useDialogModal } from "../../hook/handle-modal/hooks/actions";
 import { colors } from "../../styles/colors";
 import { RootStackParamList } from "../HomeScreen";
 import CardAction from "./CardProductAction";
-import Ionicons  from 'react-native-vector-icons/Ionicons';
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { typography } from "../../styles/typography";
 
 const ProductCard = ({ product }: any) => {
@@ -41,7 +41,12 @@ const ProductCard = ({ product }: any) => {
                 alignItems: "center",
               }}
             >
-              <Ionicons name="trash" size={16} color={colors.white} style={{ marginLeft: 8 }} />,
+              <Ionicons
+                name="trash"
+                size={16}
+                color={colors.white}
+                style={{ marginLeft: 8 }}
+              />
               <Text style={styles.expiredText}>
                 VENCIDO HÁ {product.expiredDays || 0} DIAS
               </Text>
@@ -73,18 +78,14 @@ const ProductCard = ({ product }: any) => {
                 </View>
                 <Text style={styles.text}>
                   Código do produto:{" "}
-                  <Text style={styles.text2}>
-                    {product.code}
-                  </Text>
+                  <Text style={styles.text2}>{product.code}</Text>
                 </Text>
                 <Text style={styles.text}>
-                  Data de validade: <Text style={styles.text2}>{product.expiryDate}</Text>  
+                  Data de validade:{" "}
+                  <Text style={styles.text2}>{product.expiryDate}</Text>
                 </Text>
                 <Text style={styles.text}>
-                  Local:{" "}
-                  <Text style={styles.text2}>
-                    Prateleira K12
-                  </Text>
+                  Local: <Text style={styles.text2}>Prateleira K12</Text>
                 </Text>
               </View>
             </View>
@@ -97,7 +98,7 @@ const ProductCard = ({ product }: any) => {
                   alignItems: "center",
                 }}
               >
-                <ScamBarIcon color={colors.primary['600']} />
+                <ScamBarIcon color={colors.primary["600"]} />
                 <Text style={styles.quantity}>{product.quantity} itens</Text>
               </View>
               <Text style={styles.category}>{product.category}</Text>
@@ -113,17 +114,15 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: "#fff",
     borderRadius: 8,
+    width: "100%",
     overflow: "hidden",
     borderColor: "#ddd",
     borderWidth: 1,
-    width: 344,
-    shadowColor: "#000", 
-    shadowOffset: { width: 0, height: 2 }, 
-    shadowOpacity: 0.6, 
-    shadowRadius:3, 
-    elevation: 2, 
-
-    
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.6,
+    shadowRadius: 3,
+    elevation: 2,
   },
   header: {
     backgroundColor: colors.danger["600"],
@@ -183,7 +182,7 @@ const styles = StyleSheet.create({
     fontFamily: typography.fontFamily.medium,
     lineHeight: 16,
   },
-  text2:{
+  text2: {
     color: colors.neutral["950"],
     fontFamily: typography.fontFamily.semibold,
     fontSize: 12,
@@ -209,7 +208,6 @@ const styles = StyleSheet.create({
     color: colors.neutral["900"],
     borderRadius: 4,
   },
-
 });
 
 export default ProductCard;

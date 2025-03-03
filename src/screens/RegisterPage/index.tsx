@@ -33,7 +33,7 @@ export default function Register() {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const [codeCheck, { isLoading }] = useCodeCheckMutation();
+  const [codeCheck, { isLoading, isError }] = useCodeCheckMutation();
   const { handleNotification } = useDialogNotification();
 
   const {
@@ -54,11 +54,13 @@ export default function Register() {
 
   const onSubmit = async (data: any) => {
     try {
+      console.log(isError);
       const userId = await codeCheck({
         email: data.email,
         password: data.password,
         name: data.name,
       }).unwrap();
+      console.log(userId);
       navigation.navigate(
         "ConfirmCode" as never,
         {
@@ -245,7 +247,7 @@ export default function Register() {
                   onPress={handleSubmit(onSubmit)}
                   disabled={Object.keys(errors).length > 0 || !isFormValid()}
                 >
-                  Criar conta{" "}
+                  Criar conta
                 </Button>
               </View>
               <View />

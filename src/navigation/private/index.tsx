@@ -17,6 +17,7 @@ import ExportReport from "../../screens/ExportReport";
 import FAQ from "../../screens/FAQ";
 import { useMeQuery } from "../../services/me";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { PlanPremium } from "../../screens/PlanPremium";
 
 const Stack = createNativeStackNavigator();
 
@@ -66,12 +67,17 @@ export default function PrivateRoute() {
       <Stack.Screen
         name="Notification"
         component={Notification}
-        options={{ title: "Notificações" }}
+        options={{ title: "Notificações", headerShown: false }}
       />
       <Stack.Screen
         name="PersonInformation"
         component={PersonInformation}
         options={{ title: "Informações Pessoais" }}
+      />
+      <Stack.Screen
+        name="PlanPremium"
+        component={PlanPremium}
+        options={{ title: "Premium" }}
       />
       <Stack.Screen
         name="PlansManager"
