@@ -1,10 +1,12 @@
 import React from "react";
 import { Text, View } from "react-native";
-import Swiper from "react-native-swiper";
+import LinearGradient from 'react-native-linear-gradient';
+
 
 import { NavigationProp } from "@react-navigation/native";
 import Button from "../../components/Button";
 import { styles } from "./OnBoarding.style";
+import { Image} from 'react-native';
 
 interface ButtonsProps {
   navigation: NavigationProp<any>;
@@ -13,70 +15,22 @@ interface ButtonsProps {
 const OnboardingScreen = ({ navigation }: ButtonsProps) => {
   return (
     <>
-      <Swiper
-        style={styles.wrapper}
-        showsButtons={false}
-        dot={<View style={styles.dot} />}
-        activeDot={<View style={styles.activeDot} />}
-        paginationStyle={styles.pagination}
-        loop={false}
-      >
-        <View style={styles.slide}>
-          <View style={styles.divImage}>
-            <Text>X</Text>
-          </View>
+        <View>
+          <Image 
+        source={require('../../../assets/init.png')} 
+        style={styles.Image}
+      />
           <View style={styles.divContent}>
             <Text style={styles.title}>
-              Gerencie a validade dos seus produtos
+              Controle a validade {"\n"}dos seus produtos
             </Text>
             <Text style={styles.text}>
-              Acompanhe a validade dos itens do seu estoque e evite
-              desperdícios.
+            O Expiral oferece controle preciso das datas {"\n"}de validade, com notificações e {"\n"}gerenciamento completo do seu estoque.
             </Text>
+            </View>
           </View>
-        </View>
+   
 
-        <View style={styles.slide}>
-          <View style={styles.divImage}>
-            <Text>X</Text>
-          </View>
-          <View style={styles.divContent}>
-            <Text style={styles.title}>Adicione produtos rapidamente </Text>
-            <Text style={styles.text}>
-              Escaneie códigos de barras ou adicione produtos manualmente para
-              acompanhar a validade.
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.slide}>
-          <View style={styles.divImage}>
-            <Text>X</Text>
-          </View>
-          <View style={styles.divContent}>
-            <Text style={styles.title}>Receba alertas de vencimento</Text>
-            <Text style={styles.text}>
-              Notificações automáticas para lembrar você dos produtos prestes a
-              vencer
-            </Text>
-          </View>
-        </View>
-
-        <View style={styles.slide}>
-          <View style={styles.divImage}>
-            <Text>X</Text>
-          </View>
-          <View style={styles.divContent}>
-            <Text style={styles.title}>
-              Gerencie produtos de múltiplas lojas
-            </Text>
-            <Text style={styles.text}>
-              Adicione e acompanhe o estoque de diversas lojas de forma
-              centralizada. Tudo na palma da sua mão
-            </Text>
-          </View>
-        </View>
-      </Swiper>
       <Buttons navigation={navigation} />
     </>
   );
@@ -91,7 +45,7 @@ const Buttons = ({ navigation }: ButtonsProps) => (
       size="large"
       disabled={false}
     >
-      Acessar minha conta{" "}
+      Acessar minha conta
     </Button>
     <Button
       onPress={() => navigation.navigate("Register")}

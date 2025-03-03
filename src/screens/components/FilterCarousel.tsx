@@ -9,6 +9,7 @@ import {
 import CaretDown from "../../../assets/icons/caret-down";
 import CheckIcon from "../../../assets/icons/check";
 import { colors } from "../../styles/colors";
+import { typography } from "../../styles/typography";
 
 interface FilterCarouselProps {
   filters: string[];
@@ -27,8 +28,8 @@ const FilterCarousel: React.FC<FilterCarouselProps> = ({
         data={filters}
         horizontal
         showsHorizontalScrollIndicator={false}
-        keyExtractor={(item) => item}
-        renderItem={({ item }) => (
+        keyExtractor={(item) => item.toString()}
+        renderItem={({ item }) => (    
           <TouchableOpacity
             style={[
               styles.filterButton,
@@ -81,17 +82,17 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
     textAlign: "center",
-    backgroundColor: "#d1f7e6",
+    backgroundColor: colors.primary["100"],
     borderColor: "#a2e3d3",
   },
   filterText: {
-    color: "#333",
+    color: colors.neutral["900"],
     display: "flex",
     flexDirection: "row",
     gap: 6,
     justifyContent: "center",
     alignItems: "center",
-    fontWeight: "500",
+    fontFamily:typography.fontFamily.medium,
   },
   activeFilterText: {
     color: "#000",

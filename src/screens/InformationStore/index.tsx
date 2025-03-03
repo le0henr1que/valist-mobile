@@ -31,10 +31,13 @@ import {
 import Svg, { Path, Rect } from "react-native-svg";
 import { MaterialIcons } from "@expo/vector-icons";
 import CustomIcon from "../../../assets/icons/logo2";
+import LoadingIcon1 from "../../../assets/icons/loading";
 import StoreIcon2 from "../../../assets/icons/store-icon2";
 import PersonIcon2 from "../../../assets/icons/person-icon2";
 import { CustomInput } from "../../components/Input";
 import { typography } from "../../styles/typography";
+
+import LogoIcon from "../../../assets/icons/logo";
 
 const Stack = createNativeStackNavigator();
 
@@ -99,7 +102,7 @@ function ObjectiveScreen({
           style={[styles.radioItem, checked === "owner" && styles.checked]}
           onPress={() => setChecked("owner")}
         >
-          <View style={styles.radioGroup}>
+          <View style={styles.radioGroup1}>
             <View style={styles.icon}>
               <StoreIcon2 />
             </View>
@@ -116,7 +119,7 @@ function ObjectiveScreen({
           style={[styles.radioItem, checked === "member" && styles.checked]}
           onPress={() => setChecked("member")}
         >
-          <View style={styles.radioGroup}>
+          <View style={styles.radioGroup1}>
             <View style={styles.icon}>
               <PersonIcon2 />
             </View>
@@ -153,7 +156,7 @@ function ObjectiveScreen({
               Insira abaixo o código recebido
             </Text>
             <View style={styles.divider} />
-            <View style={Input.inputView}>
+            <View style={styles.inputViewCod}>
               <CustomInput
                 errors={errors}
                 name="cod"
@@ -322,13 +325,18 @@ function NotificationsScreen({
         </View>
         <View style={styles.radioGroup}>
           <TouchableOpacity
-            style={[styles.radioItem, checked === "yes" && styles.checked]}
+            style={[
+              styles.radioItemNotification,
+              checked === "yes" && styles.checked,
+            ]}
             onPress={() => setChecked("yes")}
           >
             <Image source={require("../../../assets/bell.png")} />
             <Text style={styles.radioItemText}>
               Sim, desejo receber notificações pelo{" "}
-              <Text style={{ fontWeight: "bold" }}>aplicativo</Text>
+              <Text style={{ fontFamily: typography.fontFamily.bold }}>
+                aplicativo
+              </Text>
             </Text>
             <View style={styles.radioButton}>
               {checked === "yes" && (
@@ -348,7 +356,7 @@ function NotificationsScreen({
           </TouchableOpacity>
           <TouchableOpacity
             style={[
-              styles.radioItem,
+              styles.radioItemNotification,
               checked === "not" && styles.checked,
               { justifyContent: "center", alignItems: "center" },
             ]}
@@ -473,7 +481,8 @@ function ExpirationScreen({
                   fontSize: 16,
                   color: colors.neutral["900"],
                   lineHeight: 24,
-                  fontWeight: 500,
+                  fontFamily: typography.fontFamily.semibold,
+                  /* fontWeight: 500, */
                 }}
               >
                 {
@@ -553,19 +562,14 @@ function LoadingScreen({ navigation, route }: { navigation: any; route: any }) {
       }}
     >
       <View>
-        <Image source={require("../../../assets/logo-primary.png")} />
+        <CustomIcon />
       </View>
       <View>
-        <LottieView
-          source={animation}
-          autoPlay
-          loop
-          style={{ width: 200, height: 200 }}
-        />
+        <LoadingIcon1 />
       </View>
       <View>
         <Text style={styles.loadingText}>
-          Tudo pronto! Estamos configurando sua conta...
+          Tudo pronto! {"\n"}Estamos configurando sua conta...
         </Text>
       </View>
     </View>
@@ -628,7 +632,8 @@ const styles = StyleSheet.create({
     fontSize: 16,
     marginBottom: 32,
     color: "#71727A",
-    fontWeight: "normal",
+    /* fontWeight: "normal", */
+    fontFamily: typography.fontFamily.regular,
     lineHeight: 24,
     textAlign: "left",
   },
@@ -661,7 +666,7 @@ const styles = StyleSheet.create({
     color: colors.primary["600"],
   },
   radioItem: {
-    gap: 12,
+    gap: 8,
     alignSelf: "stretch",
     justifyContent: "space-between",
     borderWidth: 1,
@@ -673,23 +678,43 @@ const styles = StyleSheet.create({
     padding: 16,
     position: "relative",
   },
+  radioItemNotification: {
+    gap: 8,
+    alignSelf: "stretch",
+    justifyContent: "space-between",
+    borderWidth: 1,
+    borderColor: colors.neutral["300"],
+    borderRadius: 8,
+    flexDirection: "row",
+    alignItems: "flex-start",
+    padding: 16,
+    position: "relative",
+  },
+
   radioItemText: {
     flex: 1,
     flexWrap: "wrap",
     // fontFamily: "Inter_400Regular",
     color: colors.neutral["900"],
     fontSize: 14,
-    fontWeight: "normal",
+    /* fontWeight: "normal", */
+    fontFamily: typography.fontFamily.regular,
     lineHeight: 20,
   },
-  radioGroup: {
+  radioGroup1: {
     display: "flex",
     flexDirection: "row",
     alignItems: "flex-start",
-    gap: 12,
+    gap: "12dp",
     flex: 1,
     flexBasis: 0,
     flexShrink: 0,
+  },
+  radioGroup: {
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "flex-start",
+    gap: 16,
   },
   option: {
     flexDirection: "row",
@@ -707,8 +732,9 @@ const styles = StyleSheet.create({
   titleButton: {
     fontSize: 14,
     color: colors.neutral["900"],
-    fontWeight: 600,
-    fontStyle: "normal",
+    /* fontWeight: 600,
+    fontStyle: "normal", */
+    fontFamily: typography.fontFamily.semibold,
     lineHeight: 20,
   },
   radioText: {
@@ -769,12 +795,13 @@ const styles = StyleSheet.create({
   },
   modalContent: {
     width: "100%",
-    height: 335,
-    borderTopLeftRadius: 24, // Apenas os cantos superiores arredondados
+    flexShrink: 0,
+    borderTopLeftRadius: 24,
     borderTopRightRadius: 24,
     backgroundColor: "#FFF",
-    padding: 16,
+    paddingTop: 8,
     alignItems: "center",
+    height: 335,
   },
   modalTitle: {
     fontSize: 18,
@@ -789,12 +816,13 @@ const styles = StyleSheet.create({
     marginBottom: 16,
   },
   buttonModalG: {
-    padding: 16,
+    paddingHorizontal: 16,
     justifyContent: "flex-end",
     alignItems: "flex-start",
     gap: 8,
     alignSelf: "stretch",
     flexDirection: "row",
+
     marginTop: 16,
   },
   button2: {
@@ -805,8 +833,7 @@ const styles = StyleSheet.create({
     borderRadius: 8,
     gap: 8,
     flex: 1,
-    flexShrink: 0,
-    flexBasis: 0,
+
     alignItems: "center",
     justifyContent: "center",
   },
@@ -816,9 +843,16 @@ const styles = StyleSheet.create({
     paddingVertical: 12,
     paddingHorizontal: 16,
     width: 139,
+    height: 48,
     borderRadius: 8,
     alignItems: "center",
     justifyContent: "center",
+  },
+  inputViewCod: {
+    width: "100%",
+    display: "flex",
+    gap: 6,
+    paddingHorizontal: 16,
   },
   divider: {
     height: 1,
@@ -829,7 +863,7 @@ const styles = StyleSheet.create({
   divider2: {
     height: 1,
     backgroundColor: colors.neutral["200"],
-    marginTop: 74,
+    marginTop: 83,
     width: 400,
   },
 });

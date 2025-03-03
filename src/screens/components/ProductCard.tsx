@@ -9,6 +9,8 @@ import { useDialogModal } from "../../hook/handle-modal/hooks/actions";
 import { colors } from "../../styles/colors";
 import { RootStackParamList } from "../HomeScreen";
 import CardAction from "./CardProductAction";
+import Ionicons  from 'react-native-vector-icons/Ionicons';
+import { typography } from "../../styles/typography";
 
 const ProductCard = ({ product }: any) => {
   const { handleModal } = useDialogModal();
@@ -39,9 +41,9 @@ const ProductCard = ({ product }: any) => {
                 alignItems: "center",
               }}
             >
-              <TrashIcon />
+              <Ionicons name="trash" size={16} color={colors.white} style={{ marginLeft: 8 }} />,
               <Text style={styles.expiredText}>
-                VENCIDO HÁ {product.expiredDays} DIAS
+                VENCIDO HÁ {product.expiredDays || 0} DIAS
               </Text>
             </View>
             <TouchableOpacity onPress={() => handlePress()}>
@@ -71,12 +73,18 @@ const ProductCard = ({ product }: any) => {
                 </View>
                 <Text style={styles.text}>
                   Código do produto:{" "}
-                  <Text style={{ color: colors.neutral["900"] }}>
+                  <Text style={styles.text2}>
                     {product.code}
                   </Text>
                 </Text>
                 <Text style={styles.text}>
-                  Data de validade: {product.expiryDate}
+                  Data de validade: <Text style={styles.text2}>{product.expiryDate}</Text>  
+                </Text>
+                <Text style={styles.text}>
+                  Local:{" "}
+                  <Text style={styles.text2}>
+                    Prateleira K12
+                  </Text>
                 </Text>
               </View>
             </View>
@@ -89,7 +97,7 @@ const ProductCard = ({ product }: any) => {
                   alignItems: "center",
                 }}
               >
-                <ScamBarIcon color={"#0D9488"} />
+                <ScamBarIcon color={colors.primary['600']} />
                 <Text style={styles.quantity}>{product.quantity} itens</Text>
               </View>
               <Text style={styles.category}>{product.category}</Text>
@@ -108,11 +116,19 @@ const styles = StyleSheet.create({
     overflow: "hidden",
     borderColor: "#ddd",
     borderWidth: 1,
-    width: "100%",
+    width: 344,
+    shadowColor: "#000", 
+    shadowOffset: { width: 0, height: 2 }, 
+    shadowOpacity: 0.6, 
+    shadowRadius:3, 
+    elevation: 2, 
+
+    
   },
   header: {
-    backgroundColor: "#f44",
-    padding: 10,
+    backgroundColor: colors.danger["600"],
+    paddingVertical: 4,
+    paddingHorizontal: 8,
     display: "flex",
     gap: 6,
     justifyContent: "space-between",
@@ -121,8 +137,8 @@ const styles = StyleSheet.create({
   },
   expiredText: {
     color: "#fff",
-    fontWeight: "bold",
     fontSize: 14,
+    fontFamily: typography.fontFamily.semibold,
   },
   body: {
     flexDirection: "row",
@@ -140,21 +156,38 @@ const styles = StyleSheet.create({
     flexDirection: "column",
     justifyContent: "space-between",
     width: "100%",
+    gap: 4,
   },
   title: {
-    fontWeight: "bold",
-    fontSize: 16,
+    fontWeight: 500,
+    fontSize: 14,
     width: "85%",
+    lineHeight: 20,
+    fontFamily: typography.fontFamily.semibold,
+    flex: 1,
+    flexShrink: 0,
+    flexBasis: 0,
   },
   price: {
-    color: "#007f00",
-    fontWeight: "bold",
+    color: colors.primary["600"],
+    fontFamily: typography.fontFamily.semibold,
+    lineHeight: 20,
     marginVertical: 5,
-    width: "15%",
+    width: "30%",
+    marginTop: -0.4,
+    textAlign: "right",
   },
   text: {
-    fontSize: 14,
+    fontSize: 12,
     color: colors.neutral["600"],
+    fontFamily: typography.fontFamily.medium,
+    lineHeight: 16,
+  },
+  text2:{
+    color: colors.neutral["950"],
+    fontFamily: typography.fontFamily.semibold,
+    fontSize: 12,
+    lineHeight: 16,
   },
   footer: {
     flexDirection: "row",
@@ -164,17 +197,19 @@ const styles = StyleSheet.create({
     borderColor: "#ddd",
   },
   quantity: {
-    fontWeight: "bold",
-    color: "#0D9488",
+    fontFamily: typography.fontFamily.semibold,
+    color: colors.primary["600"],
   },
   category: {
-    fontSize: 14,
+    fontSize: 12,
+    fontFamily: typography.fontFamily.semibold,
     backgroundColor: colors.neutral["100"],
     paddingVertical: 2,
     paddingHorizontal: 12,
     color: colors.neutral["900"],
     borderRadius: 4,
   },
+
 });
 
 export default ProductCard;

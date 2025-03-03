@@ -4,6 +4,8 @@ import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
 import ScamBarIcon from "../../../assets/icons/scam-bar";
 import SearchIcon from "../../../assets/icons/search";
 import { colors } from "../../styles/colors";
+import { Ionicons } from 'react-native-vector-icons';
+import { typography } from "../../styles/typography";
 
 const SearchInput = ({ name, control, onBarcodePress, productCode }: any) => {
   const inputRef = useRef<TextInput>(null);
@@ -17,7 +19,7 @@ const SearchInput = ({ name, control, onBarcodePress, productCode }: any) => {
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handleFocus}>
-        <SearchIcon />
+      <Ionicons name="search-outline" size={24} color={colors.neutral["500"]}/>
       </TouchableOpacity>
       <Controller
         control={control}
@@ -27,7 +29,7 @@ const SearchInput = ({ name, control, onBarcodePress, productCode }: any) => {
             ref={inputRef}
             style={styles.input}
             placeholder="Procurar por produto ou código"
-            placeholderTextColor="#999"
+            placeholderTextColor={colors.neutral[500]}
             onChangeText={onChange}
             onBlur={onBlur}
             value={productCode}
@@ -35,7 +37,7 @@ const SearchInput = ({ name, control, onBarcodePress, productCode }: any) => {
         )}
       />
       <TouchableOpacity style={styles.barcodeButton} onPress={onBarcodePress}>
-        <ScamBarIcon />
+          <Ionicons name="barcode-outline" size={24} color="#343330"/>
       </TouchableOpacity>
     </View>
   );
@@ -58,12 +60,11 @@ const styles = StyleSheet.create({
     height: 50,
     width: "100%",
   },
-  icon: {
-    marginRight: 8,
-  },
   input: {
     flex: 1,
-    fontSize: 16,
+    fontSize: 14,
+    fontFamily: typography.fontFamily.regular,
+    lineHeight:20,
     color: colors.neutral["500"],
   },
   barcodeButton: {
