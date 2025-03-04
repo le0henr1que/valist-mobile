@@ -18,6 +18,7 @@ import FAQ from "../../screens/FAQ";
 import { useMeQuery } from "../../services/me";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { PlanPremium } from "../../screens/PlanPremium";
+import AddProduct from "../../screens/AddProduct";
 
 const Stack = createNativeStackNavigator();
 
@@ -68,6 +69,11 @@ export default function PrivateRoute() {
         name="Notification"
         component={Notification}
         options={{ title: "Notificações", headerShown: false }}
+      />
+      <Stack.Screen
+        name="AddProduct"
+        component={AddProduct}
+        options={{ title: "AddProduct" }}
       />
       <Stack.Screen
         name="PersonInformation"

@@ -4,4 +4,5 @@ export enum Tags {
   FILE = "FILE",
   SUBSCRIPTION = "SUBSCRIPTION",
   PLAN = "PLAN",
+  PRODUCT = "PRODUCT",
 }

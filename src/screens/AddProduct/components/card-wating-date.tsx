@@ -2,11 +2,7 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import ScamBarIcon from "../../../../assets/icons/scam-bar";
 import { colors } from "../../../styles/colors";
 
-export default function CardWatingDate({
-  productCode,
-}: {
-  productCode: string;
-}) {
+export default function CardWatingDate({ product }: { product: any }) {
   return (
     <View style={styles.cardDate}>
       <View style={styles.cardDataHeader}>
@@ -25,14 +21,12 @@ export default function CardWatingDate({
         <View style={styles.cardDataContent}>
           <View>
             <Image
-              source={{ uri: "https://via.placeholder.com/60" }}
+              source={{ uri: product?.media?.urlFile[0] }}
               style={styles.image}
             />
           </View>
           <View style={{ flex: 2 }}>
-            <Text style={styles.normalTitle}>
-              Wasabi Doritos Pacote Grande 78g
-            </Text>
+            <Text style={styles.normalTitle}>{product?.name}</Text>
             <View
               style={{
                 display: "flex",
@@ -51,7 +45,7 @@ export default function CardWatingDate({
                   letterSpacing: 0,
                 }}
               >
-                {productCode}
+                {product?.code}
               </Text>
             </View>
           </View>
@@ -66,7 +60,7 @@ export default function CardWatingDate({
                 letterSpacing: 0,
               }}
             >
-              R$ 20,00
+              R$ {product?.price}
             </Text>
           </View>
         </View>

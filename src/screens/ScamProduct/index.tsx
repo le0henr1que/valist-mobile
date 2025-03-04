@@ -11,6 +11,7 @@ import {
   Text,
   TouchableOpacity,
   View,
+  ActivityIndicator,
 } from "react-native";
 import { Button } from "react-native-paper";
 import BackIconcon from "../../../assets/icons/backIcon";
@@ -20,18 +21,27 @@ import useHideTabBar from "../../utils/useHideTabBar";
 import { RootStackParamList } from "../HomeScreen";
 import ScannerWithAnimation from "../components/AnimationScam";
 import CodInsert from "../components/FormCodeInsert";
+import { useGetProductQuery } from "../../services/product";
+import { colors } from "../../styles/colors";
 
 const BarcodeScanner = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
   const [scanned, setScanned] = useState(false);
   const [cameraReady, setCameraReady] = useState(false);
   const [sound, setSound] = useState<Audio.Sound | null>(null);
+  const [productCode, setProductCode] = useState<string | null>(null);
+  const [loading, setLoading] = useState(false);
   const { handleModal } = useDialogModal();
   const route = useRoute();
   const { isSearch } = route.params as any;
 
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
+  const { data: productInformation, isFetching } = useGetProductQuery(
+    { barCode: productCode as any },
+    { skip: !productCode }
+  );
 
   useEffect(() => {
     (async () => {
@@ -69,11 +79,20 @@ const BarcodeScanner = () => {
     if (!scanned) {
       setScanned(true);
       playSound();
+      setProductCode(data);
+      setLoading(true);
     }
     console.log(`Barcode type: ${type}, data: ${data}`);
-    const redirectTo = isSearch ? "Home" : "AddProduct";
-    navigation.navigate(redirectTo, { productCode: data });
   };
+
+  useEffect(() => {
+    if (!isFetching && productInformation) {
+      setLoading(false);
+      const redirectTo = isSearch ? "Home" : "AddProduct";
+      console.log(productInformation, "productInformation");
+      navigation.navigate(redirectTo, { productInformation });
+    }
+  }, [isFetching, productInformation, isSearch, navigation]);
 
   if (hasPermission === null) {
     return (
@@ -134,24 +153,11 @@ const BarcodeScanner = () => {
           onBarcodeScanned={(barcodeData) => handleBarCodeScanned(barcodeData)}
           onCameraReady={() => setCameraReady(true)}
         />
-        {/* LOAD PRONTA PARA VIR A REQUISIÇÂO */}
-        {/* <View style={styles.loadView}>
-          <LottieView
-            source={loadScam}
-            autoPlay
-            loop
-            style={{
-              width: 200,
-              height: 200,
-              margin: 0,
-              marginTop: -60,
-              marginBottom: -40,
-              marginLeft: 0,
-              marginRight: 0,
-            }}
-          />
-          <Text style={styles.textLoadView}>Escaneando produto...</Text>
-        </View> */}
+        {loading && (
+          <View style={styles.loading}>
+            <ActivityIndicator size="large" color={colors.primary["600"]} />
+          </View>
+        )}
         <View style={styles.animationScam}>
           <ScannerWithAnimation />
         </View>
@@ -184,7 +190,6 @@ const styles = StyleSheet.create({
     borderColor: "#fff",
     color: "#fff",
     width: "100%",
-
     height: 40,
   },
   textLoadView: {
@@ -192,12 +197,10 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 600,
     lineHeight: 28,
-    // margi,
   },
   loadView: {
     display: "flex",
     flexDirection: "column",
-
     position: "absolute",
     width: "80%",
     height: 200,
@@ -238,7 +241,6 @@ const styles = StyleSheet.create({
     flex: 1,
     width: "100%",
   },
-
   cameraContainer: {
     width: "100%",
     height: "100%",
@@ -260,5 +262,16 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     alignItems: "center",
+  },
+  loading: {
+    position: "absolute",
+    top: 50,
+    left: 0,
+    right: 0,
+    zIndex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    padding: 10,
+    backgroundColor: "transparent",
   },
 });

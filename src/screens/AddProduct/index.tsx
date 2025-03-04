@@ -5,15 +5,12 @@ import { ScrollView, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import Button from "../../components/Button";
 import { Input } from "../../components/Input/Input.style";
-import { RootStackParamList } from "../HomeScreen";
-import CardWatingDate from "./components/card-wating-date";
 import { useDialogModal } from "../../hook/handle-modal/hooks/actions";
-import DeleteAction from "../components/DeleteProductAction";
 import SaveAction from "../components/SaveAction";
+import CardWatingDate from "./components/card-wating-date";
 
 function AddProduct() {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const { handleModal } = useDialogModal();
   const {
     control,
@@ -25,7 +22,7 @@ function AddProduct() {
     console.log(data);
   };
   const route = useRoute();
-  const { productCode } = route.params as any;
+  const { productInformation } = route.params as any;
 
   const handleValidateField = () => {
     handleModal({
@@ -37,7 +34,7 @@ function AddProduct() {
   return (
     <View style={styles.container}>
       <View style={styles.insideContainer}>
-        <CardWatingDate productCode={productCode} />
+        <CardWatingDate product={productInformation} />
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <View style={styles.formContainer}>
             <View style={styles.formContainerLine}>
