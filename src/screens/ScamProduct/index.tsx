@@ -23,6 +23,9 @@ import ScannerWithAnimation from "../components/AnimationScam";
 import CodInsert from "../components/FormCodeInsert";
 import { useGetProductQuery } from "../../services/product";
 import { colors } from "../../styles/colors";
+import loadScam from "../../../assets/load-scam.json";
+import { useDialogNotification } from "../../hook/notification/hooks/actions";
+import EmptyProduct from "../components/emptProductAction";
 
 const BarcodeScanner = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -38,7 +41,11 @@ const BarcodeScanner = () => {
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
 
-  const { data: productInformation, isFetching } = useGetProductQuery(
+  const {
+    data: productInformation,
+    error,
+    isFetching,
+  } = useGetProductQuery(
     { barCode: productCode as any },
     { skip: !productCode }
   );
@@ -83,6 +90,13 @@ const BarcodeScanner = () => {
       setLoading(true);
     }
     console.log(`Barcode type: ${type}, data: ${data}`);
+    if (error) {
+      console.log("Ocorreu um erro ao buscar o produto", error);
+      handleModal({
+        isOpen: true,
+        element: <EmptyProduct navigation={navigation} code={data} />,
+      });
+    }
   };
 
   useEffect(() => {
@@ -153,9 +167,23 @@ const BarcodeScanner = () => {
           onBarcodeScanned={(barcodeData) => handleBarCodeScanned(barcodeData)}
           onCameraReady={() => setCameraReady(true)}
         />
-        {loading && (
-          <View style={styles.loading}>
-            <ActivityIndicator size="large" color={colors.primary["600"]} />
+        {loading && !error && (
+          <View style={styles.loadView}>
+            <LottieView
+              source={loadScam}
+              autoPlay
+              loop
+              style={{
+                width: 200,
+                height: 200,
+                margin: 0,
+                marginTop: -60,
+                marginBottom: -40,
+                marginLeft: 0,
+                marginRight: 0,
+              }}
+            />
+            <Text style={styles.textLoadView}>Escaneando produto...</Text>
           </View>
         )}
         <View style={styles.animationScam}>

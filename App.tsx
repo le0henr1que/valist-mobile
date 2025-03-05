@@ -18,7 +18,7 @@ import { store } from "./store";
 import "./ignoreWarnings";
 import { AppRegistry } from "react-native";
 import { name as appName } from "./app.json";
-
+import { ToastProvider } from "react-native-toast-notifications";
 
 export default function App() {
   const [fontsLoaded] = useFonts({
@@ -60,13 +60,15 @@ export default function App() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
-      <Provider store={store}>
-        <QueryClientProvider client={queryClient}>
-          <Modal />
-          <ModalNotification />
-          <RootNavigator />
-        </QueryClientProvider>
-      </Provider>
+      <ToastProvider>
+        <Provider store={store}>
+          <QueryClientProvider client={queryClient}>
+            <Modal />
+            <ModalNotification />
+            <RootNavigator />
+          </QueryClientProvider>
+        </Provider>
+      </ToastProvider>
     </GestureHandlerRootView>
   );
 }

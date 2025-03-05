@@ -73,7 +73,7 @@ export default function PrivateRoute() {
       <Stack.Screen
         name="AddProduct"
         component={AddProduct}
-        options={{ title: "AddProduct" }}
+        options={{ title: "AddProduct", headerShown: false }}
       />
       <Stack.Screen
         name="PersonInformation"

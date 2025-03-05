@@ -19,6 +19,7 @@ interface DataPickerProps {
   name: string;
   placeholder?: string;
   onChangeText?: (text: string) => void;
+  onChange?: (date: string) => void;
   value?: string;
 }
 
@@ -27,6 +28,7 @@ export function DataPicker({
   name,
   placeholder,
   onChangeText,
+  onChange,
   value,
   ...props
 }: DataPickerProps) {
@@ -66,6 +68,9 @@ export function DataPicker({
     setInputValue(formattedDate);
     if (onChangeText) {
       onChangeText(formattedDate);
+    }
+    if (onChange) {
+      onChange(formattedDate);
     }
   };
 
@@ -160,6 +165,13 @@ export function DataPicker({
         if (onChangeText) {
           onChangeText(formattedText);
         }
+        if (onChange) {
+          onChange(formattedText);
+        }
+      }
+    } else {
+      if (onChange) {
+        onChange(formattedText);
       }
     }
   };
@@ -215,8 +227,8 @@ const styles = StyleSheet.create({
   },
   iconContainer: {
     position: "absolute",
-    right: 10,
-    top: 15,
+    right: 15,
+    top: 16,
   },
   iosModalContainer: {
     paddingVertical: 16,

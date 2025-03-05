@@ -1,7 +1,7 @@
 import { useNavigation, useRoute } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { Controller, useForm } from "react-hook-form";
-import { ScrollView, StyleSheet, Text, View } from "react-native";
+import { SafeAreaView, ScrollView, StyleSheet, Text, View } from "react-native";
 import { TextInput } from "react-native-gesture-handler";
 import Button from "../../components/Button";
 import { Input } from "../../components/Input/Input.style";
@@ -13,7 +13,13 @@ import { formatCurrency } from "../../utils/formatToMoney";
 import { CustomInput } from "../../components/Input";
 import { useGetSuppliersQuery } from "../../services/supplier";
 import { formatDate } from "../../utils/formatDate";
-
+import { useGetCategorysQuery } from "../../services/category";
+import Header from "./components/Header";
+/**
+ *
+ *
+ * @return {*}
+ */
 function AddProduct() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const { handleModal } = useDialogModal();
@@ -29,11 +35,12 @@ function AddProduct() {
   const place = watch("place");
   const qtdItems = watch("qtdItems");
   const price = watch("price");
+  const name = watch("name");
 
-  console.log(date);
   const onSubmit = (data: any) => {
     console.log(data);
   };
+
   const route = useRoute();
   const { productInformation } = route.params as any;
 
@@ -66,18 +73,40 @@ function AddProduct() {
     },
   });
 
-  const options = supplier?.data?.map((item: any) => ({
+  const optionsSupplier = supplier?.data?.map((item: any) => ({
+    id: item.id,
+    label: item.name,
+  }));
+
+  const { data: category } = useGetCategorysQuery({
+    search: {
+      page: 1,
+      perPage: 100,
+    },
+  });
+  const optionsCategory = category?.data?.map((item: any) => ({
     id: item.id,
     label: item.name,
   }));
 
   return (
-    <View style={styles.container}>
+    <SafeAreaView style={styles.container}>
+      <Header />
       <View style={styles.insideContainer}>
         <CardWatingDate
-          product={{ ...productInformation, date, place, qtdItems, price }}
+          product={{
+            ...productInformation,
+            date,
+            place,
+            qtdItems,
+            price,
+            name,
+          }}
         />
-        <ScrollView contentContainerStyle={styles.scrollViewContent}>
+        <ScrollView
+          contentContainerStyle={styles.scrollViewContent}
+          showsVerticalScrollIndicator={false}
+        >
           <View style={styles.formContainer}>
             <View style={styles.formContainerLine}>
               <View style={(Input.inputView, styles.inputWrapper)}>
@@ -159,6 +188,7 @@ function AddProduct() {
                       placeholder="R$ 20,00"
                       errors={errors}
                       name="validate"
+                      onChange={onChange}
                     />
                   )}
                   name="validate"
@@ -176,12 +206,12 @@ function AddProduct() {
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={errors.category ? Input.styleError : Input.style}
-                      placeholder="R$ 20,00"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
+                    <CustomInput
+                      variant="option"
+                      options={optionsCategory}
+                      errors={errors}
+                      placeholder="Selecione o fornecedor"
+                      name="supplier"
                     />
                   )}
                   name="category"
@@ -267,7 +297,7 @@ function AddProduct() {
                   render={({ field: { onChange, onBlur, value } }) => (
                     <CustomInput
                       variant="option"
-                      options={options}
+                      options={optionsSupplier}
                       errors={errors}
                       placeholder="Selecione o fornecedor"
                       name="supplier"
@@ -283,7 +313,7 @@ function AddProduct() {
       <View style={styles.buttonContainer}>
         <Button onPress={() => handleValidateField()}>Salvar</Button>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 

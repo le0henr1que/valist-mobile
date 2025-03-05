@@ -1,32 +1,40 @@
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
-import { Ionicons } from "react-native-vector-icons";
-import { RootStackParamList } from "..";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import { useMeQuery } from "../../../services/me";
 import { colors } from "../../../styles/colors";
 import { typography } from "../../../styles/typography";
 
 export default function Header() {
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const notificationCount = 1;
-  // const user = userMe();
   const { data: user } = useMeQuery();
   return (
     <View style={styles.container}>
-      <View style={{}}>
-        <Text
-          style={{
-            color: colors.neutral["900"],
-            fontSize: 16,
-            fontWeight: "600",
-            fontFamily: typography.fontFamily.semibold,
-            lineHeight: 24,
+      <View style={{ display: "flex", flexDirection: "row", gap: 12 }}>
+        <TouchableOpacity
+          onPress={() => {
+            navigation.goBack();
+            navigation.goBack();
           }}
         >
-          Olá, {user?.name}
-        </Text>
+          <Ionicons name="arrow-back-outline" size={24} color="#343330" />
+        </TouchableOpacity>
+
+        <View style={{}}>
+          <Text
+            style={{
+              color: colors.neutral["900"],
+              fontSize: 16,
+              fontWeight: "600",
+              fontFamily: typography.fontFamily.semibold,
+              lineHeight: 24,
+            }}
+          >
+            Adicionar produto
+          </Text>
+        </View>
       </View>
       <View
         style={{
@@ -36,27 +44,8 @@ export default function Header() {
           gap: 12,
         }}
       >
-        <Ionicons
-          name="help-circle-outline"
-          size={24}
-          color="#343330"
-          style={styles.icon}
-        />
-        <TouchableOpacity onPress={() => navigation.navigate("Notification")}>
-          <Ionicons
-            name="notifications-outline"
-            size={24}
-            color="#343330"
-            style={styles.icon}
-          />
-
-          {notificationCount > 0 && (
-            <View style={styles.badge}>
-              <Text style={styles.badgeText}>
-                {notificationCount > 99 ? "99+" : notificationCount}
-              </Text>
-            </View>
-          )}
+        <TouchableOpacity onPress={() => console.log("Help")}>
+          <Ionicons name="camera-outline" size={24} color="#343330" />
         </TouchableOpacity>
       </View>
     </View>
@@ -70,6 +59,7 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     justifyContent: "space-between",
     padding: 20,
+
     width: "100%",
     borderBottomColor: colors.neutral["200"],
     borderBottomWidth: 1,

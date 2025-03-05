@@ -5,7 +5,7 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useEffect, useLayoutEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
   SafeAreaView,
@@ -27,6 +27,7 @@ import SearchInput from "../../../components/SearchInput";
 import Header from "../../components/Header";
 import { typography } from "../../../../styles/typography";
 import { CustomInput } from "../../../../components/Input";
+import { useToast } from "react-native-toast-notifications";
 
 export const productList = [
   {

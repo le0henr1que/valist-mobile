@@ -16,7 +16,7 @@ const CodInsert = ({ navigation }: any) => {
 
   const onSubmit = (data: any) => {
     console.log("data", data);
-    navigation.navigate("AddProduct", { productCode: data?.productCode });
+    navigation.navigate("AddProduct", { code: data?.productCode });
     handleModal({ isOpen: false });
   };
 

@@ -35,7 +35,7 @@ function Profile() {
   const { signOut, isLoading } = useAuth();
   const [avatar, setAvatar] = useState<string | null>(null);
   const { data: user, refetch, isFetching } = useMeQuery();
-  const { name } = user?.subscription?.plan;
+  const { name } = user?.subscription?.plan || { name: Plan.FREE };
 
   const [refreshing, setRefreshing] = useState(false);
   const dispatch = useDispatch();

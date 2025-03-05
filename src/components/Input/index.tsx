@@ -17,6 +17,7 @@ interface CustomInputProps {
   onBlur?: () => void;
   name: string;
   options?: { id: string; label: string }[];
+  onChange?: (date: string) => void;
 }
 
 export const CustomInput = ({

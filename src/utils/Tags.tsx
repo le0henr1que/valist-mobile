@@ -6,4 +6,5 @@ export enum Tags {
   PLAN = "PLAN",
   PRODUCT = "PRODUCT",
   SUPPLIER = "SUPPLIER",
+  CATEGORY = "CATEGORY",
 }
