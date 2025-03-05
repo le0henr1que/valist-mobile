@@ -26,6 +26,7 @@ import ProductCard from "../../../components/ProductCard";
 import SearchInput from "../../../components/SearchInput";
 import Header from "../../components/Header";
 import { typography } from "../../../../styles/typography";
+import { CustomInput } from "../../../../components/Input";
 
 export const productList = [
   {
@@ -139,25 +140,26 @@ function Expirations() {
   // const { isOpen, element, title } = useDialogModalState();
   const { handleModal } = useDialogModal();
 
-  const filters: { [key: string]: string[] }  = {
+  const filters: { [key: string]: string[] } = {
     Todos: [],
-    Categorias: ["Todas as categorias",
-    "Mercearia",
-    "Padaria",
-    "Carnes",
-    "Frutas e Legumes",
-    "Frios e Laticínios",
-    "Higiene",
-    "Congelados",
-    "Material de Limpeza",
-    "Bebidas",
-    "Outros",],
+    Categorias: [
+      "Todas as categorias",
+      "Mercearia",
+      "Padaria",
+      "Carnes",
+      "Frutas e Legumes",
+      "Frios e Laticínios",
+      "Higiene",
+      "Congelados",
+      "Material de Limpeza",
+      "Bebidas",
+      "Outros",
+    ],
     Quantidade: ["Todas", "Com Lotes", "Unitário"],
     Preço: ["Até R$10", "R$10 - R$50", "Acima de R$50"],
     Marca: ["Marca A", "Marca B", "Marca C"],
     Vencimento: ["Todas", "Vencidos", "Próximos ao vencimento", "Em dia"],
   };
-  
 
   const handleFilterPress = (filter: string) => {
     setSelectedFilter(filter);
@@ -167,10 +169,10 @@ function Expirations() {
       isOpen: true,
       element: (
         <FilterModalize
-        filter={selectedItems} 
-        onSelectFilter={(item) => {
-          setSelectedFilterItem(item); 
-          console.log("Item selecionado:", item);
+          filter={selectedItems}
+          onSelectFilter={(item) => {
+            setSelectedFilterItem(item);
+            console.log("Item selecionado:", item);
           }}
         />
       ),
@@ -191,7 +193,7 @@ function Expirations() {
           <View style={{ height: 32, marginTop: 20 }}>
             <FilterCarousel
               onFilterPress={handleFilterPress}
-              filters={Object.keys(filters)} 
+              filters={Object.keys(filters)}
               selectedFilter={selectedFilter}
             />
           </View>

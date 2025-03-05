@@ -12,6 +12,7 @@ import React, { useEffect } from "react";
 import { formatCurrency } from "../../utils/formatToMoney";
 import { CustomInput } from "../../components/Input";
 import { useGetSuppliersQuery } from "../../services/supplier";
+import { formatDate } from "../../utils/formatDate";
 
 function AddProduct() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -158,7 +159,6 @@ function AddProduct() {
                       placeholder="R$ 20,00"
                       errors={errors}
                       name="validate"
-                      value={value}
                     />
                   )}
                   name="validate"
