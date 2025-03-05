@@ -1,12 +1,13 @@
 import React from "react";
 import { Text, View } from "react-native";
-import LinearGradient from 'react-native-linear-gradient';
-
+import LinearGradient from "react-native-linear-gradient";
 
 import { NavigationProp } from "@react-navigation/native";
 import Button from "../../components/Button";
 import { styles } from "./OnBoarding.style";
-import { Image} from 'react-native';
+import { Image } from "react-native";
+import Typography from "../../components/Text";
+import { typography } from "../../styles/typography";
 
 interface ButtonsProps {
   navigation: NavigationProp<any>;
@@ -15,21 +16,38 @@ interface ButtonsProps {
 const OnboardingScreen = ({ navigation }: ButtonsProps) => {
   return (
     <>
-        <View>
-          <Image 
-        source={require('../../../assets/init.png')} 
-        style={styles.Image}
-      />
-          <View style={styles.divContent}>
-            <Text style={styles.title}>
-              Controle a validade {"\n"}dos seus produtos
-            </Text>
-            <Text style={styles.text}>
-            O Expiral oferece controle preciso das datas {"\n"}de validade, com notificações e {"\n"}gerenciamento completo do seu estoque.
-            </Text>
-            </View>
-          </View>
-   
+      <View>
+        <Image
+          source={require("../../../assets/init.png")}
+          style={styles.Image}
+        />
+        <View style={styles.divContent}>
+          {/* <Text style={styles.title}>
+            Controle a validade {"\n"}dos seus produtos
+          </Text> 
+          */}
+          <Typography
+            variant="3XL"
+            family="bold"
+            style={{ color: "rgba(255, 255, 255, 0.90)" }}
+          >
+            Controle a validade {"\n"}dos seus produtos
+          </Typography>
+          <Typography
+            variant="BASE"
+            family="regular"
+            style={{ color: "rgba(255, 255, 255, 0.80)" }}
+          >
+            O Expiral oferece controle preciso das datas{"\n"} de validade, com
+            notificações e {"\n"}gerenciamento completo do seu estoque.
+          </Typography>
+          {/*        
+          <Text style={styles.text}>
+            O Expiral oferece controle preciso das datas {"\n"}de validade, com
+            notificações e {"\n"}gerenciamento completo do seu estoque.
+          </Text>  */}
+        </View>
+      </View>
 
       <Buttons navigation={navigation} />
     </>

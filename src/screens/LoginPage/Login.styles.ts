@@ -52,14 +52,7 @@ export const styles = StyleSheet.create({
     paddingTop: 64,
     paddingRight: 20,
   },
-  title: {
-    color: "white",
-    width: "70%",
-    fontSize: 32,
-    fontStyle: "normal",
-    fontWeight: typography.weight.bold as any,
-    lineHeight: 41.6,
-  },
+
   body: {
     flex: 3,
     backgroundColor: "white",
