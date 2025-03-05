@@ -4,9 +4,12 @@ import {
   Text,
   TouchableOpacity,
   View,
+  RefreshControl,
+  FlatList,
+  ActivityIndicator,
 } from "react-native";
 import { Controller, useForm } from "react-hook-form";
-import { useRef } from "react";
+import { useRef, useState, useCallback, useEffect } from "react";
 import { TextInput } from "react-native-gesture-handler";
 import { colors } from "../../styles/colors";
 import SearchIcon from "../../../assets/icons/search";
@@ -14,11 +17,37 @@ import { CardProviders } from "./components/CardProviders";
 import Button from "../../components/Button";
 import { useDialogModal } from "../../hook/handle-modal/hooks/actions";
 import { FormProviderAction } from "./components/FormProviderAction";
+import { useGetSuppliersQuery } from "../../services/supplier";
+import { useSupplierFilterActions } from "./ducks/filter/hooks/actions";
+import { debounce } from "lodash";
+import { useFilterState } from "./ducks/filter/hooks/filterState";
+import EmptyIcon from "../../../assets/icons/not-exist";
+const PER_PAGE = 10;
 
 export default function ManageProviders() {
   const inputRef = useRef<TextInput>(null);
-  const { control, handleSubmit } = useForm();
+  const { control } = useForm();
   const { handleModal } = useDialogModal();
+  const filterState = useFilterState();
+  const [data, setData] = useState<any[]>([]);
+  const [isFetchingMore, setIsFetchingMore] = useState(false);
+  const [refreshing, setRefreshing] = useState(false);
+
+  const { filters } = filterState || { filters: {} };
+  const {
+    data: supplier,
+    refetch,
+    isFetching,
+    isLoading,
+  } = useGetSuppliersQuery({
+    search: {
+      search: filters.search,
+      page: filters?.page || 1,
+      perPage: PER_PAGE,
+    },
+  });
+
+  const { updateFilter } = useSupplierFilterActions();
 
   const handleAddProvider = () => {
     handleModal({
@@ -28,11 +57,48 @@ export default function ManageProviders() {
     });
   };
 
-  const handleFocus = () => {
-    if (inputRef.current) {
-      inputRef.current.focus();
-    }
+  const handleInputChange = (value: string) => {
+    updateFilter({ key: "search", value });
   };
+
+  const debouncedHandleInputChange = useCallback(
+    debounce(handleInputChange, 500),
+    []
+  );
+
+  const handleFocus = () => {
+    inputRef.current?.focus();
+  };
+
+  useEffect(() => {
+    setData([]);
+    if (supplier?.data) {
+      setData((prevData) => {
+        const existingIds = new Set(prevData.map((item) => item.id));
+        const newData = supplier.data.filter(
+          (item: any) => !existingIds.has(item.id)
+        );
+        return [...prevData, ...newData];
+      });
+    }
+
+    setIsFetchingMore(false);
+  }, [supplier]);
+
+  const onRefresh = useCallback(() => {
+    setRefreshing(true);
+    refetch().finally(() => {
+      setRefreshing(false);
+    });
+  }, [refetch]);
+
+  const fetchMoreData = () => {
+    if (isFetchingMore || !supplier?.meta?.next) return;
+
+    setIsFetchingMore(true);
+    updateFilter({ key: "page", value: (filters?.page ?? 1) + 1 });
+  };
+
   return (
     <View style={styles.container}>
       <View style={styles.searchProducts}>
@@ -42,33 +108,71 @@ export default function ManageProviders() {
           </TouchableOpacity>
           <Controller
             control={control}
-            name={"name"}
+            name={"search"}
             render={({ field: { onChange, onBlur, value } }) => (
               <TextInput
                 ref={inputRef}
                 style={styles.input}
                 placeholder="Procurar por produto ou código"
                 placeholderTextColor="#999"
-                onChangeText={onChange}
+                onChangeText={(text) => {
+                  onChange(text);
+                  debouncedHandleInputChange(text);
+                }}
                 onBlur={onBlur}
-                value={"productCode"}
+                value={value}
               />
             )}
           />
         </View>
       </View>
-      <ScrollView style={styles.scrollCard}>
-        <CardProviders />
-        <CardProviders />
-        <CardProviders />
-        <CardProviders />
-        <CardProviders />
-        <CardProviders />
-      </ScrollView>
+      {data.length === 0 && !isLoading && (
+        <View
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            width: "100%",
+            alignItems: "center",
+            height: "100%",
+          }}
+        >
+          <EmptyIcon />
+          <Text
+            style={{
+              color: "#000",
+              textAlign: "center",
+              fontFamily: "Inter",
+              fontSize: 14,
+              fontStyle: "normal",
+              fontWeight: "500",
+              lineHeight: 20,
+            }}
+          >
+            Nenhum produto encontrado
+          </Text>
+        </View>
+      )}
+      <FlatList
+        style={styles.scrollCard}
+        data={data}
+        renderItem={({ item }) => (
+          <CardProviders key={item.id} supplier={item} />
+        )}
+        keyExtractor={(item) => item.id.toString()}
+        refreshControl={
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+        }
+        onEndReached={fetchMoreData}
+        onEndReachedThreshold={0.2}
+        ListFooterComponent={
+          isFetchingMore ? (
+            <ActivityIndicator size="large" color={colors.primary[500]} />
+          ) : null
+        }
+      />
+
       <View style={styles.footerButtom}>
-        <Button onPress={() => handleAddProvider()}>
-          Adicionar fornecedor
-        </Button>
+        <Button onPress={handleAddProvider}>Adicionar fornecedor</Button>
       </View>
     </View>
   );
@@ -94,13 +198,10 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     gap: 16,
     backgroundColor: "#FFF",
-    boxShadow: "0px -4px 12px 0px rgba(151, 151, 151, 0.15)",
-  },
-  wrapper: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    padding: 16,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: -4 },
+    shadowOpacity: 0.15,
+    shadowRadius: 12,
   },
   containerInput: {
     flexDirection: "row",
@@ -112,22 +213,10 @@ const styles = StyleSheet.create({
     height: 50,
     width: "100%",
   },
-  icon: {
-    marginRight: 8,
-  },
   input: {
     flex: 1,
     fontSize: 16,
     color: colors.neutral["500"],
-  },
-  barcodeButton: {
-    padding: 8,
-  },
-  submitButton: {
-    marginTop: 16,
-    backgroundColor: "#4CAF50",
-    padding: 10,
-    borderRadius: 8,
   },
   searchProducts: {
     flexDirection: "column",

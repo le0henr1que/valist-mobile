@@ -3,36 +3,51 @@ import { StyleSheet, Text, TextInput, View } from "react-native";
 import { ScrollView } from "react-native-gesture-handler";
 import { Input } from "../../../components/Input/Input.style";
 import Button from "../../../components/Button";
+import { useCreateSupplierMutation } from "../../../services/supplier";
+import { useDialogModal } from "../../../hook/handle-modal/hooks/actions";
 
 export const FormProviderAction = () => {
+  const [createSupplier, { isLoading }] = useCreateSupplierMutation();
+  const { handleModal } = useDialogModal();
+
   const {
     control,
     handleSubmit,
     formState: { errors },
   } = useForm();
 
-  const onSubmit = (data: any) => {
-    console.log(data);
+  const onSubmit = async (data: any) => {
+    const { name, contactInfo } = data;
+    try {
+      await createSupplier({
+        name,
+        contactInfo,
+      }).unwrap();
+    } catch (error) {
+      console.log(error);
+    } finally {
+      handleModal({ isOpen: false });
+    }
   };
   return (
-    <View contentContainerStyle={styles.scrollViewContent}>
+    <ScrollView contentContainerStyle={styles.scrollViewContent}>
       <View style={styles.formContainer}>
         <View style={styles.formContainerLine}>
           <View style={Input.inputView}>
-            <Text style={Input.label}>Nome do produto</Text>
+            <Text style={Input.label}>Nome do fornecedor </Text>
             <Controller
               control={control}
               rules={{ required: true }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
-                  style={errors.price ? Input.styleError : Input.style}
-                  placeholder="R$ 20,00"
+                  style={errors.name ? Input.styleError : Input.style}
+                  placeholder="Digite o nome do fornecedor"
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
                 />
               )}
-              name="price"
+              name="name"
             />
             {errors.name && (
               <Text style={Input.errorText}>Lote é obrigatório</Text>
@@ -43,22 +58,22 @@ export const FormProviderAction = () => {
       <View style={styles.formContainer}>
         <View style={styles.formContainerLine}>
           <View style={Input.inputView}>
-            <Text style={Input.label}>Nome do produto</Text>
+            <Text style={Input.label}>Número (Opcional)</Text>
             <Controller
               control={control}
-              rules={{ required: true }}
+              rules={{ required: false }}
               render={({ field: { onChange, onBlur, value } }) => (
                 <TextInput
-                  style={errors.price ? Input.styleError : Input.style}
-                  placeholder="R$ 20,00"
+                  style={errors.contactInfo ? Input.styleError : Input.style}
+                  placeholder="Digite o número do fornecedor"
                   onBlur={onBlur}
                   onChangeText={onChange}
                   value={value}
                 />
               )}
-              name="price"
+              name="contactInfo"
             />
-            {errors.name && (
+            {errors.contactInfo && (
               <Text style={Input.errorText}>Lote é obrigatório</Text>
             )}
           </View>
@@ -71,10 +86,12 @@ export const FormProviderAction = () => {
           </Button>
         </View>
         <View style={{ width: "100%", flex: 1.5 }}>
-          <Button onPress={handleSubmit(onSubmit)}>Adicionar</Button>
+          <Button onPress={handleSubmit(onSubmit)} isLoading={isLoading}>
+            Adicionar
+          </Button>
         </View>
       </View>
-    </View>
+    </ScrollView>
   );
 };
 

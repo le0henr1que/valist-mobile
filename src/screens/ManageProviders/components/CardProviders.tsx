@@ -6,19 +6,24 @@ import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
 import { useDialogModal } from "../../../hook/handle-modal/hooks/actions";
 import { colors } from "../../../styles/colors";
 import CardMemberAction from "../../components/CardMemberAction";
-import { RootStackParamList } from "../../HomeScreen";
 import CardProviderAction from "../../components/CardProviderAction";
 
-export const CardProviders = () => {
-  const navigate =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+export const CardProviders = ({
+  supplier,
+}: {
+  supplier: { name: string; contactInfo: string };
+}) => {
+  const navigate = useNavigation<NativeStackNavigationProp<any>>();
   const { handleModal } = useDialogModal();
 
   const handleMember = () => {
-    handleModal({ isOpen: true, element: <CardProviderAction /> });
+    handleModal({
+      isOpen: true,
+      element: <CardProviderAction supplier={supplier} />,
+    });
   };
   return (
-    <TouchableOpacity style={styles.card}>
+    <View style={styles.card}>
       <View
         style={{
           flexDirection: "row",
@@ -35,8 +40,8 @@ export const CardProviders = () => {
           }}
         >
           <View>
-            <Text style={styles.name}>Nome do fornecedor</Text>
-            <Text style={styles.role}>(11) 99232-1212</Text>
+            <Text style={styles.name}>{supplier?.name}</Text>
+            <Text style={styles.role}>{supplier?.contactInfo}</Text>
           </View>
         </View>
 
@@ -48,7 +53,7 @@ export const CardProviders = () => {
           />
         </TouchableOpacity>
       </View>
-    </TouchableOpacity>
+    </View>
   );
 };
 const styles = StyleSheet.create({

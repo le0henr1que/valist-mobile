@@ -5,4 +5,5 @@ export enum Tags {
   SUBSCRIPTION = "SUBSCRIPTION",
   PLAN = "PLAN",
   PRODUCT = "PRODUCT",
+  SUPPLIER = "SUPPLIER",
 }

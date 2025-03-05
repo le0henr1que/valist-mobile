@@ -1,6 +1,7 @@
 import { Image, StyleSheet, Text, View } from "react-native";
 import ScamBarIcon from "../../../../assets/icons/scam-bar";
 import { colors } from "../../../styles/colors";
+import { formatCurrency } from "../../../utils/formatToMoney";
 
 export default function CardWatingDate({ product }: { product: any }) {
   return (
@@ -48,8 +49,50 @@ export default function CardWatingDate({ product }: { product: any }) {
                 {product?.code}
               </Text>
             </View>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text style={styles.neutralTitle}>Data de validade: </Text>
+              <Text
+                style={{
+                  color: "#1F2937",
+                  fontSize: 12,
+                  fontStyle: "normal",
+                  fontWeight: "600",
+                  lineHeight: 20,
+                  letterSpacing: 0,
+                }}
+              >
+                {product.date}
+              </Text>
+            </View>
+            <View
+              style={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+              }}
+            >
+              <Text style={styles.neutralTitle}>Local: </Text>
+              <Text
+                style={{
+                  color: "#1F2937",
+                  fontSize: 12,
+                  fontStyle: "normal",
+                  fontWeight: "600",
+                  lineHeight: 20,
+                  letterSpacing: 0,
+                }}
+              >
+                {product.place}
+              </Text>
+            </View>
           </View>
-          <View style={{ flex: 1 }}>
+          <View style={{ flex: 0 }}>
             <Text
               style={{
                 color: colors.primary["600"],
@@ -60,7 +103,7 @@ export default function CardWatingDate({ product }: { product: any }) {
                 letterSpacing: 0,
               }}
             >
-              R$ {product?.price}
+              R$ {formatCurrency(product?.price)}
             </Text>
           </View>
         </View>
@@ -68,7 +111,9 @@ export default function CardWatingDate({ product }: { product: any }) {
           <Text>
             <ScamBarIcon color={"#0D9488"} />
           </Text>
-          <Text style={styles.cardDataTitleFooter}>0 items</Text>
+          <Text style={styles.cardDataTitleFooter}>
+            {product.qtdItems} Itens
+          </Text>
         </View>
       </View>
     </View>

@@ -7,13 +7,36 @@ import { colors } from "../../styles/colors";
 import UserIcon from "../../../assets/icons/user";
 import DeleteMemberAction from "./DeleteMemberAction";
 import CardPermission from "./CardPermission";
+import { useDeleteSupplierMutation } from "../../services/supplier";
+import { useDialogNotification } from "../../hook/notification/hooks/actions";
 
-const CardProviderAction = ({ navigation }: any) => {
+const CardProviderAction = ({ supplier }: { supplier: any }) => {
   const { handleModal } = useDialogModal();
 
-  const handleAddProvider = async () => {};
+  const [deleteSupplier, { isLoading }] = useDeleteSupplierMutation();
+  const { handleNotification } = useDialogNotification();
 
-  const handleDeleteddProvider = () => {};
+  const handleAddProvider = async () => {
+    console.log("Editar o fornecedor", supplier?.id);
+  };
+
+  const handleDeleteddProvider = async () => {
+    console.log("Excluir o fornecedor", supplier);
+    try {
+      await deleteSupplier({
+        id: supplier?.id,
+        version: supplier?.version,
+      }).unwrap();
+      handleModal({ isOpen: false });
+    } catch (error) {
+      handleNotification({
+        isOpen: true,
+        variant: "error",
+        title: "Ocorreu um erro ao excluir o fornecedor",
+        message: (error as any)?.data?.messages[0] || "Ocorreu um erro",
+      });
+    }
+  };
 
   return (
     <View style={styles.container}>

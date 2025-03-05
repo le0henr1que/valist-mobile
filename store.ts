@@ -8,12 +8,14 @@ import { DialogModalState } from "./src/hook/handle-modal/types";
 import { DialogNotificationState } from "./src/hook/notification/types";
 import { apiSlice, loginSlice } from "./src/services/http";
 import authReducer from "./src/auth/slice/auth-slice";
-
+import { FilterStateSupplier } from "./src/screens/ManageProviders/ducks/filter/types";
+import filterSupplierReducer from "./src/screens/ManageProviders/ducks/filter";
 export interface ApplicationState {
   [apiSlice.reducerPath]: ReturnType<typeof apiSlice.reducer>;
   [loginSlice.reducerPath]: ReturnType<typeof loginSlice.reducer>;
   dialogModal: DialogModalState;
   notification: DialogNotificationState;
+  filterSupplier: FilterStateSupplier;
 }
 
 const rootReducer = combineReducers({
@@ -22,6 +24,7 @@ const rootReducer = combineReducers({
   auth: authReducer,
   dialogModal: dialogModalReducer,
   notification: notificationReducer,
+  filterSupplier: filterSupplierReducer,
 });
 
 const persistConfig = {

@@ -8,6 +8,10 @@ import { Input } from "../../components/Input/Input.style";
 import { useDialogModal } from "../../hook/handle-modal/hooks/actions";
 import SaveAction from "../components/SaveAction";
 import CardWatingDate from "./components/card-wating-date";
+import React, { useEffect } from "react";
+import { formatCurrency } from "../../utils/formatToMoney";
+import { CustomInput } from "../../components/Input";
+import { useGetSuppliersQuery } from "../../services/supplier";
 
 function AddProduct() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
@@ -16,14 +20,32 @@ function AddProduct() {
     control,
     handleSubmit,
     formState: { errors },
+    watch,
+    setValue,
   } = useForm();
 
+  const date = watch("validate");
+  const place = watch("place");
+  const qtdItems = watch("qtdItems");
+  const price = watch("price");
+
+  console.log(date);
   const onSubmit = (data: any) => {
     console.log(data);
   };
   const route = useRoute();
   const { productInformation } = route.params as any;
 
+  useEffect(() => {
+    if (productInformation) {
+      setValue("name", productInformation.name);
+      setValue("code", productInformation.code);
+      setValue("price", productInformation.price);
+      setValue("supplier", productInformation.supplier);
+      setValue("batch", productInformation.batch);
+      setValue("qtdItems", productInformation.qtdItems);
+    }
+  }, [productInformation]);
   const handleValidateField = () => {
     handleModal({
       isOpen: true,
@@ -31,10 +53,29 @@ function AddProduct() {
     });
   };
 
+  const {
+    data: supplier,
+    refetch,
+    isFetching,
+    isLoading,
+  } = useGetSuppliersQuery({
+    search: {
+      page: 1,
+      perPage: 100,
+    },
+  });
+
+  const options = supplier?.data?.map((item: any) => ({
+    id: item.id,
+    label: item.name,
+  }));
+
   return (
     <View style={styles.container}>
       <View style={styles.insideContainer}>
-        <CardWatingDate product={productInformation} />
+        <CardWatingDate
+          product={{ ...productInformation, date, place, qtdItems, price }}
+        />
         <ScrollView contentContainerStyle={styles.scrollViewContent}>
           <View style={styles.formContainer}>
             <View style={styles.formContainerLine}>
@@ -45,14 +86,14 @@ function AddProduct() {
                   rules={{ required: true }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
-                      style={errors.price ? Input.styleError : Input.style}
-                      placeholder="R$ 20,00"
+                      style={errors.name ? Input.styleError : Input.style}
+                      placeholder="Nome do produto"
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
                     />
                   )}
-                  name="price"
+                  name="name"
                 />
                 {errors.name && (
                   <Text style={Input.errorText}>Lote é obrigatório</Text>
@@ -67,14 +108,14 @@ function AddProduct() {
                   rules={{ required: true }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
-                      style={errors.price ? Input.styleError : Input.style}
-                      placeholder="R$ 20,00"
+                      style={errors.code ? Input.styleError : Input.style}
+                      placeholder="Código do produto"
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
                     />
                   )}
-                  name="price"
+                  name="code"
                 />
                 {errors.name && (
                   <Text style={Input.errorText}>Lote é obrigatório</Text>
@@ -89,11 +130,12 @@ function AddProduct() {
                   rules={{ required: true }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
+                      keyboardType="numeric"
                       style={errors.price ? Input.styleError : Input.style}
                       placeholder="R$ 20,00"
                       onBlur={onBlur}
                       onChangeText={onChange}
-                      value={value}
+                      value={formatCurrency(value)}
                     />
                   )}
                   name="price"
@@ -111,21 +153,22 @@ function AddProduct() {
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={errors.price ? Input.styleError : Input.style}
+                    <CustomInput
+                      variant="date"
                       placeholder="R$ 20,00"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
+                      errors={errors}
+                      name="validate"
                       value={value}
                     />
                   )}
-                  name="price"
+                  name="validate"
                 />
-                {errors.name && (
+                {errors.validate && (
                   <Text style={Input.errorText}>Lote é obrigatório</Text>
                 )}
               </View>
             </View>
+
             <View style={styles.formContainerLine}>
               <View style={(Input.inputView, styles.inputWrapper)}>
                 <Text style={Input.label}>Categoria</Text>
@@ -134,16 +177,16 @@ function AddProduct() {
                   rules={{ required: true }}
                   render={({ field: { onChange, onBlur, value } }) => (
                     <TextInput
-                      style={errors.price ? Input.styleError : Input.style}
+                      style={errors.category ? Input.styleError : Input.style}
                       placeholder="R$ 20,00"
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
                     />
                   )}
-                  name="price"
+                  name="category"
                 />
-                {errors.name && (
+                {errors.category && (
                   <Text style={Input.errorText}>Lote é obrigatório</Text>
                 )}
               </View>
@@ -178,6 +221,7 @@ function AddProduct() {
                     <TextInput
                       style={errors.qtdItems ? Input.styleError : Input.style}
                       placeholder="Ex: 12"
+                      keyboardType="numeric"
                       onBlur={onBlur}
                       onChangeText={onChange}
                       value={value}
@@ -192,7 +236,28 @@ function AddProduct() {
                 )}
               </View>
             </View>
-
+            <View style={styles.formContainerLine}>
+              <View style={(Input.inputView, styles.inputWrapper)}>
+                <Text style={Input.label}>Local</Text>
+                <Controller
+                  control={control}
+                  rules={{ required: true }}
+                  render={({ field: { onChange, onBlur, value } }) => (
+                    <TextInput
+                      style={errors.place ? Input.styleError : Input.style}
+                      placeholder="Ex: Prateleira 2"
+                      onBlur={onBlur}
+                      onChangeText={onChange}
+                      value={value}
+                    />
+                  )}
+                  name="place"
+                />
+                {errors.place && (
+                  <Text style={Input.errorText}>Lote é obrigatório</Text>
+                )}
+              </View>
+            </View>
             <View style={styles.formContainerLine}>
               <View style={(Input.inputView, styles.inputWrapper)}>
                 <Text style={Input.label}>Fornecedor</Text>
@@ -200,19 +265,16 @@ function AddProduct() {
                   control={control}
                   rules={{ required: true }}
                   render={({ field: { onChange, onBlur, value } }) => (
-                    <TextInput
-                      style={errors.supplier ? Input.styleError : Input.style}
+                    <CustomInput
+                      variant="option"
+                      options={options}
+                      errors={errors}
                       placeholder="Selecione o fornecedor"
-                      onBlur={onBlur}
-                      onChangeText={onChange}
-                      value={value}
+                      name="supplier"
                     />
                   )}
                   name="supplier"
                 />
-                {errors.name && (
-                  <Text style={Input.errorText}>Lote é obrigatório</Text>
-                )}
               </View>
             </View>
           </View>
