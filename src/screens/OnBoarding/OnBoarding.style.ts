@@ -10,24 +10,24 @@ export const styles = StyleSheet.create({
     justifyContent: "center",
     alignItems: "center",
   },
-  title: {
-    color: 'rgba(255, 255, 255, 0.90)',
+  /*   title: {
+    color: "rgba(255, 255, 255, 0.90)",
     fontSize: 30,
     fontFamily: typography.fontFamily.semibold,
     lineHeight: 36,
-  },
-  text: {
-    color: 'rgba(255, 255, 255, 0.80)',
+  },*/
+  /*   text: {
+    color: "rgba(255, 255, 255, 0.80)",
     fontSize: 16,
     fontFamily: typography.fontFamily.regular,
     lineHeight: 24,
-  },
+  }, */
   buttonContainer: {
     padding: 20,
     width: "100%",
     gap: 16,
   },
-  Image:{
+  Image: {
     width: "100%",
     height: 618,
   },
