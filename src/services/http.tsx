@@ -127,7 +127,7 @@ const baseQueryWithReauth: BaseQueryFn = async (args, api, extraOptions) => {
   return result;
 };
 
-export const baseQueryWithRetry = retry(baseQueryWithReauth, { maxRetries: 3 });
+export const baseQueryWithRetry = retry(baseQueryWithReauth, { maxRetries: 1 });
 
 export const apiSlice = createApi({
   reducerPath: "api",

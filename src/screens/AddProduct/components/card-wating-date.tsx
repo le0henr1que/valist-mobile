@@ -22,7 +22,12 @@ export default function CardWatingDate({ product }: { product: any }) {
         <View style={styles.cardDataContent}>
           <View>
             <Image
-              source={{ uri: product?.media?.urlFile[0] }}
+              source={{
+                uri:
+                  product?.media?.urlFile[0] ||
+                  product?.imageUri ||
+                  "https://via.placeholder.com/100",
+              }}
               style={styles.image}
             />
           </View>

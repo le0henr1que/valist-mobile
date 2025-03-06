@@ -9,11 +9,7 @@ import { colors } from "../../styles/colors";
 
 const EmptyProduct = ({ navigation, code }: any) => {
   const { handleModal } = useDialogModal();
-  const [isEnabled, setIsEnabled] = React.useState(false);
-  const toggleSwitch = () => {
-    console.log("isEnabled", isEnabled);
-    setIsEnabled((previousState) => !previousState);
-  };
+
   return (
     <View style={styles.container}>
       <View style={styles.containerTitle}>
@@ -29,16 +25,16 @@ const EmptyProduct = ({ navigation, code }: any) => {
       <View style={styles.buttonContainer}>
         <Button
           onPress={() => {
-            navigation.navigate("AddProduct", { productInformation: { code } });
             handleModal({ isOpen: false });
+            navigation.navigate("AddProduct", { productInformation: { code } });
           }}
         >
           Cadastrar manualmente
         </Button>
         <Button
           onPress={() => {
-            navigation.navigate("Home");
             handleModal({ isOpen: false });
+            navigation.navigate("Home");
           }}
           variant="neutral"
         >

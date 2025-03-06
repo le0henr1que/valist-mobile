@@ -11,6 +11,7 @@ import { apiSlice, loginSlice } from "./src/services/http";
 import authReducer from "./src/auth/slice/auth-slice";
 import { FilterStateSupplier } from "./src/screens/ManageProviders/ducks/filter/types";
 import filterSupplierReducer from "./src/screens/ManageProviders/ducks/filter";
+import filterProductReducer from "./src/screens/AddProduct/ducks/filter";
 
 const rootReducer = combineReducers({
   [apiSlice.reducerPath]: apiSlice.reducer,
@@ -19,7 +20,18 @@ const rootReducer = combineReducers({
   dialogModal: dialogModalReducer,
   notification: notificationReducer,
   filterSupplier: filterSupplierReducer,
+  filterProduct: filterProductReducer,
 });
+
+export type ApplicationState = {
+  [apiSlice.reducerPath]: ReturnType<typeof apiSlice.reducer>;
+  [loginSlice.reducerPath]: ReturnType<typeof loginSlice.reducer>;
+  auth: ReturnType<typeof authReducer>;
+  dialogModal: DialogModalState;
+  notification: DialogNotificationState;
+  filterSupplier: FilterStateSupplier;
+  filterProduct: ReturnType<typeof filterProductReducer>;
+};
 
 const persistConfig = {
   key: "root",

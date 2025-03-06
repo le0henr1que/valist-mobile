@@ -90,16 +90,17 @@ const BarcodeScanner = () => {
       setLoading(true);
     }
     console.log(`Barcode type: ${type}, data: ${data}`);
+  };
+
+  useEffect(() => {
     if (error) {
       console.log("Ocorreu um erro ao buscar o produto", error);
       handleModal({
         isOpen: true,
-        element: <EmptyProduct navigation={navigation} code={data} />,
+        element: <EmptyProduct navigation={navigation} code={productCode} />,
       });
+      return;
     }
-  };
-
-  useEffect(() => {
     if (!isFetching && productInformation) {
       setLoading(false);
       const redirectTo = isSearch ? "Home" : "AddProduct";

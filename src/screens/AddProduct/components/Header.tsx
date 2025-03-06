@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { StyleSheet, Text, TouchableOpacity, View } from "react-native";
@@ -5,16 +6,22 @@ import Ionicons from "react-native-vector-icons/Ionicons";
 import { useMeQuery } from "../../../services/me";
 import { colors } from "../../../styles/colors";
 import { typography } from "../../../styles/typography";
+import { CameraPermission } from "../../../components/CameraPermission/Index";
+import { useProductFilterActions } from "../ducks/filter/hooks/actions";
 
 export default function Header() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-  const notificationCount = 1;
-  const { data: user } = useMeQuery();
+  const { updateFilter } = useProductFilterActions();
+  const handleImageSelected = (uri: string | null) => {
+    updateFilter({ key: "imageUri", value: uri });
+  };
+
   return (
     <View style={styles.container}>
       <View style={{ display: "flex", flexDirection: "row", gap: 12 }}>
         <TouchableOpacity
           onPress={() => {
+            updateFilter({ key: "imageUri", value: null });
             navigation.goBack();
             navigation.goBack();
           }}
@@ -44,9 +51,9 @@ export default function Header() {
           gap: 12,
         }}
       >
-        <TouchableOpacity onPress={() => console.log("Help")}>
+        <CameraPermission onImageSelected={handleImageSelected}>
           <Ionicons name="camera-outline" size={24} color="#343330" />
-        </TouchableOpacity>
+        </CameraPermission>
       </View>
     </View>
   );
