@@ -12,6 +12,7 @@ import authReducer from "./src/auth/slice/auth-slice";
 import { FilterStateSupplier } from "./src/screens/ManageProviders/ducks/filter/types";
 import filterSupplierReducer from "./src/screens/ManageProviders/ducks/filter";
 import filterProductReducer from "./src/screens/AddProduct/ducks/filter";
+import filterBatchReducer from "./src/screens/HomeScreen/screens/expirations/ducks/filter";
 
 const rootReducer = combineReducers({
   [apiSlice.reducerPath]: apiSlice.reducer,
@@ -21,6 +22,7 @@ const rootReducer = combineReducers({
   notification: notificationReducer,
   filterSupplier: filterSupplierReducer,
   filterProduct: filterProductReducer,
+  filterBatch: filterBatchReducer,
 });
 
 export type ApplicationState = {
@@ -31,6 +33,7 @@ export type ApplicationState = {
   notification: DialogNotificationState;
   filterSupplier: FilterStateSupplier;
   filterProduct: ReturnType<typeof filterProductReducer>;
+  filterBatch: ReturnType<typeof filterProductReducer>;
 };
 
 const persistConfig = {

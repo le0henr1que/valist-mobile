@@ -1,27 +1,22 @@
 import { useNavigation } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import React from "react";
 import { Image, StyleSheet, Text, TouchableOpacity, View } from "react-native";
+import Ionicons from "react-native-vector-icons/Ionicons";
 import DotsVertical from "../../../assets/icons/dots-vertical";
 import ScamBarIcon from "../../../assets/icons/scam-bar";
-import TrashIcon from "../../../assets/icons/trash";
 import { useDialogModal } from "../../hook/handle-modal/hooks/actions";
 import { colors } from "../../styles/colors";
-import { RootStackParamList } from "../HomeScreen";
-import CardAction from "./CardProductAction";
-import Ionicons from "react-native-vector-icons/Ionicons";
 import { typography } from "../../styles/typography";
+import CardAction from "./CardProductAction";
 
-const ProductCard = ({ product }: any) => {
+const ProductCard = ({ item }: any) => {
   const { handleModal } = useDialogModal();
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
 
   const handlePressProductCard = () => {
     console.log("Produto clicado");
     navigation.navigate("ViewProduct");
   };
-
   const handlePress = () => {
     handleModal({
       isOpen: true,
@@ -30,7 +25,7 @@ const ProductCard = ({ product }: any) => {
   };
   return (
     <>
-      <TouchableOpacity>
+      <TouchableOpacity style={{ paddingBottom: 16 }}>
         <View style={styles.card}>
           <TouchableOpacity onPress={() => handlePress()} style={styles.header}>
             <View
@@ -48,7 +43,7 @@ const ProductCard = ({ product }: any) => {
                 style={{ marginLeft: 8 }}
               />
               <Text style={styles.expiredText}>
-                VENCIDO HÁ {product.expiredDays || 0} DIAS
+                VENCIDO HÁ {item?.product?.expiredDays || 0} DIAS
               </Text>
             </View>
             <TouchableOpacity onPress={() => handlePress()}>
@@ -57,7 +52,10 @@ const ProductCard = ({ product }: any) => {
           </TouchableOpacity>
           <TouchableOpacity onPress={() => handlePressProductCard()}>
             <View style={styles.body}>
-              <Image source={{ uri: product.image }} style={styles.image} />
+              <Image
+                source={{ uri: item?.product?.image }}
+                style={styles.image}
+              />
               <View style={styles.details}>
                 <View
                   style={{
@@ -72,17 +70,17 @@ const ProductCard = ({ product }: any) => {
                     numberOfLines={2}
                     ellipsizeMode="tail"
                   >
-                    {product.name}
+                    {item?.product?.name}
                   </Text>
-                  <Text style={styles.price}>R$ {product.price}</Text>
+                  <Text style={styles.price}>R$ {item?.price}</Text>
                 </View>
                 <Text style={styles.text}>
                   Código do produto:{" "}
-                  <Text style={styles.text2}>{product.code}</Text>
+                  <Text style={styles.text2}>{item?.code}</Text>
                 </Text>
                 <Text style={styles.text}>
                   Data de validade:{" "}
-                  <Text style={styles.text2}>{product.expiryDate}</Text>
+                  <Text style={styles.text2}>{item?.expiryDate}</Text>
                 </Text>
                 <Text style={styles.text}>
                   Local: <Text style={styles.text2}>Prateleira K12</Text>
@@ -99,9 +97,9 @@ const ProductCard = ({ product }: any) => {
                 }}
               >
                 <ScamBarIcon color={colors.primary["600"]} />
-                <Text style={styles.quantity}>{product.quantity} itens</Text>
+                <Text style={styles.quantity}>{item?.quantity} itens</Text>
               </View>
-              <Text style={styles.category}>{product.category}</Text>
+              <Text style={styles.category}>{item?.category}</Text>
             </View>
           </TouchableOpacity>
         </View>

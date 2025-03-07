@@ -5,115 +5,52 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect, useRef, useState } from "react";
 import { useForm } from "react-hook-form";
 import {
+  BackHandler,
   SafeAreaView,
-  ScrollView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-import { Modalize } from "react-native-modalize";
-import { RootStackParamList } from "../..";
-import SearchIcon from "../../../../../assets/search";
-import { useDialogModal } from "../../../../hook/handle-modal/hooks/actions";
+1;
+import { useGetBatchsQuery } from "../../../../services/batch";
 import { colors } from "../../../../styles/colors";
-import FilterCarousel from "../../../components/FilterCarousel";
-import FilterModalize from "../../../components/FilterModalize";
-import ProductCard from "../../../components/ProductCard";
+import { typography } from "../../../../styles/typography";
 import SearchInput from "../../../components/SearchInput";
 import Header from "../../components/Header";
-import { typography } from "../../../../styles/typography";
-import { CustomInput } from "../../../../components/Input";
-import { useToast } from "react-native-toast-notifications";
+import InfiniteScrollWithLoad from "../../../../components/InfiniteScrellWithLoad";
+import { useFilterState } from "./ducks/filter/hooks/filterState";
+import { useBatchFilterActions } from "./ducks/filter/hooks/actions";
+import ProductCard from "../../../components/ProductCard";
+import { pad } from "lodash";
 
-export const productList = [
-  {
-    name: "Desod Rexona invisible Men 150ml",
-    price: 200.0,
-    code: "1234567890",
-    expiryDate: "12/12/2023",
-    image: "https://via.placeholder.com/60",
-    quantity: 5,
-    category: "Produtos de Higiene",
-    expiredDays: 2,
-  },
-  {
-    name: "Outro Produto Exemplo",
-    price: 15.0,
-    code: "0987654321",
-    expiryDate: "10/12/2023",
-    image: "https://via.placeholder.com/60",
-    quantity: 3,
-    category: "Alimentos",
-    expiredDays: 5,
-  },
-  {
-    name: "Outro Produto Exemplo",
-    price: 15.0,
-    code: "0987654321",
-    expiryDate: "10/12/2023",
-    image: "https://via.placeholder.com/60",
-    quantity: 3,
-    category: "Alimentos",
-    expiredDays: 5,
-  },
-  {
-    name: "Outro Produto Exemplo",
-    price: 15.0,
-    code: "0987654321",
-    expiryDate: "10/12/2023",
-    image: "https://via.placeholder.com/60",
-    quantity: 3,
-    category: "Alimentos",
-    expiredDays: 5,
-  },
-  {
-    name: "Outro Produto Exemplo",
-    price: 15.0,
-    code: "0987654321",
-    expiryDate: "10/12/2023",
-    image: "https://via.placeholder.com/60",
-    quantity: 3,
-    category: "Alimentos",
-    expiredDays: 5,
-  },
-  {
-    name: "Outro Produto Exemplo",
-    price: 15.0,
-    code: "0987654321",
-    expiryDate: "10/12/2023",
-    image: "https://via.placeholder.com/60",
-    quantity: 3,
-    category: "Alimentos",
-    expiredDays: 5,
-  },
-  {
-    name: "Outro Produto Exemplo",
-    price: 15.0,
-    code: "0987654321",
-    expiryDate: "10/12/2023",
-    image: "https://via.placeholder.com/60",
-    quantity: 3,
-    category: "Alimentos",
-    expiredDays: 5,
-  },
-];
-
-interface Filters {
-  [key: string]: string[];
-}
+const PER_PAGE = 10;
 
 function Expirations() {
-  const { control, handleSubmit } = useForm();
-
-  const navigation =
-    useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+  const { control } = useForm();
+  const navigation = useNavigation<NativeStackNavigationProp<any>>();
+  const { updateFilter } = useBatchFilterActions();
   const isFocused = useIsFocused();
   const route = useRoute();
   const { productCode } = (route.params as any) || { productCode: "" };
+  const filterState = useFilterState();
+  const { filters } = filterState || { filters: {} };
+
+  const {
+    data: batchs,
+    isLoading,
+    refetch,
+    isFetching,
+  } = useGetBatchsQuery({
+    search: {
+      search: filters.search,
+      page: filters?.page || 1,
+      perPage: PER_PAGE,
+    },
+  });
 
   useLayoutEffect(() => {
     if (isFocused) {
@@ -121,65 +58,19 @@ function Expirations() {
     }
   }, [navigation, isFocused]);
 
-  const onSubmit = (data: any) => {
-    console.log("Dados enviados:", data);
-  };
-
   const handleBarcodePress = () => {
-    console.log("Ação para leitura de código de barras");
     navigation.navigate("BarcodeScannerApp", { isSearch: true });
   };
 
   const handleFloatingButtonPress = () => {
-    console.log("Botão flutuante pressionado");
     navigation.navigate("BarcodeScannerApp", { isSearch: false });
   };
 
-  const [selectedFilter, setSelectedFilter] = useState("Todos");
-  const [selectedFilterItem, setSelectedFilterItem] = useState("Todos");
-  const modalizeRefs = useRef<{ [key: string]: Modalize | null }>({});
-  // const { isOpen, element, title } = useDialogModalState();
-  const { handleModal } = useDialogModal();
-
-  const filters: { [key: string]: string[] } = {
-    Todos: [],
-    Categorias: [
-      "Todas as categorias",
-      "Mercearia",
-      "Padaria",
-      "Carnes",
-      "Frutas e Legumes",
-      "Frios e Laticínios",
-      "Higiene",
-      "Congelados",
-      "Material de Limpeza",
-      "Bebidas",
-      "Outros",
-    ],
-    Quantidade: ["Todas", "Com Lotes", "Unitário"],
-    Preço: ["Até R$10", "R$10 - R$50", "Acima de R$50"],
-    Marca: ["Marca A", "Marca B", "Marca C"],
-    Vencimento: ["Todas", "Vencidos", "Próximos ao vencimento", "Em dia"],
+  const renderItem = ({ item }: { item: any }) => {
+    return <ProductCard item={item} />;
   };
 
-  const handleFilterPress = (filter: string) => {
-    setSelectedFilter(filter);
-    const selectedItems = filters[filter] || [];
-
-    handleModal({
-      isOpen: true,
-      element: (
-        <FilterModalize
-          filter={selectedItems}
-          onSelectFilter={(item) => {
-            setSelectedFilterItem(item);
-            console.log("Item selecionado:", item);
-          }}
-        />
-      ),
-      title: filter,
-    });
-  };
+  const keyExtractor = (item: any) => item.id.toString();
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <Header />
@@ -191,49 +82,27 @@ function Expirations() {
             control={control}
             onBarcodePress={handleBarcodePress}
           />
-          <View style={{ height: 32, marginTop: 20 }}>
-            <FilterCarousel
-              onFilterPress={handleFilterPress}
-              filters={Object.keys(filters)}
-              selectedFilter={selectedFilter}
-            />
-          </View>
         </View>
         <View style={styles.containerTitle}>
           <Text style={styles.title}>Todos os produtos</Text>
-          <Text style={styles.badge}>{productList.length}</Text>
+          <Text style={styles.badge}>{batchs?.meta?.total}</Text>
         </View>
-        {!productList.length && (
-          <View
-            style={{
-              alignItems: "center",
-              display: "flex",
-              height: "60%",
-              flexDirection: "column",
-              justifyContent: "center",
-            }}
-          >
-            <SearchIcon />
-            <Text style={{ color: "#000", fontWeight: 500, lineHeight: 20 }}>
-              Nenhum produto encontrado
-            </Text>
-          </View>
-        )}
-        <ScrollView
-          style={{
+
+        <InfiniteScrollWithLoad
+          flatStyle={{
             width: "100%",
+            marginBottom: 16,
             display: "flex",
             flexDirection: "column",
           }}
-          showsHorizontalScrollIndicator={false}
-          showsVerticalScrollIndicator={false}
-        >
-          {productList.map((product, index) => (
-            <View key={index} style={{ marginBottom: 16 }}>
-              <ProductCard product={product} />
-            </View>
-          ))}
-        </ScrollView>
+          dataResponse={batchs}
+          isLoading={isLoading}
+          refetch={refetch}
+          renderItem={renderItem}
+          keyExtractor={keyExtractor}
+          hookModifyPaginated={updateFilter}
+        />
+
         <TouchableOpacity
           style={styles.floatingButton}
           onPress={handleFloatingButtonPress}

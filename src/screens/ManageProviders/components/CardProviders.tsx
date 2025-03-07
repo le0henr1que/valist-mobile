@@ -7,6 +7,7 @@ import { useDialogModal } from "../../../hook/handle-modal/hooks/actions";
 import { colors } from "../../../styles/colors";
 import CardMemberAction from "../../components/CardMemberAction";
 import CardProviderAction from "../../components/CardProviderAction";
+import { formatPhoneNumber } from "../../../utils/formatPhoneNumber";
 
 export const CardProviders = ({
   supplier,
@@ -41,7 +42,9 @@ export const CardProviders = ({
         >
           <View>
             <Text style={styles.name}>{supplier?.name}</Text>
-            <Text style={styles.role}>{supplier?.contactInfo}</Text>
+            <Text style={styles.role}>
+              {formatPhoneNumber(supplier?.contactInfo)}
+            </Text>
           </View>
         </View>
 

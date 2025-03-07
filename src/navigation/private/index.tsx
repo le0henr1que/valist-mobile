@@ -53,7 +53,7 @@ export default function PrivateRoute() {
       <Stack.Screen
         name="ManageProviders"
         component={ManageProviders}
-        options={{ title: "Gerenciar Fornecedores" }}
+        options={{ title: "Gerenciar Fornecedores", headerShown: false }}
       />
       <Stack.Screen
         name="ManageStores"

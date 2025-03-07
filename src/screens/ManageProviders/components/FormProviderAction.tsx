@@ -5,6 +5,7 @@ import { Input } from "../../../components/Input/Input.style";
 import Button from "../../../components/Button";
 import { useCreateSupplierMutation } from "../../../services/supplier";
 import { useDialogModal } from "../../../hook/handle-modal/hooks/actions";
+import { formatPhoneNumber } from "../../../utils/formatPhoneNumber";
 
 export const FormProviderAction = () => {
   const [createSupplier, { isLoading }] = useCreateSupplierMutation();
@@ -50,7 +51,9 @@ export const FormProviderAction = () => {
               name="name"
             />
             {errors.name && (
-              <Text style={Input.errorText}>Lote é obrigatório</Text>
+              <Text style={Input.errorText}>
+                Nome do fornecedor é obrigatório
+              </Text>
             )}
           </View>
         </View>
@@ -68,7 +71,7 @@ export const FormProviderAction = () => {
                   placeholder="Digite o número do fornecedor"
                   onBlur={onBlur}
                   onChangeText={onChange}
-                  value={value}
+                  value={formatPhoneNumber(value)}
                 />
               )}
               name="contactInfo"

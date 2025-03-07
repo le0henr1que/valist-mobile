@@ -7,6 +7,7 @@ import {
   RefreshControl,
   FlatList,
   ActivityIndicator,
+  SafeAreaView,
 } from "react-native";
 import { Controller, useForm } from "react-hook-form";
 import { useRef, useState, useCallback, useEffect } from "react";
@@ -22,6 +23,9 @@ import { useSupplierFilterActions } from "./ducks/filter/hooks/actions";
 import { debounce } from "lodash";
 import { useFilterState } from "./ducks/filter/hooks/filterState";
 import EmptyIcon from "../../../assets/icons/not-exist";
+import { LoadTable } from "../../components/LoadTable";
+import Header from "./components/Header";
+import InfiniteScrollWithLoad from "../../components/InfiniteScrellWithLoad";
 const PER_PAGE = 10;
 
 export default function ManageProviders() {
@@ -99,8 +103,18 @@ export default function ManageProviders() {
     updateFilter({ key: "page", value: (filters?.page ?? 1) + 1 });
   };
 
+  const isLoad = isLoading || isFetching;
+
+  const renderItem = ({ item }: { item: any }) => {
+    return <CardProviders key={item.id} supplier={item} />; // Substitua pelo seu componente de item
+  };
+  const keyExtractor = (item: any) => item.id.toString();
+
   return (
     <View style={styles.container}>
+      <SafeAreaView>
+        <Header />
+      </SafeAreaView>
       <View style={styles.searchProducts}>
         <View style={styles.containerInput}>
           <TouchableOpacity onPress={handleFocus}>
@@ -126,51 +140,37 @@ export default function ManageProviders() {
           />
         </View>
       </View>
-      {data.length === 0 && !isLoading && (
-        <View
-          style={{
-            flex: 1,
-            justifyContent: "center",
-            width: "100%",
-            alignItems: "center",
-            height: "100%",
-          }}
-        >
-          <EmptyIcon />
-          <Text
-            style={{
-              color: "#000",
-              textAlign: "center",
-              fontFamily: "Inter",
-              fontSize: 14,
-              fontStyle: "normal",
-              fontWeight: "500",
-              lineHeight: 20,
-            }}
-          >
-            Nenhum produto encontrado
-          </Text>
-        </View>
-      )}
-      <FlatList
-        style={styles.scrollCard}
-        data={data}
-        renderItem={({ item }) => (
-          <CardProviders key={item.id} supplier={item} />
-        )}
-        keyExtractor={(item) => item.id.toString()}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
-        }
-        onEndReached={fetchMoreData}
-        onEndReachedThreshold={0.2}
-        ListFooterComponent={
-          isFetchingMore ? (
-            <ActivityIndicator size="large" color={colors.primary[500]} />
-          ) : null
-        }
-      />
 
+      {/* <LoadTable isLoading={isLoad} dataTableLength={supplier?.data.length} /> */}
+
+      <InfiniteScrollWithLoad
+        hookModifyPaginated={updateFilter}
+        dataResponse={supplier}
+        isLoading={isLoading}
+        refetch={refetch}
+        renderItem={renderItem}
+        keyExtractor={keyExtractor}
+      />
+      {/* {!isLoad && (
+        <FlatList
+          style={styles.scrollCard}
+          data={data}
+          renderItem={({ item }) => (
+            <CardProviders key={item.id} supplier={item} />
+          )}
+          keyExtractor={(item) => item.id.toString()}
+          refreshControl={
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+          }
+          onEndReached={fetchMoreData}
+          onEndReachedThreshold={0.2}
+          ListFooterComponent={
+            isFetchingMore ? (
+              <ActivityIndicator size="large" color={colors.primary[500]} />
+            ) : null
+          }
+        />
+      )} */}
       <View style={styles.footerButtom}>
         <Button onPress={handleAddProvider}>Adicionar fornecedor</Button>
       </View>
