@@ -5,27 +5,25 @@ import {
   useRoute,
 } from "@react-navigation/native";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
-import { useLayoutEffect, useRef, useState } from "react";
+import { useLayoutEffect } from "react";
 import { useForm } from "react-hook-form";
 import {
-  BackHandler,
   SafeAreaView,
   StyleSheet,
   Text,
   TouchableOpacity,
   View,
 } from "react-native";
-1;
+import InfiniteScrollWithLoad from "../../../../components/InfiniteScrellWithLoad";
 import { useGetBatchsQuery } from "../../../../services/batch";
 import { colors } from "../../../../styles/colors";
 import { typography } from "../../../../styles/typography";
+import ProductCard from "../../../components/ProductCard";
 import SearchInput from "../../../components/SearchInput";
 import Header from "../../components/Header";
-import InfiniteScrollWithLoad from "../../../../components/InfiniteScrellWithLoad";
-import { useFilterState } from "./ducks/filter/hooks/filterState";
 import { useBatchFilterActions } from "./ducks/filter/hooks/actions";
-import ProductCard from "../../../components/ProductCard";
-import { pad } from "lodash";
+import { useFilterState } from "./ducks/filter/hooks/filterState";
+1;
 
 const PER_PAGE = 10;
 
@@ -35,10 +33,9 @@ function Expirations() {
   const { updateFilter } = useBatchFilterActions();
   const isFocused = useIsFocused();
   const route = useRoute();
-  const { productCode } = (route.params as any) || { productCode: "" };
+  const { productInformation } = (route.params as any) || {};
   const filterState = useFilterState();
   const { filters } = filterState || { filters: {} };
-
   const {
     data: batchs,
     isLoading,
@@ -53,6 +50,7 @@ function Expirations() {
   });
 
   useLayoutEffect(() => {
+    updateFilter({ key: "search", value: productInformation?.code });
     if (isFocused) {
       navigation.getParent()?.setOptions({ tabBarStyle: { display: "flex" } });
     }
@@ -65,7 +63,6 @@ function Expirations() {
   const handleFloatingButtonPress = () => {
     navigation.navigate("BarcodeScannerApp", { isSearch: false });
   };
-
   const renderItem = ({ item }: { item: any }) => {
     return <ProductCard item={item} />;
   };
@@ -78,7 +75,7 @@ function Expirations() {
         <View style={styles.searchProducts}>
           <SearchInput
             name="search"
-            productCode={productCode}
+            productCode={filters.search}
             control={control}
             onBarcodePress={handleBarcodePress}
           />

@@ -20,6 +20,8 @@ import { batch, useCreateBatchMutation } from "../../services/batch";
 import { useToast } from "react-native-toast-notifications";
 import { parse, format } from "date-fns";
 import { useUploadUserFileMutation } from "../../services/me";
+import { useUploadFileMutation } from "../../services/file";
+import { API_URL } from "@env";
 
 /**
  *
@@ -30,7 +32,6 @@ function AddProduct() {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const route = useRoute();
   const { productInformation } = route.params as any;
-  const { handleModal } = useDialogModal();
   const {
     control,
     handleSubmit,
@@ -47,27 +48,29 @@ function AddProduct() {
 
   const [createBatch, { isLoading }] = useCreateBatchMutation();
   const toast = useToast();
-  const [uploadUserFile] = useUploadUserFileMutation();
+  const [uploadFile, { isLoading: isLoadingFile }] = useUploadFileMutation();
   const { filters } = useFilterState();
 
+  const isLoad = isLoading || isLoadingFile;
   const onSubmit = async (data: any) => {
     try {
-      console.log(filters, "DATA_DATA");
-      // if (imageUri) {
-      //   try {
-      //     const formData = new FormData();
-      //     const file = {
-      //       uri: imageUri,
-      //       type: "image/jpeg",
-      //       name: "photo.jpg",
-      //     };
-      //     await uploadUserFile({
-      //       file: file,
-      //     }).unwrap();
-      //   } catch (error) {
-      //     console.log("Upload file error:", error);
-      //   }
-      // }
+      if (filters?.imageUrl?.includes("file://")) {
+        try {
+          const formData = new FormData();
+          const file = {
+            uri: filters?.imageUrl,
+            type: "image/jpeg",
+            name: "photo.jpg",
+          };
+          await uploadFile({
+            file: file,
+            entity_name: "PRODUCT",
+            entity_id: data?.code,
+          }).unwrap();
+        } catch (error) {
+          console.log("Upload file error:", error);
+        }
+      }
       let formattedDate = null;
       if (data.validate) {
         const parsedDate = parse(data.validate, "dd/MM/yyyy", new Date());
@@ -86,6 +89,7 @@ function AddProduct() {
         productValidate: formattedDate,
         productPlace: data?.place,
         quantity: data?.qtdItems,
+        imageUrl: `${API_URL}/file/image/${data?.code}`,
       }).unwrap();
       navigation.goBack();
       navigation.goBack();
@@ -135,10 +139,10 @@ function AddProduct() {
     id: item.id,
     label: item.name,
   }));
-
+  console.log(filters);
   return (
     <SafeAreaView style={styles.container}>
-      <Header />
+      <Header productInformation={productInformation} />
       <View style={styles.insideContainer}>
         <CardWatingDate
           product={{
@@ -148,7 +152,7 @@ function AddProduct() {
             qtdItems,
             price,
             name,
-            imageUri: filters?.imageUri,
+            imageUrl: productInformation?.imageUrl ?? filters?.imageUrl,
           }}
         />
         <ScrollView
@@ -363,7 +367,7 @@ function AddProduct() {
         </ScrollView>
       </View>
       <View style={styles.buttonContainer}>
-        <Button onPress={handleSubmit(onSubmit)} isLoading={isLoading}>
+        <Button onPress={handleSubmit(onSubmit)} isLoading={isLoad}>
           Salvar Produto
         </Button>
       </View>

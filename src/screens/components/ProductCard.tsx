@@ -15,6 +15,8 @@ import { formatCurrency } from "../../utils/formatToMoney";
 
 const ProductCard = ({ item }: any) => {
   const { handleModal } = useDialogModal();
+  console.log(item);
+
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const handlePressProductCard = () => {
     console.log("Produto clicado");
@@ -79,7 +81,7 @@ const ProductCard = ({ item }: any) => {
           <TouchableOpacity onPress={() => handlePressProductCard()}>
             <View style={styles.body}>
               <Image
-                source={{ uri: item?.product?.media?.urlFile[0] }}
+                source={{ uri: item?.product?.imageUrl }}
                 style={styles.image}
               />
               <View style={styles.details}>

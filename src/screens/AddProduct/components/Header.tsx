@@ -9,11 +9,15 @@ import { typography } from "../../../styles/typography";
 import { CameraPermission } from "../../../components/CameraPermission/Index";
 import { useProductFilterActions } from "../ducks/filter/hooks/actions";
 
-export default function Header() {
+export default function Header({
+  productInformation,
+}: {
+  productInformation: any;
+}) {
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const { updateFilter } = useProductFilterActions();
   const handleImageSelected = (uri: string | null) => {
-    updateFilter({ key: "imageUri", value: uri });
+    updateFilter({ key: "imageUrl", value: uri });
   };
 
   return (
@@ -51,9 +55,11 @@ export default function Header() {
           gap: 12,
         }}
       >
-        <CameraPermission onImageSelected={handleImageSelected}>
-          <Ionicons name="camera-outline" size={24} color="#343330" />
-        </CameraPermission>
+        {!productInformation?.imageUrl && (
+          <CameraPermission onImageSelected={handleImageSelected}>
+            <Ionicons name="camera-outline" size={24} color="#343330" />
+          </CameraPermission>
+        )}
       </View>
     </View>
   );

@@ -26,6 +26,7 @@ import { colors } from "../../styles/colors";
 import loadScam from "../../../assets/load-scam.json";
 import { useDialogNotification } from "../../hook/notification/hooks/actions";
 import EmptyProduct from "../components/emptProductAction";
+import { navigate } from "../../navigation/navigationService";
 
 const BarcodeScanner = () => {
   const [hasPermission, setHasPermission] = useState<boolean | null>(null);
@@ -92,8 +93,19 @@ const BarcodeScanner = () => {
     console.log(`Barcode type: ${type}, data: ${data}`);
   };
 
+  const navigateTo = ({ isSearch, productInformation }: any) => {
+    isSearch
+      ? navigate("Home", {
+          screen: "Vencimentos",
+          params: {
+            screen: "Expirations",
+            params: { productInformation },
+          },
+        })
+      : navigate("AddProduct", { productInformation });
+  };
   useEffect(() => {
-    if (error) {
+    if (error && !isSearch) {
       console.log("Ocorreu um erro ao buscar o produto", error);
       handleModal({
         isOpen: true,
@@ -105,7 +117,8 @@ const BarcodeScanner = () => {
       setLoading(false);
       const redirectTo = isSearch ? "Home" : "AddProduct";
       console.log(productInformation, "productInformation");
-      navigation.navigate(redirectTo, { productInformation });
+
+      navigateTo({ isSearch, productInformation });
     }
   }, [isFetching, productInformation, isSearch, navigation]);
 

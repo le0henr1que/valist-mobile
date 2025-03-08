@@ -22,6 +22,7 @@ export interface CreateBatch {
   productValidate?: any;
   productPlace?: string;
   productImage?: string;
+  imageUrl?: string;
 }
 
 export const batch = apiSlice.injectEndpoints({

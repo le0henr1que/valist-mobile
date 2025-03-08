@@ -71,10 +71,7 @@ export default function CardWatingDate({ product }: { product: any }) {
           <View>
             <Image
               source={{
-                uri:
-                  product?.media?.urlFile[0] ||
-                  product?.imageUri ||
-                  "https://via.placeholder.com/100",
+                uri: product?.imageUrl,
               }}
               style={styles.image}
             />

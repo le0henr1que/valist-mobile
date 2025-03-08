@@ -25,6 +25,7 @@ import {
 } from "../../services/me";
 import { colors } from "../../styles/colors";
 import { API_URL } from "@env";
+import { useToast } from "react-native-toast-notifications";
 
 export default function PersonInformation() {
   const [imageUri, setImageUri] = useState<string | null>(null);
@@ -113,12 +114,15 @@ export default function PersonInformation() {
   const [updateUser, { isLoading }] = useUpdateUserMutation();
   const { handleNotification } = useDialogNotification();
   const dispatch = useDispatch();
-  const [uploadUserFile] = useUploadUserFileMutation();
+  const [uploadUserFile, { isLoading: isLoadingUrlImage }] =
+    useUploadUserFileMutation();
+  const toast = useToast();
+
+  const isLoad = isLoading || isLoadingUrlImage;
 
   const onSubmit = async (data: any) => {
     if (imageUri) {
       try {
-        const formData = new FormData();
         const file = {
           uri: imageUri,
           type: "image/jpeg",
@@ -145,24 +149,16 @@ export default function PersonInformation() {
         payload: updatedUser,
       });
       navigation.goBack();
+      toast.show("Usuário atualizado com sucesso!", {
+        type: "success",
+        placement: "top",
+      });
     } catch (error) {
-      console.log(error);
-      handleNotification({
-        isOpen: true,
-        variant: "error",
-        title: "Falha ao atualizar os dados",
-        message:
-          "Ocorreu um erro ao tentar atualizar os dados. Tente novamente mais tarde.",
+      toast.show("Erro ao atualizar usuario!", {
+        type: "error",
+        placement: "top",
       });
     }
-
-    // // Adicionar outros campos do formulário
-    // formData.append("username", data.username);
-    // formData.append("whatsapp", data.whatsapp);
-    // formData.append("phone", data.phone);
-
-    // console.log("FormData criado:", formData);
-    // Aqui você pode enviar o FormData para sua API
   };
 
   useEffect(() => {
@@ -302,7 +298,7 @@ export default function PersonInformation() {
         </View>
         <View style={{ width: "100%" }}>
           <View style={styles.footerButtom}>
-            <Button onPress={handleSubmit(onSubmit)} isLoading={isLoading}>
+            <Button onPress={handleSubmit(onSubmit)} isLoading={isLoad}>
               Salvar dados
             </Button>
           </View>

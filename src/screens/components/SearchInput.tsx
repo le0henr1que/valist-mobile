@@ -1,14 +1,15 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useCallback } from "react";
 import { Controller } from "react-hook-form";
 import { StyleSheet, TextInput, TouchableOpacity, View } from "react-native";
-import ScamBarIcon from "../../../assets/icons/scam-bar";
-import SearchIcon from "../../../assets/icons/search";
+import { Ionicons } from "react-native-vector-icons";
 import { colors } from "../../styles/colors";
-import { Ionicons } from 'react-native-vector-icons';
 import { typography } from "../../styles/typography";
+import { useBatchFilterActions } from "../HomeScreen/screens/expirations/ducks/filter/hooks/actions";
+import debounce from "lodash/debounce";
 
 const SearchInput = ({ name, control, onBarcodePress, productCode }: any) => {
   const inputRef = useRef<TextInput>(null);
+  const { updateFilter } = useBatchFilterActions();
 
   const handleFocus = () => {
     if (inputRef.current) {
@@ -16,29 +17,65 @@ const SearchInput = ({ name, control, onBarcodePress, productCode }: any) => {
     }
   };
 
+  const debouncedUpdateFilter = useCallback(
+    debounce((value) => {
+      updateFilter({ key: "search", value });
+    }, 300),
+    []
+  );
+
+  useEffect(() => {
+    if (inputRef.current && productCode) {
+      inputRef.current.setNativeProps({ text: productCode });
+      updateFilter({ key: "search", value: productCode });
+    }
+  }, [productCode]);
+
   return (
     <View style={styles.container}>
       <TouchableOpacity onPress={handleFocus}>
-      <Ionicons name="search-outline" size={24} color={colors.neutral["500"]}/>
+        <Ionicons
+          name="search-outline"
+          size={24}
+          color={colors.neutral["500"]}
+        />
       </TouchableOpacity>
       <Controller
         control={control}
         name={name}
+        defaultValue={productCode || ""}
         render={({ field: { onChange, onBlur, value } }) => (
           <TextInput
             ref={inputRef}
             style={styles.input}
             placeholder="Procurar por produto ou código"
             placeholderTextColor={colors.neutral[500]}
-            onChangeText={onChange}
+            onChangeText={(text) => {
+              onChange(text);
+              debouncedUpdateFilter(text);
+            }}
             onBlur={onBlur}
-            value={productCode}
+            value={value}
           />
         )}
       />
-      <TouchableOpacity style={styles.barcodeButton} onPress={onBarcodePress}>
-          <Ionicons name="barcode-outline" size={24} color="#343330"/>
-      </TouchableOpacity>
+      {!productCode ? (
+        <TouchableOpacity style={styles.barcodeButton} onPress={onBarcodePress}>
+          <Ionicons name="barcode-outline" size={24} color="#343330" />
+        </TouchableOpacity>
+      ) : (
+        <TouchableOpacity
+          style={styles.barcodeButton}
+          onPress={() => {
+            if (inputRef.current && productCode) {
+              inputRef.current.setNativeProps({ text: "" });
+              updateFilter({ key: "search", value: "" });
+            }
+          }}
+        >
+          <Ionicons name="close" size={24} color="#343330" />
+        </TouchableOpacity>
+      )}
     </View>
   );
 };
@@ -64,7 +101,7 @@ const styles = StyleSheet.create({
     flex: 1,
     fontSize: 14,
     fontFamily: typography.fontFamily.regular,
-    lineHeight:20,
+    lineHeight: 20,
     color: colors.neutral["500"],
   },
   barcodeButton: {
