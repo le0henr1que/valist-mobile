@@ -19,6 +19,7 @@ import { useFilterState } from "./ducks/filter/hooks/filterState";
 import { batch, useCreateBatchMutation } from "../../services/batch";
 import { useToast } from "react-native-toast-notifications";
 import { parse, format } from "date-fns";
+import { useUploadUserFileMutation } from "../../services/me";
 
 /**
  *
@@ -46,9 +47,27 @@ function AddProduct() {
 
   const [createBatch, { isLoading }] = useCreateBatchMutation();
   const toast = useToast();
+  const [uploadUserFile] = useUploadUserFileMutation();
+  const { filters } = useFilterState();
 
   const onSubmit = async (data: any) => {
     try {
+      console.log(filters, "DATA_DATA");
+      // if (imageUri) {
+      //   try {
+      //     const formData = new FormData();
+      //     const file = {
+      //       uri: imageUri,
+      //       type: "image/jpeg",
+      //       name: "photo.jpg",
+      //     };
+      //     await uploadUserFile({
+      //       file: file,
+      //     }).unwrap();
+      //   } catch (error) {
+      //     console.log("Upload file error:", error);
+      //   }
+      // }
       let formattedDate = null;
       if (data.validate) {
         const parsedDate = parse(data.validate, "dd/MM/yyyy", new Date());
@@ -116,7 +135,6 @@ function AddProduct() {
     id: item.id,
     label: item.name,
   }));
-  const { filters } = useFilterState();
 
   return (
     <SafeAreaView style={styles.container}>

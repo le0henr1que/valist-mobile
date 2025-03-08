@@ -8,11 +8,14 @@ import { useDialogModal } from "../../hook/handle-modal/hooks/actions";
 import { colors } from "../../styles/colors";
 import { typography } from "../../styles/typography";
 import CardAction from "./CardProductAction";
+import { calculateDaysExpired } from "../../utils/calculateDaysExpired";
+import { exportIconAndColor } from "../../utils/exportIconAndColor";
+import { formatDate } from "date-fns";
+import { formatCurrency } from "../../utils/formatToMoney";
 
 const ProductCard = ({ item }: any) => {
   const { handleModal } = useDialogModal();
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
-
   const handlePressProductCard = () => {
     console.log("Produto clicado");
     navigation.navigate("ViewProduct");
@@ -27,7 +30,17 @@ const ProductCard = ({ item }: any) => {
     <>
       <TouchableOpacity style={{ paddingBottom: 16 }}>
         <View style={styles.card}>
-          <TouchableOpacity onPress={() => handlePress()} style={styles.header}>
+          <TouchableOpacity
+            onPress={() => handlePress()}
+            style={[
+              styles.header,
+              {
+                backgroundColor: exportIconAndColor(
+                  calculateDaysExpired(item?.expires_at)
+                )?.color,
+              },
+            ]}
+          >
             <View
               style={{
                 display: "flex",
@@ -36,15 +49,28 @@ const ProductCard = ({ item }: any) => {
                 alignItems: "center",
               }}
             >
-              <Ionicons
-                name="trash"
-                size={16}
-                color={colors.white}
-                style={{ marginLeft: 8 }}
-              />
-              <Text style={styles.expiredText}>
-                VENCIDO HÁ {item?.product?.expiredDays || 0} DIAS
-              </Text>
+              {item?.expires_at && (
+                <Ionicons
+                  name={
+                    exportIconAndColor(calculateDaysExpired(item?.expires_at))
+                      ?.icon || "default-icon-name"
+                  }
+                  size={16}
+                  color={colors.white}
+                  style={{ marginLeft: 8 }}
+                />
+              )}
+              {!item?.expires_at && (
+                <Text style={styles.expiredText}>AGUARDANDO DATA</Text>
+              )}
+              {item?.expires_at && (
+                <Text style={styles.expiredText}>
+                  {
+                    exportIconAndColor(calculateDaysExpired(item?.expires_at))
+                      ?.title
+                  }
+                </Text>
+              )}
             </View>
             <TouchableOpacity onPress={() => handlePress()}>
               <DotsVertical />
@@ -53,7 +79,7 @@ const ProductCard = ({ item }: any) => {
           <TouchableOpacity onPress={() => handlePressProductCard()}>
             <View style={styles.body}>
               <Image
-                source={{ uri: item?.product?.image }}
+                source={{ uri: item?.product?.media?.urlFile[0] }}
                 style={styles.image}
               />
               <View style={styles.details}>
@@ -72,18 +98,27 @@ const ProductCard = ({ item }: any) => {
                   >
                     {item?.product?.name}
                   </Text>
-                  <Text style={styles.price}>R$ {item?.price}</Text>
+                  <Text style={styles.price}>
+                    R$ {formatCurrency(item?.unique_price)}
+                  </Text>
                 </View>
                 <Text style={styles.text}>
                   Código do produto:{" "}
-                  <Text style={styles.text2}>{item?.code}</Text>
+                  <Text style={styles.text2}>{item?.product?.code}</Text>
                 </Text>
                 <Text style={styles.text}>
                   Data de validade:{" "}
-                  <Text style={styles.text2}>{item?.expiryDate}</Text>
+                  <Text style={styles.text2}>
+                    {item?.expires_at
+                      ? formatDate(item?.expires_at, "dd/MM/yyyy")
+                      : "Sem data"}
+                  </Text>
                 </Text>
                 <Text style={styles.text}>
-                  Local: <Text style={styles.text2}>Prateleira K12</Text>
+                  Local:{" "}
+                  <Text style={styles.text2}>
+                    {item?.section || "Sem local"}
+                  </Text>
                 </Text>
               </View>
             </View>
@@ -99,7 +134,9 @@ const ProductCard = ({ item }: any) => {
                 <ScamBarIcon color={colors.primary["600"]} />
                 <Text style={styles.quantity}>{item?.quantity} itens</Text>
               </View>
-              <Text style={styles.category}>{item?.category}</Text>
+              <Text style={styles.category}>
+                {item?.category?.name || "Sem Categoria"}
+              </Text>
             </View>
           </TouchableOpacity>
         </View>
@@ -123,7 +160,6 @@ const styles = StyleSheet.create({
     elevation: 2,
   },
   header: {
-    backgroundColor: colors.danger["600"],
     paddingVertical: 4,
     paddingHorizontal: 8,
     display: "flex",

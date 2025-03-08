@@ -43,6 +43,7 @@ const InfiniteScrollWithLoad: React.FC<InfiniteScrollWithLoadProps> = ({
   }, []);
 
   useEffect(() => {
+    setData([]);
     if (dataResponse?.data) {
       setData((prevData) => {
         const existingIds = new Set(prevData.map((item) => item.id));

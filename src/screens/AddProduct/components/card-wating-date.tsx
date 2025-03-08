@@ -2,12 +2,60 @@ import { Image, StyleSheet, Text, View } from "react-native";
 import ScamBarIcon from "../../../../assets/icons/scam-bar";
 import { colors } from "../../../styles/colors";
 import { formatCurrency } from "../../../utils/formatToMoney";
+import { exportIconAndColor } from "../../../utils/exportIconAndColor";
+import { calculateDaysExpired } from "../../../utils/calculateDaysExpired";
+import { Ionicons } from "@expo/vector-icons";
+import { typography } from "../../../styles/typography";
+import { format, parse } from "date-fns";
 
 export default function CardWatingDate({ product }: { product: any }) {
+  let expired_days;
+  if (product?.date?.length === 10) {
+    const parsedDate = parse(product.date, "dd/MM/yyyy", new Date());
+    expired_days = format(parsedDate, "yyyy-MM-dd");
+  }
+  console.log(expired_days);
   return (
     <View style={styles.cardDate}>
-      <View style={styles.cardDataHeader}>
-        <Text style={styles.cardDataTitle}>Aguardando data</Text>
+      <View
+        style={[
+          styles.header,
+
+          {
+            backgroundColor: exportIconAndColor(
+              calculateDaysExpired(expired_days as any)
+            )?.color,
+          },
+        ]}
+      >
+        <View
+          style={{
+            display: "flex",
+            flexDirection: "row",
+            gap: 6,
+            alignItems: "center",
+          }}
+        >
+          {expired_days && (
+            <Ionicons
+              name={
+                exportIconAndColor(calculateDaysExpired(expired_days))?.icon ||
+                "default-icon-name"
+              }
+              size={16}
+              color={colors.white}
+              style={{ marginLeft: 8 }}
+            />
+          )}
+          {!expired_days && (
+            <Text style={styles.expiredText}>AGUARDANDO DATA</Text>
+          )}
+          {expired_days && (
+            <Text style={styles.expiredText}>
+              {exportIconAndColor(calculateDaysExpired(expired_days))?.title}
+            </Text>
+          )}
+        </View>
       </View>
       <View
         style={{
@@ -126,15 +174,31 @@ export default function CardWatingDate({ product }: { product: any }) {
 }
 const styles = StyleSheet.create({
   cardDate: {
-    marginTop: 5,
-    display: "flex",
-    flexDirection: "column",
-    justifyContent: "space-between",
-    alignItems: "flex-start",
-    alignSelf: "stretch",
+    backgroundColor: "#fff",
     borderRadius: 8,
-    backgroundColor: "#FFF",
-    boxShadow: "0px 4px 12px 0px rgba(151, 151, 151, 0.15)",
+    width: "100%",
+    overflow: "hidden",
+    borderColor: "#ddd",
+    borderWidth: 1,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.6,
+    shadowRadius: 3,
+    elevation: 2,
+  },
+  expiredText: {
+    color: "#fff",
+    fontSize: 14,
+    fontFamily: typography.fontFamily.semibold,
+  },
+  header: {
+    paddingVertical: 4,
+    paddingHorizontal: 8,
+    display: "flex",
+    gap: 6,
+    justifyContent: "space-between",
+    alignItems: "center",
+    flexDirection: "row",
   },
   image: { width: 80, height: 80, borderRadius: 8, marginRight: 10 },
   cardDataHeader: {
