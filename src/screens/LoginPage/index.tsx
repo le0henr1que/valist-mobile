@@ -27,6 +27,7 @@ import { useMeQuery } from "../../services/me";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { CustomInput } from "../../components/Input";
 import { typography } from "../../styles/typography";
+import Typography from "../../components/Text";
 
 const discovery = {
   authorizationEndpoint: "https://accounts.google.com/o/oauth2/v2/auth",
@@ -148,7 +149,18 @@ export default function Login() {
                 source={require("../../../assets/logo-white.png")}
                 style={styles.image}
               />
-              <Text style={styles.title}>Entre com sua conta</Text>
+
+              <Typography
+                variant="3XL"
+                family="bold"
+                style={{
+                  color: "white",
+                  width: "70%",
+                  /* lineHeight: 41.6, */
+                }}
+              >
+                Entre com sua conta
+              </Typography>
             </View>
           </ImageBackground>
           <View style={styles.body}>
@@ -298,33 +310,29 @@ export default function Login() {
               </View>
               <View />
               <View>
-                <Text
+                <Typography
+                  variant="XS"
+                  family="regular"
                   style={{
-                    color: colors.neutral["500"],
-                    fontSize: 14,
-
-                    fontFamily: typography.fontFamily.regular,
-                    lineHeight: 20,
+                    marginBottom: 93,
                     textAlign: "center",
-                    marginBottom:93,
+                    color: colors.neutral["500"],
                   }}
                 >
                   Não possui conta?{" "}
-                  <Text
+                  <Typography
                     onPress={() => navigation.navigate("Register")}
+                    variant="XS"
+                    family="bold"
                     style={{
-                      color: colors.primary["600"],
-                      fontSize: 14,
-
-                      fontFamily: typography.fontFamily.bold,
-                      lineHeight: 20,
-                      textAlign: "center",
                       marginTop: 16,
+                      textAlign: "center",
+                      color: colors.primary["600"],
                     }}
                   >
                     Registre-se
-                  </Text>
-                </Text>
+                  </Typography>
+                </Typography>
               </View>
             </View>
           </View>

@@ -26,8 +26,9 @@ const NotPass = ({ navigation }: any) => {
             display: "flex",
             justifyContent: "center",
             alignItems: "center",
-            marginBottom: 20,
-            marginTop: 24,
+            padding: 8,
+            /*    marginBottom: 20, */
+            marginTop: 32,
           }}
         >
           {/*    <Ionicons
@@ -38,13 +39,15 @@ const NotPass = ({ navigation }: any) => {
           <Confetti />
         </View>
       </View>
+
       <Text style={styles.titleStyle}>Senha resetada com sucesso!</Text>
       <View style={styles.containerText}>
         <Text style={styles.textMessage}>
-          Sua senha foi alterada com sucesso! Use a nova senha para acessar sua
-          conta.
+          Sua senha foi alterada com sucesso! Use a {"\n"} nova senha para
+          acessar sua conta.
         </Text>
       </View>
+
       <View style={{ marginTop: 16, width: 343 }}>
         <Button type="fill" variant="primary" size="large">
           Entendido
@@ -81,7 +84,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     paddingHorizontal: 16,
     paddingBottom: 48,
-    height: 324,
+    height: 300,
+    maxWidth: 343,
   },
   textMessage: {
     color: "#4B5563",
@@ -99,14 +103,13 @@ const styles = StyleSheet.create({
     fontStyle: "normal",
     fontWeight: "600",
     lineHeight: 28,
+    marginTop: 12,
   },
   containerText: {
     display: "flex",
-    marginTop: 10,
-
+    width: 400,
     justifyContent: "center",
     alignItems: "center",
-    width: "100%",
     textAlign: "center",
     height: 76,
     borderBottomColor: "#DEDEDE",
