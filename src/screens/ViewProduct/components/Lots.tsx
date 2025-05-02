@@ -54,7 +54,18 @@ export const batchList = [
   },
 ];
 
-function Lots() {
+interface Batch {
+  batchCode: string;
+  unique_price: number;
+  quantity: number;
+  expires_at: number;
+}
+
+interface Props {
+  batch: Batch[];
+}
+
+function Lots({ data }: Props) {
   return (
     <View style={styles.container}>
       <ScrollView
@@ -66,9 +77,9 @@ function Lots() {
         showsHorizontalScrollIndicator={false}
         showsVerticalScrollIndicator={false}
       >
-        {batchList.map((product, index) => (
+        {data.map((batch, index) => (
           <View key={index} style={{ marginBottom: 16, width: "100%" }}>
-            <BatchCard batch={batchList} />
+            <BatchCard batch={batch} />
           </View>
         ))}
       </ScrollView>

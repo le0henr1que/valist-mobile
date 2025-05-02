@@ -19,6 +19,7 @@ import { useMeQuery } from "../../services/me";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { PlanPremium } from "../../screens/PlanPremium";
 import AddProduct from "../../screens/AddProduct";
+import ViewProduct from "../../screens/ViewProduct";
 
 const Stack = createNativeStackNavigator();
 
@@ -34,7 +35,10 @@ export default function PrivateRoute() {
         component={HomeScreen}
         options={{ headerShown: false }}
       />
-      <Stack.Screen name="Details" component={DetailsScreen} />
+      {/* <Stack.Screen 
+        name="DetailsScreen" 
+        component={DetailsScreen}
+        options={{ title: "DetailsScreen" }}/> */}
       <Stack.Screen
         name="EditDataStore"
         component={EditDataStore}
@@ -74,6 +78,11 @@ export default function PrivateRoute() {
         name="AddProduct"
         component={AddProduct}
         options={{ title: "AddProduct", headerShown: false }}
+      />
+      <Stack.Screen
+        name="ViewProduct"
+        component={ViewProduct}
+        options={{ title: "ViewProduct", headerShown: false }}
       />
       <Stack.Screen
         name="PersonInformation"

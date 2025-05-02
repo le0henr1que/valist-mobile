@@ -9,6 +9,10 @@ import DotsVertical from "../../../assets/icons/dots-vertical";
 import TrashIcon from "../../../assets/icons/trash";
 import CardBatchAction from "./CardBatchAction";
 import { typography } from "../../styles/typography";
+import { formatToBRL } from "../../utils/formatToMoney";
+import { formatDate } from "../../utils/formatDate";
+import { exportIconAndColor } from "../../utils/exportIconAndColor";
+import { calculateDaysExpired } from "../../utils/calculateDaysExpired";
 
 const BatchCard = ({ batch }: any) => {
   const { handleModal } = useDialogModal();
@@ -26,10 +30,23 @@ const BatchCard = ({ batch }: any) => {
       element: <CardBatchAction />,
     });
   };
+
+  console.log("BAT", batch);
+
   return (
     <TouchableOpacity style={{ width: "100%" }}>
       <View style={styles.card}>
-        <TouchableOpacity onPress={() => handlePress()} style={styles.header}>
+        <TouchableOpacity
+          onPress={() => handlePress()}
+          style={[
+            styles.header,
+            {
+              backgroundColor:
+                exportIconAndColor(calculateDaysExpired(batch?.expires_at))
+                  ?.color || colors.neutral["800"],
+            },
+          ]}
+        >
           <View
             style={{
               display: "flex",
@@ -40,7 +57,10 @@ const BatchCard = ({ batch }: any) => {
           >
             <TrashIcon />
             <Text style={styles.expiredText}>
-              VENCIDO HÁ {batch?.expiredDays} DIAS
+              {
+                exportIconAndColor(calculateDaysExpired(batch?.expires_at))
+                  ?.title
+              }
             </Text>
           </View>
           <TouchableOpacity onPress={() => handlePress()}>
@@ -60,16 +80,21 @@ const BatchCard = ({ batch }: any) => {
               >
                 <View>
                   <Text style={styles.text}>
-                    Lote:
+                    Lote:{" "}
                     <Text style={{ color: colors.neutral["900"] }}>
                       {batch.batchCode}
                     </Text>
                   </Text>
                   <Text style={styles.text}>
-                    Data de validade: {batch?.expiryDate}
+                    Data de validade:{" "}
+                    {batch?.expires_at
+                      ? formatDate(batch?.expires_at)
+                      : "Sem data"}
                   </Text>
                 </View>
-                <Text style={styles.price}>R$ {batch?.price}</Text>
+                <Text style={styles.price}>
+                  {formatToBRL(Number(batch?.unique_price ?? 0))}
+                </Text>
               </View>
             </View>
           </View>
@@ -104,7 +129,6 @@ const styles = StyleSheet.create({
     width: "100%",
   },
   header: {
-    backgroundColor: "#f44",
     padding: 10,
     display: "flex",
     gap: 6,

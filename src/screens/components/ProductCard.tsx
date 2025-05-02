@@ -19,8 +19,11 @@ const ProductCard = ({ item }: any) => {
 
   const navigation = useNavigation<NativeStackNavigationProp<any>>();
   const handlePressProductCard = () => {
-    console.log("Produto clicado");
-    navigation.navigate("ViewProduct");
+    console.log("Parametros", item?.product);
+    navigation.navigate("ViewProduct", {
+      productId: item?.product.id,
+      batchId: item?.id,
+    });
   };
   const handlePress = () => {
     handleModal({

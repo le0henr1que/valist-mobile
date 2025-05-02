@@ -50,4 +50,5 @@ export const {
   useGetCategorysQuery,
   useUpdateCategoryMutation,
   useDeleteCategoryMutation,
+  useGetOneCategoryQuery,
 } = category;
