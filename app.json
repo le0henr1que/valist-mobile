@@ -7,7 +7,11 @@
     "orientation": "portrait",
     "icon": "./assets/logo-white.png",
     "userInterfaceStyle": "light",
-    "platforms": ["ios", "android", "web"],
+    "platforms": [
+      "ios",
+      "android",
+      "web"
+    ],
     "scheme": "le0henr1que",
     "splash": {
       "image": "./assets/logo-white.png",
@@ -49,7 +53,8 @@
           "microphonePermission": "Allow $(PRODUCT_NAME) to access your microphone",
           "recordAudioAndroid": true
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "extra": {
       "eas": {

@@ -64,6 +64,8 @@ function Expirations() {
     navigation.navigate("BarcodeScannerApp", { isSearch: false });
   };
   const renderItem = ({ item }: { item: any }) => {
+
+    console.log(item)
     return <ProductCard item={item} />;
   };
 

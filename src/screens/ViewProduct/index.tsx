@@ -7,34 +7,76 @@ import Details from "./components/Details";
 import Lots from "./components/Lots";
 import { NativeStackNavigationProp } from "@react-navigation/native-stack";
 import { RootStackParamList } from "../HomeScreen";
-import { useNavigation } from "@react-navigation/native";
-
-const contentSwitch: any = {
-  details: <Details />,
-  lots: <Lots />,
-};
+import { SafeAreaView } from "react-native-safe-area-context";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import { useGetOneProductQuery } from "../../services/product";
+import { calculateDaysExpired } from "../../utils/calculateDaysExpired";
+import { exportIconAndColor } from "../../utils/exportIconAndColor";
 
 function ViewProduct() {
+  type RouteParams = {
+    productId: string;
+  };
+
+  const { productId, batchId } = useRoute().params as RouteParams;
+  console.log("ID DO PRODUTO", productId);
+
+  const { data } = useGetOneProductQuery({ id: productId });
+
+  const filteredBatch = data?.batches?.find(
+    (batch: any) => batch?.id === batchId
+  );
+
+  const batchWithCode = {
+    ...filteredBatch,
+    productCode: data?.code,
+  };
+
+  console.log("BATCH com code", batchWithCode);
+  console.log("CAGUEI", data?.batches);
+
+  const contentSwitch: Record<string, JSX.Element> = {
+    details: <Details data={batchWithCode} />,
+    lots: <Lots data={data?.batches} />,
+  };
   const [activeSwitch, setActiveSwitch] = useState("details");
   const navigation =
     useNavigation<NativeStackNavigationProp<RootStackParamList>>();
+
   return (
-    <View style={styles.container}>
-      <View style={styles.tag}>
+    <SafeAreaView style={styles.container}>
+      <View
+        style={[
+          styles.tag,
+          {
+            backgroundColor:
+              exportIconAndColor(
+                calculateDaysExpired(filteredBatch?.expires_at)
+              )?.color || colors.neutral["800"],
+          },
+        ]}
+      >
         <TrashIcon />
-        <Text style={styles.tagTitle}>Vencido HÁ 2 DIAS</Text>
+        <Text style={styles.tagTitle}>
+          {
+            exportIconAndColor(calculateDaysExpired(filteredBatch?.expires_at))
+              ?.title
+          }
+        </Text>
       </View>
       <View style={styles.productContainer}>
         <View style={styles.productInfo}>
           <Image
             style={{ width: 102, height: 102 }}
-            source={{ uri: "https://via.placeholder.com/60" }}
+            source={{ uri: data?.imageUrl || "https://via.placeholder.com/60" }}
           />
           <View style={styles.productDescription}>
             <Text style={styles.productName}>
-              Wasabi Doritos Pacote Grande 78g
+              {data?.name || "Produto não encontrado"}
             </Text>
-            <Text style={styles.productPrice}>R$ 20,00/Un</Text>
+            <Text style={styles.productPrice}>
+              R$ {filteredBatch?.unique_price || "0,00"}/Un
+            </Text>
           </View>
         </View>
         <View style={styles.productAction}>
@@ -83,7 +125,7 @@ function ViewProduct() {
         </View>
         <View style={{ marginTop: 20 }}>{contentSwitch[activeSwitch]}</View>
       </View>
-    </View>
+    </SafeAreaView>
   );
 }
 
@@ -119,7 +161,6 @@ export const styles = StyleSheet.create({
   tag: {
     width: "100%",
     backgroundColor: colors.danger["600"],
-    // padding 4px 8px
     paddingVertical: 4,
     paddingHorizontal: 8,
     display: "flex",
